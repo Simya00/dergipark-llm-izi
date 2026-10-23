@@ -168,34 +168,20 @@ def kayit_ayristir(kayit: ET.Element):
     }
 
 
-def arsiv_isaretle(makaleler):
-    """Toplu yuklenmis arsiv makalelerini isaretler, yil_guvenilir'i doldurur.
-    Dergi basina rapor satirlari dondurur."""
-    dergiler = defaultdict(list)
-    for m in makaleler:
-        dergiler[m["dergi_kodu"]].append(m)
+def arsiv_bilgisi(tarih_ciltleri):
+    """Bir derginin {ilk tarih -> cilt kumesi} haritasindan toplu yukleme
+    tarihlerini ve toplu yuklenen en buyuk cildi bulur."""
+    toplu = {t for t, c in tarih_ciltleri.items() if len(c) >= TOPLU_ESIK}
+    # Arsiv birkac gune yayilmis olabilir: toplu yuklenen en buyuk cilde
+    # kadar olan her sey arsiv sayilir.
+    arsiv_son_cilt = max((c for t in toplu for c in tarih_ciltleri[t]), default=None)
+    return toplu, arsiv_son_cilt
 
-    rapor = []
-    for kod, liste in dergiler.items():
-        tarih_ciltleri = defaultdict(set)
-        for m in liste:
-            if m["tarihler"] and m["cilt"] is not None:
-                tarih_ciltleri[m["tarihler"][0]].add(m["cilt"])
-        toplu = {t for t, c in tarih_ciltleri.items() if len(c) >= TOPLU_ESIK}
-        # Arsiv birkac gune yayilmis olabilir: toplu yuklenen en buyuk cilde
-        # kadar olan her sey arsiv sayilir.
-        arsiv_son_cilt = max((c for t in toplu for c in tarih_ciltleri[t]), default=None)
 
-        for m in liste:
-            m["arsiv"] = bool(
-                (m["tarihler"] and m["tarihler"][0] in toplu)
-                or (arsiv_son_cilt is not None and m["cilt"] is not None and m["cilt"] <= arsiv_son_cilt))
-            m["yil_guvenilir"] = None if m["arsiv"] else m["yil"]
-
-        guvenilir_yillar = [m["yil_guvenilir"] for m in liste if m["yil_guvenilir"]]
-        rapor.append((kod, len(liste), sum(m["arsiv"] for m in liste), arsiv_son_cilt,
-                      min(guvenilir_yillar, default=None)))
-    return rapor
+def arsiv_mi(m, toplu, arsiv_son_cilt):
+    return bool(
+        (m["tarihler"] and m["tarihler"][0] in toplu)
+        or (arsiv_son_cilt is not None and m["cilt"] is not None and m["cilt"] <= arsiv_son_cilt))
 
 
 def main():
@@ -209,54 +195,87 @@ def main():
     if not dosyalar:
         raise SystemExit(f"{arg.ham} altinda sayfa_*.xml.gz bulunamadi.")
 
-    makaleler = {}  # oai_id -> kayit (ayni makale birden cok set'te olabilir)
+    # Tum DergiPark (~800 bin makale) bellege sigmayabilir; bu yuzden iki gecis:
+    #   1. gecis: kayitlari gecici dosyaya yaz, sadece kucuk ozetleri bellekte tut
+    #      (gorulen id'ler, set'ler, dergi basina tarih -> cilt haritasi)
+    #   2. gecis: gecici dosyayi okuyup arsiv/yil_guvenilir alanlarini ekle
+    gecici = Path(arg.cikti + ".gecici")
+    setler = {}  # oai_id -> set kumesi (ayni makale birden cok set'te olabilir)
+    tarih_ciltleri = defaultdict(lambda: defaultdict(set))  # dergi -> tarih -> ciltler
     silinen = 0
-    for dosya in dosyalar:
-        acici = gzip.open if dosya.suffix == ".gz" else open
-        with acici(dosya, "rb") as f:
-            kok = ET.parse(f).getroot()
-        for kayit in kok.findall(".//oai:record", NS):
-            m = kayit_ayristir(kayit)
-            if m is None:
-                silinen += 1
-                continue
-            onceki = makaleler.get(m["oai_id"])
-            if onceki:
-                m["setler"] = sorted(set(onceki["setler"]) | set(m["setler"]))
-            makaleler[m["oai_id"]] = m
+    with open(gecici, "w", encoding="utf-8") as g:
+        for i, dosya in enumerate(dosyalar, 1):
+            acici = gzip.open if dosya.suffix == ".gz" else open
+            with acici(dosya, "rb") as f:
+                kok = ET.parse(f).getroot()
+            for kayit in kok.findall(".//oai:record", NS):
+                m = kayit_ayristir(kayit)
+                if m is None:
+                    silinen += 1
+                    continue
+                if m["oai_id"] in setler:  # tekrar: sadece set'leri birlestir
+                    setler[m["oai_id"]].update(m["setler"])
+                    continue
+                setler[m["oai_id"]] = set(m["setler"])
+                if m["tarihler"] and m["cilt"] is not None:
+                    tarih_ciltleri[m["dergi_kodu"]][m["tarihler"][0]].add(m["cilt"])
+                g.write(json.dumps(m, ensure_ascii=False) + "\n")
+            if i % 500 == 0:
+                print(f"  {i}/{len(dosyalar)} sayfa...", end="\r")
 
-    rapor = arsiv_isaretle(makaleler.values())
+    print(" " * 40, end="\r")  # ilerleme satirini temizle
+    arsiv = {kod: arsiv_bilgisi(tc) for kod, tc in tarih_ciltleri.items()}
 
-    with open(arg.cikti, "w", encoding="utf-8") as f:
-        for m in makaleler.values():
+    # 2. gecis + rapor sayaclari
+    dergi_say, dergi_arsiv, dergi_ilk_yil = Counter(), Counter(), {}
+    yil_say, ham_say, tr_say, en_say, cift_say = Counter(), Counter(), Counter(), Counter(), Counter()
+    kaynak, oz_dil = Counter(), Counter()
+    ozsuz = kodsuz = 0
+    with open(gecici, encoding="utf-8") as g, open(arg.cikti, "w", encoding="utf-8") as f:
+        for satir in g:
+            m = json.loads(satir)
+            m["setler"] = sorted(setler[m["oai_id"]])
+            kod = m["dergi_kodu"]
+            m["arsiv"] = arsiv_mi(m, *arsiv.get(kod, (set(), None)))
+            m["yil_guvenilir"] = None if m["arsiv"] else m["yil"]
             f.write(json.dumps(m, ensure_ascii=False) + "\n")
 
+            y = m["yil_guvenilir"]
+            dergi_say[kod] += 1
+            dergi_arsiv[kod] += m["arsiv"]
+            if y and (kod not in dergi_ilk_yil or y < dergi_ilk_yil[kod]):
+                dergi_ilk_yil[kod] = y
+            yil_say[y] += 1
+            ham_say[m["yil"]] += 1
+            tr_say[y] += bool(m["ozet_tr"])
+            en_say[y] += bool(m["ozet_en"])
+            cift_say[y] += bool(m["ozet_tr"] and m["ozet_en"])
+            kaynak.update(o["dil_kaynagi"] for o in m["ozler"])
+            oz_dil.update(o["dil"] for o in m["ozler"])
+            ozsuz += not m["ozler"]
+            kodsuz += not kod
+    gecici.unlink()
+
     # Kisa rapor
-    print(f"{len(dosyalar)} sayfa, {len(makaleler)} makale, {silinen} silinmis/bos kayit atlandi")
+    print(f"{len(dosyalar)} sayfa, {len(setler)} makale, {silinen} silinmis/bos kayit atlandi")
     print(f"Cikti: {arg.cikti}\n")
     print("Arsiv tespiti (dergi basina):")
     print(f"{'dergi':>14} {'makale':>7} {'arsiv':>6} {'arsiv son cilt':>15} {'ilk guvenilir yil':>18}")
-    for kod, n, arsiv, son_cilt, ilk_yil in sorted(rapor, key=lambda r: -r[1])[:30]:
-        print(f"{str(kod):>14} {n:>7} {arsiv:>6} {str(son_cilt):>15} {str(ilk_yil):>18}")
-    if len(rapor) > 30:
-        print(f"  ... ve {len(rapor) - 30} dergi daha")
+    for kod, n in dergi_say.most_common(30):
+        son_cilt = arsiv.get(kod, (set(), None))[1]
+        print(f"{str(kod):>14} {n:>7} {dergi_arsiv[kod]:>6} {str(son_cilt):>15} {str(dergi_ilk_yil.get(kod)):>18}")
+    if len(dergi_say) > 30:
+        print(f"  ... ve {len(dergi_say) - 30} dergi daha")
     print()
 
-    yil_say = Counter(m["yil_guvenilir"] for m in makaleler.values())
-    ham_say = Counter(m["yil"] for m in makaleler.values())
-    tr_say = Counter(m["yil_guvenilir"] for m in makaleler.values() if m["ozet_tr"])
-    en_say = Counter(m["yil_guvenilir"] for m in makaleler.values() if m["ozet_en"])
-    cift_say = Counter(m["yil_guvenilir"] for m in makaleler.values() if m["ozet_tr"] and m["ozet_en"])
     print("Yillara gore ('makale' = guvenilir yil, None = arsiv/yilsiz; 'ham' = dc:date yili):")
     print(f"{'yil':>6} {'makale':>8} {'ham':>6} {'TR oz':>8} {'EN oz':>8} {'TR+EN':>8}")
     for y in sorted(set(yil_say) | set(ham_say), key=lambda y: (y is None, y)):
         print(f"{str(y):>6} {yil_say[y]:>8} {ham_say[y]:>6} {tr_say[y]:>8} {en_say[y]:>8} {cift_say[y]:>8}")
-    kaynak = Counter(o["dil_kaynagi"] for m in makaleler.values() for o in m["ozler"])
     print(f"\nOz dili kaynagi: {dict(kaynak)}")
-    oz_dil = Counter(o["dil"] for m in makaleler.values() for o in m["ozler"])
     print(f"Oz dilleri: {dict(oz_dil)}")
-    print(f"Ozu hic olmayan makale: {sum(not m['ozler'] for m in makaleler.values())}")
-    print(f"Dergi kodu bulunamayan: {sum(not m['dergi_kodu'] for m in makaleler.values())}")
+    print(f"Ozu hic olmayan makale: {ozsuz}")
+    print(f"Dergi kodu bulunamayan: {kodsuz}")
 
 
 if __name__ == "__main__":
