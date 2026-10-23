@@ -252,6 +252,8 @@ def komut_topla(arg):
 
 def main():
     global TABAN_URL
+    # nohup ile dosyaya yonlendirildiginde ilerleme satirlari hemen yazilsin
+    sys.stdout.reconfigure(line_buffering=True)
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("komut", choices=["deneme", "setler", "topla"])
     p.add_argument("--set", action="append", help="OAI set adi (dergi); birden cok kez verilebilir")
