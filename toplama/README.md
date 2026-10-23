@@ -53,7 +53,20 @@ python3 oai_topla.py topla
 - İlk 3 (eski, 2012–2014) kayıtta İngilizce abstract yok, 2'sinde öz hiç yok.
   Yeni makalelerde EN abstract oranı kontrol edilecek.
 
-## Bilinen belirsizlikler (pilotta netleşecek)
+## ESOGÜ pilotunda öğrenilenler
+
+- 4 dergi (`ogummf`, `ogusbd`, `esoguifd`, `esogutd`): 1.871 makale.
+  Yeni makalelerin neredeyse hepsinde TR öz + EN abstract var (iki dilli
+  karşılaştırma mümkün).
+- **Arşiv sorunu:** Dergiler DergiPark'a geçerken eski sayıları toplu
+  yüklemiş; bunların `dc:date`'i yükleme tarihi. Örnek: `ogusbd` Cilt 10
+  gerçekte 2009, `dc:date` 2014; `ogummf` Cilt 10 gerçekte 1997, `dc:date` 2017.
+  Cilt numarasından yıl tahmini güvenilir değil (`ogummf` düzenli cilt
+  çıkarmamış). Bu yüzden ayrıştırıcı arşiv makalelerini `arsiv: true`
+  işaretler ve `yil_guvenilir: null` yapar; **analizde `yil_guvenilir`
+  kullanılır.**
+
+## Bilinen belirsizlikler
 
 - `--from/--until` kaydın **değiştirilme** tarihine göre süzer, yayın yılına
   göre değil; bu yüzden yıl süzmesi ayrıştırmada `dc:date` üzerinden yapılıyor.

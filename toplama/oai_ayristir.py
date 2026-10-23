@@ -11,6 +11,19 @@ Her satirdaki alanlar:
   anahtar_kelimeler, basliklar, ozler (tum dc:description'lar, dil etiketiyle),
   ozet_tr, ozet_en (ozler icinden secilen Turkce / Ingilizce oz)
 
+  cilt, sayi (dc:source'taki "Vol. X No. Y"), arsiv, yil_guvenilir
+
+ARSIV TESPITI: Bir dergi DergiPark'a gectiginde eski arsivini toplu yuklemis;
+bu makalelerin dc:date'i YAYIN degil YUKLEME tarihi (orn. ogusbd Cilt 10:
+gercekte 2009, dc:date "2014"; ogummf Cilt 10: gercekte 1997, dc:date "2017").
+Yili cilt numarasindan tahmin etmek guvenilir degil (ogummf her yil duzenli
+cilt cikarmamis), bu yuzden arsiv makalelerine yil UYDURULMAZ:
+  1. Ayni dergide ayni tarihte >= TOPLU_ESIK farkli cilt varsa o tarih bir
+     toplu yukleme tarihidir.
+  2. Bu tarihlerdeki makaleler ve cildi, toplu yuklenen en buyuk cilde esit
+     veya kucuk olan makaleler "arsiv" sayilir.
+  3. yil_guvenilir = arsiv degilse dc:date yili, arsivse None (analiz disi).
+
 Oz dili: once xml:lang etiketine bakilir; yoksa basit bir sezgisel dil
 tespiti yapilir (Turkceye ozgu harfler + sik gecen ilgec/baglaclar).
 dil_kaynagi alani hangisinin kullanildigini soyler ("etiket" / "tahmin").
@@ -27,7 +40,7 @@ import html
 import json
 import re
 import xml.etree.ElementTree as ET
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 KLASOR = Path(__file__).resolve().parent
@@ -36,6 +49,8 @@ NS = {
     "dc": "http://purl.org/dc/elements/1.1/",
 }
 XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
+CILT_SAYI = re.compile(r"Vol\.?\s*(\d+)(?:\s*No\.?\s*([\w-]+))?", re.IGNORECASE)
+TOPLU_ESIK = 3  # ayni gun bu kadar farkli cilt -> toplu yukleme
 DC = "{" + NS["dc"] + "}"
 
 # ------------------------------------------------------------------
@@ -125,6 +140,8 @@ def kayit_ayristir(kayit: ET.Element):
                        if (m := re.search(r"dergipark\.org\.tr/\w+/pub/([^/]+)", t))), None)
     url = next((t for t in tanimlayicilar if t.startswith("http") and "doi.org" not in t), None)
     doi = next((t for t in tanimlayicilar if "10." in t and ("doi" in t.lower() or t.startswith("10."))), None)
+    kaynak = degerler("source")
+    cs = next((m for k in kaynak if (m := CILT_SAYI.search(k))), None)
     tarihler = degerler("date")
     yillar = [int(m.group()) for t in tarihler if (m := re.search(r"(19|20)\d{2}", t))]
 
@@ -139,7 +156,9 @@ def kayit_ayristir(kayit: ET.Element):
         "dil": [dil_normalle(d) for d in degerler("language")],
         "tur": degerler("type"),
         "dergi_kodu": dergi_kodu,
-        "dergi": degerler("source"),
+        "dergi": kaynak,
+        "cilt": int(cs.group(1)) if cs else None,
+        "sayi": cs.group(2) if cs else None,
         "yayinci": degerler("publisher"),
         "anahtar_kelimeler": degerler("subject"),
         "basliklar": [{"dil": d, "metin": m} for m, d in alanlar.get("title", [])],
@@ -147,6 +166,36 @@ def kayit_ayristir(kayit: ET.Element):
         "ozet_tr": ilk_oz("tr"),
         "ozet_en": ilk_oz("en"),
     }
+
+
+def arsiv_isaretle(makaleler):
+    """Toplu yuklenmis arsiv makalelerini isaretler, yil_guvenilir'i doldurur.
+    Dergi basina rapor satirlari dondurur."""
+    dergiler = defaultdict(list)
+    for m in makaleler:
+        dergiler[m["dergi_kodu"]].append(m)
+
+    rapor = []
+    for kod, liste in dergiler.items():
+        tarih_ciltleri = defaultdict(set)
+        for m in liste:
+            if m["tarihler"] and m["cilt"] is not None:
+                tarih_ciltleri[m["tarihler"][0]].add(m["cilt"])
+        toplu = {t for t, c in tarih_ciltleri.items() if len(c) >= TOPLU_ESIK}
+        # Arsiv birkac gune yayilmis olabilir: toplu yuklenen en buyuk cilde
+        # kadar olan her sey arsiv sayilir.
+        arsiv_son_cilt = max((c for t in toplu for c in tarih_ciltleri[t]), default=None)
+
+        for m in liste:
+            m["arsiv"] = bool(
+                (m["tarihler"] and m["tarihler"][0] in toplu)
+                or (arsiv_son_cilt is not None and m["cilt"] is not None and m["cilt"] <= arsiv_son_cilt))
+            m["yil_guvenilir"] = None if m["arsiv"] else m["yil"]
+
+        guvenilir_yillar = [m["yil_guvenilir"] for m in liste if m["yil_guvenilir"]]
+        rapor.append((kod, len(liste), sum(m["arsiv"] for m in liste), arsiv_son_cilt,
+                      min(guvenilir_yillar, default=None)))
+    return rapor
 
 
 def main():
@@ -176,6 +225,8 @@ def main():
                 m["setler"] = sorted(set(onceki["setler"]) | set(m["setler"]))
             makaleler[m["oai_id"]] = m
 
+    rapor = arsiv_isaretle(makaleler.values())
+
     with open(arg.cikti, "w", encoding="utf-8") as f:
         for m in makaleler.values():
             f.write(json.dumps(m, ensure_ascii=False) + "\n")
@@ -183,13 +234,23 @@ def main():
     # Kisa rapor
     print(f"{len(dosyalar)} sayfa, {len(makaleler)} makale, {silinen} silinmis/bos kayit atlandi")
     print(f"Cikti: {arg.cikti}\n")
-    yil_say = Counter(m["yil"] for m in makaleler.values())
-    tr_say = Counter(m["yil"] for m in makaleler.values() if m["ozet_tr"])
-    en_say = Counter(m["yil"] for m in makaleler.values() if m["ozet_en"])
-    cift_say = Counter(m["yil"] for m in makaleler.values() if m["ozet_tr"] and m["ozet_en"])
-    print(f"{'yil':>6} {'makale':>8} {'TR oz':>8} {'EN oz':>8} {'TR+EN':>8}")
-    for y in sorted(yil_say, key=lambda y: (y is None, y)):
-        print(f"{str(y):>6} {yil_say[y]:>8} {tr_say[y]:>8} {en_say[y]:>8} {cift_say[y]:>8}")
+    print("Arsiv tespiti (dergi basina):")
+    print(f"{'dergi':>14} {'makale':>7} {'arsiv':>6} {'arsiv son cilt':>15} {'ilk guvenilir yil':>18}")
+    for kod, n, arsiv, son_cilt, ilk_yil in sorted(rapor, key=lambda r: -r[1])[:30]:
+        print(f"{str(kod):>14} {n:>7} {arsiv:>6} {str(son_cilt):>15} {str(ilk_yil):>18}")
+    if len(rapor) > 30:
+        print(f"  ... ve {len(rapor) - 30} dergi daha")
+    print()
+
+    yil_say = Counter(m["yil_guvenilir"] for m in makaleler.values())
+    ham_say = Counter(m["yil"] for m in makaleler.values())
+    tr_say = Counter(m["yil_guvenilir"] for m in makaleler.values() if m["ozet_tr"])
+    en_say = Counter(m["yil_guvenilir"] for m in makaleler.values() if m["ozet_en"])
+    cift_say = Counter(m["yil_guvenilir"] for m in makaleler.values() if m["ozet_tr"] and m["ozet_en"])
+    print("Yillara gore ('makale' = guvenilir yil, None = arsiv/yilsiz; 'ham' = dc:date yili):")
+    print(f"{'yil':>6} {'makale':>8} {'ham':>6} {'TR oz':>8} {'EN oz':>8} {'TR+EN':>8}")
+    for y in sorted(set(yil_say) | set(ham_say), key=lambda y: (y is None, y)):
+        print(f"{str(y):>6} {yil_say[y]:>8} {ham_say[y]:>6} {tr_say[y]:>8} {en_say[y]:>8} {cift_say[y]:>8}")
     kaynak = Counter(o["dil_kaynagi"] for m in makaleler.values() for o in m["ozler"])
     print(f"\nOz dili kaynagi: {dict(kaynak)}")
     oz_dil = Counter(o["dil"] for m in makaleler.values() for o in m["ozler"])
