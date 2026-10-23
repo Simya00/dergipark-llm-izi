@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*_env/
+
+# IDE / sistem
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# Ham OAI sayfalari ve ayristirilmis veri (buyuk) - sadece yerelde
+toplama/ham/
+toplama/makaleler.jsonl
+toplama/deneme_ornek.xml
