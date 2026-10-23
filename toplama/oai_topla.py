@@ -46,7 +46,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-TABAN_URL = "https://dergipark.org.tr/api/public/oai"
+TABAN_URL = "https://dergipark.org.tr/api/public/oai/"
 KLASOR = Path(__file__).resolve().parent
 HAM_KLASOR = KLASOR / "ham"
 SETLER_DOSYASI = KLASOR / "setler.tsv"
