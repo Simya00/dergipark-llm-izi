@@ -56,25 +56,36 @@ NS = {
     "oai_dc": "http://www.openarchives.org/OAI/2.0/oai_dc/",
     "dc": "http://purl.org/dc/elements/1.1/",
 }
-KULLANICI_AJANI = "TR-LLM-Analiz arastirma toplayicisi (akademik, OAI-PMH; 1 istek/sn)"
+KULLANICI_AJANI = "TR-LLM-Analiz arastirma toplayicisi (akademik, OAI-PMH; 429 gelince yavaslar)"
 ZAMAN_ASIMI = 120
 MAKS_DENEME = 6
+
+# Uyarlanir ek bekleme: sunucu 429 ("cok hizli") dedikce artar, basarili
+# isteklerle yavasca azalir. Boylece hiz sunucunun sinirina kendiliginden oturur.
+EK_BEKLEME = 0.0
+EK_BEKLEME_MAKS = 60.0
 
 
 # ------------------------------------------------------------------
 # HTTP: tekrar denemeli istek
 # ------------------------------------------------------------------
 def oai_istek(parametreler: dict, bekleme: float) -> bytes:
+    global EK_BEKLEME
     url = TABAN_URL + "?" + urllib.parse.urlencode(parametreler)
     for deneme in range(1, MAKS_DENEME + 1):
         try:
             istek = urllib.request.Request(url, headers={"User-Agent": KULLANICI_AJANI})
             with urllib.request.urlopen(istek, timeout=ZAMAN_ASIMI) as yanit:
                 veri = yanit.read()
-            time.sleep(bekleme)
+            time.sleep(bekleme + EK_BEKLEME)
+            EK_BEKLEME *= 0.98  # ~35 basarili istekte yariya iner
             return veri
         except urllib.error.HTTPError as h:
-            if h.code == 503 and h.headers.get("Retry-After", "").isdigit():
+            if h.code == 429:
+                EK_BEKLEME = min(max(EK_BEKLEME * 2, 1.0), EK_BEKLEME_MAKS)
+                print(f"  HTTP 429: hiz dusuruluyor, istekler arasi artik ~{bekleme + EK_BEKLEME:.1f} sn",
+                      file=sys.stderr)
+            if h.code in (429, 503) and h.headers.get("Retry-After", "").isdigit():
                 sure = int(h.headers["Retry-After"])
             elif h.code >= 500 or h.code == 429:
                 sure = min(2 ** deneme, 300)
