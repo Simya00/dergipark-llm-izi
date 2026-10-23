@@ -18,10 +18,12 @@ dil_kaynagi alani hangisinin kullanildigini soyler ("etiket" / "tahmin").
 Kullanim:
   python3 oai_ayristir.py                  # ham/ altindaki her seyi ayristir
   python3 oai_ayristir.py --ham ham/ogummf --cikti ogummf.jsonl
+  python3 oai_ayristir.py --dosya deneme_ornek.xml --cikti deneme.jsonl
 """
 
 import argparse
 import gzip
+import html
 import json
 import re
 import xml.etree.ElementTree as ET
@@ -78,8 +80,15 @@ def dil_normalle(etiket):
 # ------------------------------------------------------------------
 # Kayit ayristirma
 # ------------------------------------------------------------------
+HTML_ETIKET = re.compile(r"<[^>]+>")
+
+
 def temiz(metin):
-    return " ".join((metin or "").split())
+    # DergiPark metinleri HTML kacisli geliyor ("TBMM&#039;nin"), bazen
+    # cift kacisli ("&amp;#039;") ve <p>/<br> etiketli. Iki kez coz, etiketleri at.
+    metin = html.unescape(html.unescape(metin or ""))
+    metin = HTML_ETIKET.sub(" ", metin)
+    return " ".join(metin.split())
 
 
 def kayit_ayristir(kayit: ET.Element):
@@ -110,6 +119,10 @@ def kayit_ayristir(kayit: ET.Element):
         return max(adaylar, key=len) if adaylar else None  # birden coksa en uzunu
 
     tanimlayicilar = degerler("identifier")
+    # Dergi kisa adi (orn. "mulkiye") makale URL'sinden; set'ler sayisal ve
+    # bazi kayitlarda hic yok, bu yuzden dergiyi buradan tanimliyoruz.
+    dergi_kodu = next((m.group(1) for t in tanimlayicilar + degerler("relation")
+                       if (m := re.search(r"dergipark\.org\.tr/\w+/pub/([^/]+)", t))), None)
     url = next((t for t in tanimlayicilar if t.startswith("http") and "doi.org" not in t), None)
     doi = next((t for t in tanimlayicilar if "10." in t and ("doi" in t.lower() or t.startswith("10."))), None)
     tarihler = degerler("date")
@@ -125,6 +138,7 @@ def kayit_ayristir(kayit: ET.Element):
         "yil": min(yillar) if yillar else None,
         "dil": [dil_normalle(d) for d in degerler("language")],
         "tur": degerler("type"),
+        "dergi_kodu": dergi_kodu,
         "dergi": degerler("source"),
         "yayinci": degerler("publisher"),
         "anahtar_kelimeler": degerler("subject"),
@@ -138,17 +152,19 @@ def kayit_ayristir(kayit: ET.Element):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--ham", default=str(KLASOR / "ham"), help="Ham sayfalarin klasoru")
+    p.add_argument("--dosya", action="append", help="Tek tek XML/XML.gz dosyalari (orn. deneme_ornek.xml)")
     p.add_argument("--cikti", default=str(KLASOR / "makaleler.jsonl"))
     arg = p.parse_args()
 
-    dosyalar = sorted(Path(arg.ham).rglob("sayfa_*.xml.gz"))
+    dosyalar = [Path(d) for d in arg.dosya] if arg.dosya else sorted(Path(arg.ham).rglob("sayfa_*.xml.gz"))
     if not dosyalar:
         raise SystemExit(f"{arg.ham} altinda sayfa_*.xml.gz bulunamadi.")
 
     makaleler = {}  # oai_id -> kayit (ayni makale birden cok set'te olabilir)
     silinen = 0
     for dosya in dosyalar:
-        with gzip.open(dosya) as f:
+        acici = gzip.open if dosya.suffix == ".gz" else open
+        with acici(dosya, "rb") as f:
             kok = ET.parse(f).getroot()
         for kayit in kok.findall(".//oai:record", NS):
             m = kayit_ayristir(kayit)
@@ -176,6 +192,10 @@ def main():
         print(f"{str(y):>6} {yil_say[y]:>8} {tr_say[y]:>8} {en_say[y]:>8} {cift_say[y]:>8}")
     kaynak = Counter(o["dil_kaynagi"] for m in makaleler.values() for o in m["ozler"])
     print(f"\nOz dili kaynagi: {dict(kaynak)}")
+    oz_dil = Counter(o["dil"] for m in makaleler.values() for o in m["ozler"])
+    print(f"Oz dilleri: {dict(oz_dil)}")
+    print(f"Ozu hic olmayan makale: {sum(not m['ozler'] for m in makaleler.values())}")
+    print(f"Dergi kodu bulunamayan: {sum(not m['dergi_kodu'] for m in makaleler.values())}")
 
 
 if __name__ == "__main__":

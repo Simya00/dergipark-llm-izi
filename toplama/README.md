@@ -13,7 +13,9 @@ cd toplama
 
 # 1) Arayüz çalışıyor mu, veri neye benziyor? (~5 sn)
 python3 oai_topla.py deneme
-#    -> çıktıyı ve oluşan deneme_ornek.xml dosyasını paylaş
+#    İlk sayfanın (100 kayıt) TR/EN öz sayımı:
+python3 oai_ayristir.py --dosya deneme_ornek.xml --cikti deneme.jsonl
+#    Belirli bir derginin ilk sayfası için:  python3 oai_topla.py deneme --set <setSpec>
 
 # 2) Dergi (set) listesini indir -> setler.tsv
 python3 oai_topla.py setler
@@ -37,6 +39,19 @@ python3 oai_topla.py topla
   o set'i baştan topla.
 - İstekler arası 1 sn beklenir (`--bekleme`); sunucuyu yormamak için düşürme.
 - `ham/` ve `makaleler.jsonl` büyük olacağı için git'e eklenmez.
+
+## İlk denemede öğrenilenler (2026-10-24)
+
+- Arayüz çalışıyor; sayfa başına 100 kayıt, toplam sayı (`completeListSize`) verilmiyor.
+- `earliestDatestamp` 2026-10-24: tüm kayıtların datestamp'i yenilenmiş,
+  yani `--from/--until` işe yaramaz.
+- Set'ler sayısal (`54`) ve bazı kayıtlarda set yok → dergi, URL'deki kısa
+  addan (`pub/mulkiye`) `dergi_kodu` alanına çıkarılıyor.
+- Dil etiketleri `tr-TR` / `en-US` biçiminde → `tr` / `en`'e indirgeniyor.
+- Metinler HTML kaçışlı (`&#039;`) → ayrıştırmada çözülüyor.
+- `dc:date` yayın tarihi gibi görünüyor; gönderilme tarihi OAI'de yok.
+- İlk 3 (eski, 2012–2014) kayıtta İngilizce abstract yok, 2'sinde öz hiç yok.
+  Yeni makalelerde EN abstract oranı kontrol edilecek.
 
 ## Bilinen belirsizlikler (pilotta netleşecek)
 
