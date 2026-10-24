@@ -24,7 +24,7 @@ Bu çalışmanın katkıları:
 |---|---|
 | `toplama/` | DergiPark OAI-PMH toplayıcı ve ayrıştırıcı ([talimatlar](toplama/README.md)) |
 | `analiz/` | Kelime sıklıkları, aşırı kullanım, alt sınır ([talimatlar](analiz/README.md)) |
-| `notlar/` | Veri planı, ESOGÜ dergi listesi, e-posta taslakları |
+| `notlar/` | [Günlük ilerleme](notlar/gunluk_ilerleme.md), veri planı, ESOGÜ dergi listesi, e-posta taslakları |
 
 ## Durum
 
