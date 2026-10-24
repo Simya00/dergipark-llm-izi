@@ -1,21 +1,28 @@
 #!/usr/bin/env python3
 """
-Kelime Sikliklari (yillara gore)
-================================
-makaleler.jsonl'deki ozlerden, her kelimenin her yil KAC OZETTE gectigini
-sayar (Kobak vd. 2025 gibi: ayni ozette kac kez gectigi degil, gecip
-gecmedigi). Analizde makalenin yil_guvenilir alani kullanilir; arsiv/yilsiz
-makaleler disarida kalir.
+Kelime ve Kelime Grubu Sikliklari (yillara gore)
+================================================
+makaleler.jsonl'deki ozlerden, her kelimenin (--n 1) veya n kelimelik grubun
+(--n 2, 3, 4: "onemli bir rol oynamaktadir" gibi kalip ifadeler) her yil KAC
+OZETTE gectigini sayar (Kobak vd. 2025 gibi: ayni ozette kac kez gectigi
+degil, gecip gecmedigi). Analizde makalenin yil_guvenilir alani kullanilir;
+arsiv/yilsiz makaleler disarida kalir.
 
-Cikti (--cikti, varsayilan siklik_<dil>.tsv.gz): yil, kelime, belge_sayisi
+Kelime gruplari cumle/yan cumle sinirini (. ! ? ; : , parantez) asmaz:
+"...sonuclandi. Bu calisma..." icinden "sonuclandi bu" grubu cikmaz.
+
+Cikti (--cikti, varsayilan siklik_<dil>.tsv.gz, n>1 icin
+siklik_<dil>_<n>gram.tsv.gz): yil, kelime, belge_sayisi
 Ayrica <cikti>.belge.json: her yil kac ozet sayildi (oranin paydasi).
 
-Bellek: tum yillari tek seferde saymak Turkcede milyonlarca farkli kelime
-bicimi yuzunden cok bellek ister; bu yuzden dosya her yil icin ayri okunur
-ve o yil --min-belge'den az ozette gecen kelimeler atilir.
+Bellek: dosya her yil icin ayri okunur ve o yil --min-belge'den az ozette
+gecen ogeler atilir. Kelime gruplari cok daha fazla cesit urettigi icin her
+yilin sayimi ayrica --parca kadar parcaya bolunur (her parca ogelerin bir
+kismini sayar; sonuc ayni, bellek 1/parca).
 
 Kullanim:
   python3 kelime_siklik.py --dil tr
+  python3 kelime_siklik.py --dil tr --n 3
   python3 kelime_siklik.py --dil en --yillar 2018-2026
 """
 
@@ -23,6 +30,7 @@ import argparse
 import gzip
 import json
 import re
+import zlib
 from collections import Counter
 from pathlib import Path
 
@@ -31,6 +39,7 @@ VARSAYILAN_GIRDI = KLASOR.parent / "toplama" / "makaleler.jsonl"
 
 KELIME = re.compile(r"[^\W\d_]+", re.UNICODE)  # sadece harflerden olusan diziler
 KESME_EKI = re.compile(r"[’'`]\w+", re.UNICODE)  # "Türkiye'nin" -> "Türkiye"
+CUMLE_SINIRI = re.compile(r"[.!?;:,()\[\]\"“”«»\n]+")
 
 
 def turkce_kucult(metin: str) -> str:
@@ -49,12 +58,36 @@ def tr_kelime_kucult(kelime: str) -> str:
     return turkce_kucult(kelime)
 
 
-def kelimeler(metin: str, dil: str) -> set:
+def kelime_listesi(metin: str, dil: str) -> list:
+    """Metindeki kelimeler, sirasiyla."""
     if dil == "tr":
         bulunan = (tr_kelime_kucult(k) for k in KELIME.findall(KESME_EKI.sub("", metin)))
     else:
         bulunan = KELIME.findall(metin.lower())
-    return {k for k in bulunan if len(k) >= 2}
+    return [k for k in bulunan if len(k) >= 2]
+
+
+def kelimeler(metin: str, dil: str) -> set:
+    return set(kelime_listesi(metin, dil))
+
+
+def gruplar(metin: str, dil: str, n: int) -> set:
+    """Metindeki n kelimelik gruplar ("onemli bir rol"); cumle sinirini asmaz."""
+    if n == 1:
+        return kelimeler(metin, dil)
+    sonuc = set()
+    for parca in CUMLE_SINIRI.split(metin):
+        k = kelime_listesi(parca, dil)
+        sonuc.update(" ".join(k[i:i + n]) for i in range(len(k) - n + 1))
+    return sonuc
+
+
+def parca_no(oge: str, parca_sayisi: int) -> int:
+    return zlib.crc32(oge.encode()) % parca_sayisi  # calismadan calismaya sabit
+
+
+def siklik_dosya_adi(dil: str, n: int) -> str:
+    return f"siklik_{dil}.tsv.gz" if n == 1 else f"siklik_{dil}_{n}gram.tsv.gz"
 
 
 def yil_araligi(metin: str):
@@ -67,32 +100,40 @@ def main():
     p.add_argument("--girdi", default=str(VARSAYILAN_GIRDI))
     p.add_argument("--dil", choices=["tr", "en"], required=True)
     p.add_argument("--yillar", default="2015-2026", help="orn. 2015-2026")
-    p.add_argument("--min-belge", type=int, default=5, help="Bir yilda bundan az ozette gecen kelime atilir")
+    p.add_argument("--n", type=int, default=1, help="1: tek kelime, 2-4: kelime gruplari")
+    p.add_argument("--min-belge", type=int, default=5, help="Bir yilda bundan az ozette gecen oge atilir")
+    p.add_argument("--parca", type=int, help="Her yilin sayimini kac parcaya bol (varsayilan n=1: 1, n>1: 8)")
     p.add_argument("--cikti")
     arg = p.parse_args()
 
-    cikti = Path(arg.cikti or KLASOR / f"siklik_{arg.dil}.tsv.gz")
+    cikti = Path(arg.cikti or KLASOR / siklik_dosya_adi(arg.dil, arg.n))
+    parca_sayisi = arg.parca or (1 if arg.n == 1 else 8)
     alan = f"ozet_{arg.dil}"
     belge_sayisi = {}
 
     with gzip.open(cikti, "wt", encoding="utf-8") as f:
         f.write("yil\tkelime\tbelge_sayisi\n")
         for yil in yil_araligi(arg.yillar):
-            sayac, n = Counter(), 0
+            # O yilin ozetlerini bir kez oku, her ozetin ogelerini tut
+            ozet_ogeleri = []
             with open(arg.girdi, encoding="utf-8") as g:
                 for satir in g:
                     m = json.loads(satir)
-                    if m.get("yil_guvenilir") != yil or not m.get(alan):
-                        continue
-                    n += 1
-                    sayac.update(kelimeler(m[alan], arg.dil))
-            belge_sayisi[yil] = n
-            tutulan = 0
-            for kelime, adet in sayac.items():
-                if adet >= arg.min_belge:
-                    f.write(f"{yil}\t{kelime}\t{adet}\n")
-                    tutulan += 1
-            print(f"{yil}: {n} ozet, {len(sayac)} farkli kelime, {tutulan} tutuldu")
+                    if m.get("yil_guvenilir") == yil and m.get(alan):
+                        ozet_ogeleri.append(gruplar(m[alan], arg.dil, arg.n))
+            belge_sayisi[yil] = len(ozet_ogeleri)
+            farkli = tutulan = 0
+            for k in range(parca_sayisi):
+                sayac = Counter()
+                for ogeler in ozet_ogeleri:
+                    sayac.update(o for o in ogeler if parca_sayisi == 1 or parca_no(o, parca_sayisi) == k)
+                farkli += len(sayac)
+                for oge, adet in sayac.items():
+                    if adet >= arg.min_belge:
+                        f.write(f"{yil}\t{oge}\t{adet}\n")
+                        tutulan += 1
+            del ozet_ogeleri
+            print(f"{yil}: {belge_sayisi[yil]} ozet, {farkli} farkli oge, {tutulan} tutuldu")
 
     Path(str(cikti) + ".belge.json").write_text(json.dumps(belge_sayisi, indent=1))
     print(f"Cikti: {cikti}")

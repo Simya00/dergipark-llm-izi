@@ -21,6 +21,7 @@ isaretci olarak secilecek (bkz. alt_sinir.py).
 
 Kullanim:
   python3 asiri_kullanim.py --dil tr --hedef 2024
+  python3 asiri_kullanim.py --dil tr --n 3 --hedef 2024     # 3 kelimelik gruplar
   python3 asiri_kullanim.py --dil en --hedef 2025 --en-az-belge 50
 """
 
@@ -31,6 +32,8 @@ import json
 import math
 from collections import defaultdict
 from pathlib import Path
+
+from kelime_siklik import siklik_dosya_adi
 
 KLASOR = Path(__file__).resolve().parent
 
@@ -51,14 +54,15 @@ def oku(siklik_dosyasi):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--dil", choices=["tr", "en"], required=True)
-    p.add_argument("--siklik", help="kelime_siklik.py ciktisi (varsayilan siklik_<dil>.tsv.gz)")
+    p.add_argument("--n", type=int, default=1, help="1: tek kelime, 2-4: kelime gruplari")
+    p.add_argument("--siklik", help="kelime_siklik.py ciktisi (varsayilan --dil ve --n'den)")
     p.add_argument("--taban", type=int, default=2022, help="Egilimin son yili (b); b-1 ve b kullanilir")
     p.add_argument("--hedef", type=int, default=2024)
     p.add_argument("--en-az-belge", type=int, default=30, help="Hedef yilda en az bu kadar ozette gecmeli")
     p.add_argument("--goster", type=int, default=40)
     arg = p.parse_args()
 
-    belge, sayi = oku(arg.siklik or KLASOR / f"siklik_{arg.dil}.tsv.gz")
+    belge, sayi = oku(arg.siklik or KLASOR / siklik_dosya_adi(arg.dil, arg.n))
     b, T = arg.taban, arg.hedef
     for y in (b - 1, b, T):
         if not belge.get(y):
@@ -81,7 +85,7 @@ def main():
         })
 
     satirlar.sort(key=lambda r: -r["delta"])
-    cikti = KLASOR / f"asiri_{arg.dil}_{T}.tsv"
+    cikti = KLASOR / (f"asiri_{arg.dil}_{T}.tsv" if arg.n == 1 else f"asiri_{arg.dil}_{arg.n}gram_{T}.tsv")
     with open(cikti, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(satirlar[0]) if satirlar else ["kelime"], delimiter="\t")
         w.writeheader()
@@ -90,9 +94,9 @@ def main():
 
     def tablo(baslik, liste):
         print(f"\n{baslik}")
-        print(f"{'kelime':>22} {'p' + str(b - 1):>8} {'p' + str(b):>8} {'q':>8} {'p' + str(T):>8} {'delta':>8} {'oran':>6}")
+        print(f"{'kelime':>32} {'p' + str(b - 1):>8} {'p' + str(b):>8} {'q':>8} {'p' + str(T):>8} {'delta':>8} {'oran':>6}")
         for r in liste[:arg.goster]:
-            print(f"{r['kelime']:>22} {r[f'p{b - 1}']:>8.4f} {r[f'p{b}']:>8.4f} {r['q']:>8.4f} "
+            print(f"{r['kelime']:>32} {r[f'p{b - 1}']:>8.4f} {r[f'p{b}']:>8.4f} {r['q']:>8.4f} "
                   f"{r['p']:>8.4f} {r['delta']:>+8.4f} {r['oran']:>6.2f}")
 
     print(f"{arg.dil.upper()} | taban {b - 1}-{b} -> hedef {T} | ozet sayisi: "

@@ -105,6 +105,19 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   %20,2 (gerçeğin altında, beklendiği gibi).
 - Türkçe küçültme: "COVID" gibi kısaltmalar "covıd" olmuyor.
 
+### Kelime grupları ve hazır liste
+- Türkçede iz büyük ihtimalle kalıp ifadelerde ("önemli bir rol
+  oynamaktadır", "ışık tutmaktadır"): tek kelimeler sıradan, grup olarak
+  LLM'e özgü. → `kelime_siklik.py --n 2/3/4` ile kelime grupları eklendi
+  (cümle/yan cümle sınırını aşmaz; bellek için parçalı sayım).
+- Hazır liste kontrolü eklendi (`liste_kontrol.py`): veriye bakmadan önce
+  yazılan aday ifadeler doğrudan test ediliyor. Başlangıç listeleri:
+  `analiz/aday_liste_tr.txt` (Türkçe tahminler), `analiz/aday_liste_en.txt`
+  (Kobak vd. kelimeleri; makalenin ek listesiyle karşılaştırılacak).
+  Veriden keşif + hazır liste birlikte kullanılacak.
+- Sahte veri testi: gizlenen kalıplar 16–23 kat çıktı, içlerindeki yaygın
+  kelimeler artmamış göründü (sadece kelimeye bakmak izi kaçırırdı).
+
 ### Durum (2026-10-24 sonu)
 - Tüm DergiPark toplaması sürüyor: sayfa 7.079, ~708 bin makale (~%84).
 

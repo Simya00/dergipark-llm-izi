@@ -1,0 +1,44 @@
+# English candidate LLM style words — prepared before looking at the data (2026-10-24).
+# Mostly words reported as excess / LLM-typical in Kobak et al. (2025) and related
+# work (from memory: to be checked against the paper's supplementary list).
+
+# --- Single words ---
+delve
+delves
+delving
+showcasing
+showcase
+showcases
+underscores
+underscore
+underscoring
+intricate
+pivotal
+meticulous
+meticulously
+notably
+realm
+crucial
+comprehensive
+additionally
+enhancing
+insights
+invaluable
+noteworthy
+commendable
+garnered
+emphasizing
+unparalleled
+nuanced
+multifaceted
+
+# --- Phrases ---
+shed light
+sheds light
+play a crucial role
+plays a crucial role
+plays a pivotal role
+valuable insights
+a comprehensive understanding
+in the realm of
+it is important to note

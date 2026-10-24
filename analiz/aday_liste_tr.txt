@@ -1,0 +1,54 @@
+# Türkçe aday LLM üslup ifadeleri — veriye bakmadan önce hazırlandı (2026-10-24).
+# Kaynak: Kobak vd. (2025) İngilizce işaretçilerinin Türkçe karşılıkları ve
+# LLM'lerin Türkçe akademik metinlerde sık ürettiği kalıplar (tahmin).
+# Bu liste bir HİPOTEZ listesidir; veriden keşif (asiri_kullanim.py) ayrıca yapılır.
+# Ekleme/çıkarma yapılırsa tarihiyle not düşülmeli (veriye bakmadan önce mi sonra mı).
+
+# --- Tek kelimeler ---
+kapsamlı
+derinlemesine
+kritik
+bütüncül
+potansiyel
+içgörü
+içgörüler
+titiz
+titizlikle
+nüanslı
+dinamikleri
+dönüştürücü
+yenilikçi
+paydaşlar
+vurgulamaktadır
+vurgulanmaktadır
+aydınlatmaktadır
+özetle
+ayrıca
+bununla birlikte
+
+# --- Kelime grupları ---
+kapsamlı bir şekilde
+kapsamlı bir
+derinlemesine bir
+önemli bir rol oynamaktadır
+önemli bir rol oynar
+kritik bir rol
+kritik öneme sahiptir
+kritik bir öneme
+ışık tutmaktadır
+ışık tutmayı amaçlamaktadır
+altını çizmektedir
+göz önünde bulundurulduğunda
+bu bağlamda
+sonuç olarak
+çok boyutlu
+değerli içgörüler
+önemli içgörüler
+katkı sunmaktadır
+katkıda bulunmaktadır
+gözler önüne sermektedir
+öne çıkarmaktadır
+yol haritası
+ele almaktadır
+incelemeyi amaçlamaktadır
+ortaya koymaktadır

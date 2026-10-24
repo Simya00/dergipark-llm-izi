@@ -12,7 +12,9 @@ LLM'li bir ozet isaretcilerden en az birini en fazla 1 olasilikla iceriyorsa:
 Isaretci icermeyen LLM'li ozetler sayilmadigi ve yazarlarin bu kelimeleri
 silmis olabilecegi icin bu bir ALT sinirdir.
 
-Isaretci dosyasi: her satirda bir kelime (# ile baslayan satirlar yorum).
+Isaretci dosyasi: her satirda bir kelime veya kelime grubu ("onemli bir rol");
+# ile baslayan satirlar yorum. Gruplar ayni sekilde (cumle sinirini asmadan)
+aranir.
 
 Kullanim:
   python3 alt_sinir.py --dil tr --isaretciler isaretciler_tr.txt
@@ -23,7 +25,7 @@ import json
 from pathlib import Path
 
 from asiri_kullanim import karsi_olgusal
-from kelime_siklik import VARSAYILAN_GIRDI, kelimeler, yil_araligi
+from kelime_siklik import VARSAYILAN_GIRDI, gruplar, yil_araligi
 
 
 def main():
@@ -35,8 +37,9 @@ def main():
     p.add_argument("--taban", type=int, default=2022)
     arg = p.parse_args()
 
-    isaretciler = {s.strip() for s in Path(arg.isaretciler).read_text(encoding="utf-8").splitlines()
+    isaretciler = {" ".join(s.split()) for s in Path(arg.isaretciler).read_text(encoding="utf-8").splitlines()
                    if s.strip() and not s.startswith("#")}
+    uzunluklar = {len(i.split()) for i in isaretciler}  # hangi n'ler aranacak
     yillar = yil_araligi(arg.yillar)
     alan = f"ozet_{arg.dil}"
     n = dict.fromkeys(yillar, 0)
@@ -48,7 +51,8 @@ def main():
             if y not in n or not m.get(alan):
                 continue
             n[y] += 1
-            isaretli[y] += bool(kelimeler(m[alan], arg.dil) & isaretciler)
+            ogeler = set().union(*(gruplar(m[alan], arg.dil, u) for u in uzunluklar))
+            isaretli[y] += bool(ogeler & isaretciler)
 
     oran = {y: isaretli[y] / n[y] for y in yillar if n[y]}
     b = arg.taban
