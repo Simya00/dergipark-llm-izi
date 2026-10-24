@@ -20,3 +20,7 @@ toplama/deneme_ornek.xml
 analiz/siklik_*.tsv.gz
 analiz/siklik_*.tsv.gz.belge.json
 analiz/asiri_*.tsv
+analiz/siklik_tr_ek*.tsv.gz*
+analiz/ek_yogunluk_tr.tsv
+analiz/ek_onbellek.json.gz
+analiz/zemberek_env

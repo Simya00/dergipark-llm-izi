@@ -12,6 +12,11 @@ Girdi: `../toplama/makaleler.jsonl` (yalnızca `yil_guvenilir` dolu makaleler).
   Listeyi veriden önce yazmak "işine gelen kelimeyi seçmek" eleştirisine
   karşı korur; listeye sonradan ekleme yapılırsa tarihiyle not düşülmeli.
 
+- **Ek düzeyi** (`ek_siklik.py`, Zemberek): her ekin ve ek zincirinin
+  ("Prog2+A3sg+Cop" = -mAktAdIr) yıllara göre kullanımı. Modelden bağımsız:
+  gerçek özetlerde neyin değiştiğini ölçer. (LLM'lerin ek profilini deneyle
+  çıkarmak ayrı iş; birden çok model gerektirdiği için ertelendi.)
+
 Kök (Zemberek) düzeyi sonraki adım.
 
 ## Adımlar
@@ -35,6 +40,11 @@ python3 asiri_kullanim.py --dil en --hedef 2024
 # 2b) Hazır listeyi kontrol et
 python3 liste_kontrol.py --dil tr --liste aday_liste_tr.txt --hedef 2024
 python3 liste_kontrol.py --dil en --liste aday_liste_en.txt --hedef 2024
+
+# 2c) Ek düzeyi (bir kez: bash zemberek_kur.sh; ilk çalıştırma ~1–2 saat,
+#     kelime çözümlemeleri ek_onbellek.json.gz'ye kaydedilir)
+zemberek_env/bin/python3 ek_siklik.py --hedef 2024
+python3 asiri_kullanim.py --dil tr --siklik siklik_tr_ekzinciri.tsv.gz --hedef 2024 --en-az-belge 50
 
 # 3) Aday listeden içerik kelimelerini (covid, deprem...) ayıklayıp üslup
 #    kelimelerini/gruplarını isaretciler_tr.txt'ye yaz, sonra alt sınırı hesapla:
@@ -65,3 +75,8 @@ tutmaktadır", "kapsamlı bir şekilde" kalıplarında gizlendi):
   yaygın kelimeler ("rol", "önemli bir") ise hiç artmamış göründü (kat 1,0) →
   sadece kelimeye bakmak bu izi kaçırırdı.
 - Grup işaretçileriyle alt sınır: %4,8 / %13,4 / %17,0 / %18,5 (gerçeğin altında).
+
+Ek düzeyi için (LLM tarzı cümlelerde "-mAktAdIr" ve edilgen "-Il+mAktAdIr"):
+- Ek yoğunluğunda Prog2 (-mAktA) ve Cop (-DIr) 2024'te beklenenin ~11 katı.
+- Zincir düzeyinde "Prog2+A3sg+Cop" 9 kat, edilgen "Pass+Verb+Prog2+A3sg+Cop"
+  ayrı zincir olarak yakalandı.

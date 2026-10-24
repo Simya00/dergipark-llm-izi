@@ -143,7 +143,11 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 - **Karar:** Şimdilik ertelendi. Ek profili tek bir modelden çıkarılırsa
   güvenilir sayılmaz; birden çok LLM'den (ör. Llama, Gemma, Qwen + ChatGPT,
   Claude, Gemini) alınıp birleştirilmeli (ortak ve modele özgü ekler ayrı).
-- Taslak kod `taslak/ek-analizi` dalında (test edilmedi, main'de değil).
+- Ama DergiPark tarafı (eklerin yıllara göre değişimi) modelden bağımsız →
+  şimdi yapılıyor: `analiz/ek_siklik.py` (ek ve ek zinciri sıklığı + 100
+  kelimede yoğunluk; Kobak hesabı `asiri_kullanim.py` ile). Sahte veride
+  "-mAktAdIr" artışı ~11 kat, edilgen "-Il+mAktAdIr" ayrı zincir olarak
+  bulundu. LLM ek profili deneyi (çok modelli) hâlâ ertelendi.
 
 ### Durum (2026-10-24 sonu)
 - Tüm DergiPark toplaması sürüyor: sayfa 7.079, ~708 bin makale (~%84).
