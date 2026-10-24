@@ -66,6 +66,14 @@ python3 oai_topla.py topla
   işaretler ve `yil_guvenilir: null` yapar; **analizde `yil_guvenilir`
   kullanılır.**
 
+## İlk büyük ara çıktıda öğrenilenler (138 bin makale, ~%15)
+
+- Bazı dergiler cildi yılla numaralıyor (`bmj`: "Vol. 2014"). Arşiv kuralı
+  bunların hepsini atıyordu; artık cilt yıl gibiyse `yil_guvenilir = cilt`
+  (`yil_kaynagi: "cilt_yil"`).
+- 1902, 2068 gibi veri giriş hataları: 1990–2027 dışı yıllar `null`.
+- `yil_kaynagi`: `tarih` / `cilt_yil` / `arsiv` / `aralik_disi`.
+
 ## Bilinen belirsizlikler
 
 - `--from/--until` kaydın **değiştirilme** tarihine göre süzer, yayın yılına

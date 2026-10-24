@@ -11,7 +11,7 @@ Her satirdaki alanlar:
   anahtar_kelimeler, basliklar, ozler (tum dc:description'lar, dil etiketiyle),
   ozet_tr, ozet_en (ozler icinden secilen Turkce / Ingilizce oz)
 
-  cilt, sayi (dc:source'taki "Vol. X No. Y"), arsiv, yil_guvenilir
+  cilt, sayi (dc:source'taki "Vol. X No. Y"), arsiv, yil_guvenilir, yil_kaynagi
 
 ARSIV TESPITI: Bir dergi DergiPark'a gectiginde eski arsivini toplu yuklemis;
 bu makalelerin dc:date'i YAYIN degil YUKLEME tarihi (orn. ogusbd Cilt 10:
@@ -23,6 +23,10 @@ cilt cikarmamis), bu yuzden arsiv makalelerine yil UYDURULMAZ:
   2. Bu tarihlerdeki makaleler ve cildi, toplu yuklenen en buyuk cilde esit
      veya kucuk olan makaleler "arsiv" sayilir.
   3. yil_guvenilir = arsiv degilse dc:date yili, arsivse None (analiz disi).
+ISTISNA: Bazi dergiler cildi yille numaraliyor ("Vol. 2014", orn. bmj). Bu
+durumda cilt zaten yayin yilidir: yil_guvenilir = cilt (yil_kaynagi "cilt_yil"),
+bu ciltler toplu yukleme / arsiv hesabina katilmaz.
+YIL_ALT..YIL_UST disindaki yillar (orn. 1902, 2068: veri giris hatasi) None olur.
 
 Oz dili: once xml:lang etiketine bakilir; yoksa basit bir sezgisel dil
 tespiti yapilir (Turkceye ozgu harfler + sik gecen ilgec/baglaclar).
@@ -53,6 +57,12 @@ NS = {
 XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
 CILT_SAYI = re.compile(r"Vol\.?\s*(\d+)(?:\s*No\.?\s*([\w-]+))?", re.IGNORECASE)
 TOPLU_ESIK = 3  # ayni gun bu kadar farkli cilt -> toplu yukleme
+YIL_ALT, YIL_UST = 1990, 2027  # bu aralik disindaki yillar guvenilmez sayilir
+
+
+def cilt_yil_mi(cilt):
+    """Cilt numarasi aslinda bir yil mi ("Vol. 2014")?"""
+    return cilt is not None and 1900 <= cilt <= 2100
 DC = "{" + NS["dc"] + "}"
 
 # ------------------------------------------------------------------
@@ -183,7 +193,21 @@ def arsiv_bilgisi(tarih_ciltleri):
 def arsiv_mi(m, toplu, arsiv_son_cilt):
     return bool(
         (m["tarihler"] and m["tarihler"][0] in toplu)
-        or (arsiv_son_cilt is not None and m["cilt"] is not None and m["cilt"] <= arsiv_son_cilt))
+        or (arsiv_son_cilt is not None and m["cilt"] is not None and not cilt_yil_mi(m["cilt"])
+            and m["cilt"] <= arsiv_son_cilt))
+
+
+def guvenilir_yil(m):
+    """(yil_guvenilir, yil_kaynagi)"""
+    if cilt_yil_mi(m["cilt"]):
+        yil, kaynak = m["cilt"], "cilt_yil"
+    elif not m["arsiv"]:
+        yil, kaynak = m["yil"], "tarih"
+    else:
+        return None, "arsiv"
+    if yil is None or not YIL_ALT <= yil <= YIL_UST:
+        return None, "aralik_disi"
+    return yil, kaynak
 
 
 def main():
@@ -219,7 +243,7 @@ def main():
                     setler[m["oai_id"]].update(m["setler"])
                     continue
                 setler[m["oai_id"]] = set(m["setler"])
-                if m["tarihler"] and m["cilt"] is not None:
+                if m["tarihler"] and m["cilt"] is not None and not cilt_yil_mi(m["cilt"]):
                     tarih_ciltleri[m["dergi_kodu"]][m["tarihler"][0]].add(m["cilt"])
                 g.write(json.dumps(m, ensure_ascii=False) + "\n")
             if i % 500 == 0:
@@ -231,7 +255,7 @@ def main():
     # 2. gecis + rapor sayaclari
     dergi_say, dergi_arsiv, dergi_ilk_yil = Counter(), Counter(), {}
     yil_say, ham_say, tr_say, en_say, cift_say = Counter(), Counter(), Counter(), Counter(), Counter()
-    kaynak, oz_dil = Counter(), Counter()
+    kaynak, oz_dil, yil_kaynak = Counter(), Counter(), Counter()
     ozsuz = kodsuz = 0
     with open(gecici, encoding="utf-8") as g, open(arg.cikti, "w", encoding="utf-8") as f:
         for satir in g:
@@ -239,7 +263,8 @@ def main():
             m["setler"] = sorted(setler[m["oai_id"]])
             kod = m["dergi_kodu"]
             m["arsiv"] = arsiv_mi(m, *arsiv.get(kod, (set(), None)))
-            m["yil_guvenilir"] = None if m["arsiv"] else m["yil"]
+            m["yil_guvenilir"], m["yil_kaynagi"] = guvenilir_yil(m)
+            yil_kaynak[m["yil_kaynagi"]] += 1
             f.write(json.dumps(m, ensure_ascii=False) + "\n")
 
             y = m["yil_guvenilir"]
@@ -274,7 +299,8 @@ def main():
     print(f"{'yil':>6} {'makale':>8} {'ham':>6} {'TR oz':>8} {'EN oz':>8} {'TR+EN':>8}")
     for y in sorted(set(yil_say) | set(ham_say), key=lambda y: (y is None, y)):
         print(f"{str(y):>6} {yil_say[y]:>8} {ham_say[y]:>6} {tr_say[y]:>8} {en_say[y]:>8} {cift_say[y]:>8}")
-    print(f"\nOz dili kaynagi: {dict(kaynak)}")
+    print(f"\nYil kaynagi: {dict(yil_kaynak)}")
+    print(f"Oz dili kaynagi: {dict(kaynak)}")
     print(f"Oz dilleri: {dict(oz_dil)}")
     print(f"Ozu hic olmayan makale: {ozsuz}")
     print(f"Dergi kodu bulunamayan: {kodsuz}")
