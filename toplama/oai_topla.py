@@ -37,7 +37,9 @@ degil, ayristirma/analiz asamasinda dc:date uzerinden yapilir.
 
 import argparse
 import gzip
+import html
 import json
+import re
 import sys
 import time
 import urllib.error
@@ -97,6 +99,66 @@ def oai_istek(parametreler: dict, bekleme: float) -> bytes:
             print(f"  Baglanti hatasi ({h}), {sure} sn sonra tekrar ({deneme}/{MAKS_DENEME})", file=sys.stderr)
         time.sleep(sure)
     raise RuntimeError(f"{MAKS_DENEME} denemede de basarisiz: {url}")
+
+
+# ------------------------------------------------------------------
+# Bozuk XML onarimi
+# ------------------------------------------------------------------
+# DergiPark bazen XML'de gecersiz icerik donduruyor (ozlere karismis kontrol
+# karakterleri, kacissiz "&", HTML varliklari). Sayfa once oldugu gibi, olmazsa
+# temizlenerek, o da olmazsa kayit kayit ayiklanarak okunur.
+KONTROL_KARAKTERI = re.compile(rb"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+GECERSIZ_KARAKTER_REF = re.compile(
+    rb"&#(?:0*(?:[0-8]|1[124-9]|2\d|3[01])|x0*(?:[0-8bcef]|1[0-9a-f]));", re.IGNORECASE)
+VARLIK = re.compile(rb"&(?!#\d+;|#x[0-9a-fA-F]+;)(\w+;)?")
+XML_VARLIKLARI = {b"amp;", b"lt;", b"gt;", b"quot;", b"apos;"}
+KAYIT = re.compile(rb"<record>.*?</record>", re.DOTALL)
+TOKEN = re.compile(rb"<resumptionToken[^>]*>([^<]*)</resumptionToken>")
+
+
+def _varlik_duzelt(m):
+    ad = m.group(1)
+    if ad is None:
+        return b"&amp;"  # kacissiz "&"
+    if ad in XML_VARLIKLARI:
+        return m.group(0)
+    cozulmus = html.unescape("&" + ad.decode())  # orn. &nbsp; -> karakter
+    return html.escape(cozulmus, quote=False).encode()
+
+
+def xml_temizle(ham: bytes) -> bytes:
+    ham = ham.decode("utf-8", errors="replace").encode("utf-8")
+    ham = KONTROL_KARAKTERI.sub(b" ", ham)
+    ham = GECERSIZ_KARAKTER_REF.sub(b" ", ham)
+    return VARLIK.sub(_varlik_duzelt, ham)
+
+
+def xml_coz(ham: bytes):
+    """(kok, saklanacak_bayt, atlanan_kayit_sayisi) dondurur."""
+    try:
+        return ET.fromstring(ham), ham, 0
+    except ET.ParseError:
+        pass
+    temiz = xml_temizle(ham)
+    try:
+        return ET.fromstring(temiz), temiz, 0
+    except ET.ParseError:
+        pass
+    # Son care: kayitlari tek tek dene, okunamayanlari at
+    kayitlar = list(KAYIT.finditer(temiz))
+    if not kayitlar:
+        raise ET.ParseError("sayfa onarilamadi (kayit bulunamadi)")
+    sarmal = b'<x xmlns="http://www.openarchives.org/OAI/2.0/">%s</x>'
+    iyiler = []
+    for k in kayitlar:
+        try:
+            ET.fromstring(sarmal % k.group(0))
+            iyiler.append(k.group(0))
+        except ET.ParseError:
+            pass
+    bas, son = temiz[:kayitlar[0].start()], temiz[kayitlar[-1].end():]
+    onarilmis = bas + b"".join(iyiler) + son
+    return ET.fromstring(onarilmis), onarilmis, len(kayitlar) - len(iyiler)
 
 
 def oai_hatasi(kok: ET.Element):
@@ -217,7 +279,9 @@ def tek_set_topla(set_adi, arg):
                 sys.exit(f"Token reddedildi (suresi dolmus olabilir): {h}. "
                          f"{hedef} klasorunu silip bu set'i bastan toplayin.")
             raise
-        kok = ET.fromstring(ham)
+        kok, ham, atlanan = xml_coz(ham)
+        if atlanan:
+            print(f"  UYARI: sayfa {sayfa + 1}'de okunamayan {atlanan} kayit atlandi", file=sys.stderr)
         hata = oai_hatasi(kok)
         if hata and hata[0] == "noRecordsMatch":
             print(f"[{set_adi or 'hepsi'}] kayit yok.")

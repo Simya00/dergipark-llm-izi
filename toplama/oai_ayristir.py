@@ -43,6 +43,8 @@ import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from oai_topla import xml_coz
+
 KLASOR = Path(__file__).resolve().parent
 NS = {
     "oai": "http://www.openarchives.org/OAI/2.0/",
@@ -207,7 +209,7 @@ def main():
         for i, dosya in enumerate(dosyalar, 1):
             acici = gzip.open if dosya.suffix == ".gz" else open
             with acici(dosya, "rb") as f:
-                kok = ET.parse(f).getroot()
+                kok, _, _ = xml_coz(f.read())
             for kayit in kok.findall(".//oai:record", NS):
                 m = kayit_ayristir(kayit)
                 if m is None:
