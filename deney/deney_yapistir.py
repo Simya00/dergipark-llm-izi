@@ -13,12 +13,19 @@ Ozel girdiler (tek basina bir satirda):
   atla   bu ornegi simdilik atla
   cik    kaydedip cik
 
-Ipucu: Onceki cevaplarin modeli etkilememesi icin her 10-20 ornekte bir yeni
-sohbet acin (ChatGPT'de "hafiza" ozelligini de kapatmak iyi olur).
+PAKET MODU (--paket 10): Ozetler 10'arli JSON paketleri halinde verilir; model
+10 cevabi JSON olarak dondurur, tek seferde yapistirilir (model basina ~20
+yapistirma). Karsilastirma adil olsun diye TUM modellerde ayni paket boyutu
+kullanilmali.
+
+Ipucu: Onceki cevaplarin modeli etkilememesi icin her pakette (tekli modda her
+10-20 ornekte) yeni sohbet acin; ChatGPT'de "hafiza" ozelligini kapatin.
 
 Kullanim:
-  python3 deney_yapistir.py chatgpt
-  python3 deney_yapistir.py claude
+  python3 deney_yapistir.py chatgpt --paket 10
+  python3 deney_yapistir.py claude --paket 10
+  python3 deney_yapistir.py gemini --paket 10
+  python3 deney_yapistir.py chatgpt            # tek tek
   python3 deney_yapistir.py --durum
 """
 
@@ -55,10 +62,66 @@ def cevap_oku():
     return "cik"  # girdi bitti (Ctrl+D)
 
 
+PAKET_TALIMATI = (
+    "Aşağıdaki JSON listesinde {n} ayrı akademik özet var. Her özeti BİRBİRİNDEN BAĞIMSIZ olarak "
+    "şu talimata göre düzenle:\n\n{komut}\n"
+    "Cevabını SADECE şu biçimde bir JSON listesi olarak ver, başka hiçbir şey yazma; her özet için "
+    "aynı \"no\" değerini kullan ve hiçbir özeti atlama veya kısaltma:\n"
+    '[{{"no": 1, "metin": "düzenlenmiş özet"}}, ...]\n\n')
+
+
+def json_listesi_ayikla(metin):
+    """Model cevabindaki JSON listesini bulur (```json ... ``` ve oncesi/sonrasi yazilar olabilir)."""
+    bas, son = metin.find("["), metin.rfind("]")
+    if bas < 0 or son <= bas:
+        raise ValueError("Cevapta JSON listesi ([ ... ]) bulunamadi")
+    return json.loads(metin[bas:son + 1])
+
+
+def paket_modu(veri, model, boyut):
+    bekleyen = [o for o in veri["ornekler"] if not o["cevaplar"].get(model, "").strip()]
+    print(f"{model}: {len(bekleyen)} ornek bekliyor, {boyut}'arli paketler. "
+          f"Modelin JSON cevabini yapistirip yeni satira ### yazin.\n")
+    for i in range(0, len(bekleyen), boyut):
+        paket = bekleyen[i:i + boyut]
+        girdi = [{"no": o["no"], "ozet": o["ozet_tr"]} for o in paket]
+        komut = veri["komut"].split("Sadece düzenlenmiş özeti yaz")[0].strip()
+        print("=" * 70)
+        print(f"Paket: ornek {paket[0]['no']}-{paket[-1]['no']} ({len(paket)} ozet). YENI SOHBET acin.")
+        print("-" * 25 + " MODELE VERILECEK METIN " + "-" * 21)
+        print(PAKET_TALIMATI.format(n=len(paket), komut=komut) + json.dumps(girdi, ensure_ascii=False, indent=1))
+        print("-" * 70)
+        while True:
+            print(f"{model} cevabini yapistirin (bitince yeni satira ###; 'atla' / 'cik'):")
+            cevap = cevap_oku()
+            if cevap in ("cik", "atla"):
+                break
+            try:
+                liste = json_listesi_ayikla(cevap)
+                gelen = {int(x["no"]): str(x["metin"]).strip() for x in liste}
+            except (ValueError, KeyError, TypeError) as h:
+                print(f"  HATA: cevap okunamadi ({h}). Tekrar yapistirin.\n")
+                continue
+            eksik = [o["no"] for o in paket if not gelen.get(o["no"])]
+            if eksik:
+                print(f"  UYARI: su orneklerin cevabi yok: {eksik} (sonra tekrar sorulur)")
+            for o in paket:
+                if gelen.get(o["no"]):
+                    o["cevaplar"][model] = gelen[o["no"]]
+            kaydet(veri)
+            print(f"  kaydedildi: {len(paket) - len(eksik)}/{len(paket)}\n")
+            break
+        if cevap == "cik":
+            break
+    print("\nDurum:")
+    durum(veri)
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("model", nargs="?")
     p.add_argument("--durum", action="store_true", help="Sadece kac cevabin dolu oldugunu goster")
+    p.add_argument("--paket", type=int, help="Ozetleri bu boyutta JSON paketleri halinde ver (orn. 10)")
     arg = p.parse_args()
 
     veri = json.loads(DOSYA.read_text(encoding="utf-8"))
@@ -68,6 +131,9 @@ def main():
     if arg.model not in veri["modeller"]:
         raise SystemExit(f"Model listede yok: {arg.model}. Secenekler: {', '.join(veri['modeller'])}")
 
+    if arg.paket:
+        paket_modu(veri, arg.model, arg.paket)
+        return
     bekleyen = [o for o in veri["ornekler"] if not o["cevaplar"].get(arg.model, "").strip()]
     print(f"{arg.model}: {len(bekleyen)} ornek bekliyor. Cevabi yapistirdiktan sonra yeni satira ### yazin.\n")
     for o in bekleyen:

@@ -19,23 +19,32 @@ cd deney
 #    birleşik kelimeli özetler dışarıda kalsın diye)
 python3 deney_hazirla.py            # -> deney_ornekleri.json (200 örnek)
 
-# 2) Her model için cevapları yapıştır (istediğiniz zaman bırakıp devam edebilirsiniz)
-python3 deney_yapistir.py chatgpt
-python3 deney_yapistir.py claude
-python3 deney_yapistir.py gemini
+# 2) Her model için cevapları yapıştır — 10'arlı paketler, ÜÇ MODELDE DE AYNI
+#    (model başına ~20 yapıştırma; istediğiniz zaman bırakıp devam edebilirsiniz)
+python3 deney_yapistir.py chatgpt --paket 10
+python3 deney_yapistir.py claude --paket 10
+python3 deney_yapistir.py gemini --paket 10
 
 # Ne kadar doldu?
 python3 deney_yapistir.py --durum
 ```
 
-`deney_yapistir.py` her örnek için modele verilecek metni (komut + özet)
-ekrana basar; modelin cevabını terminale yapıştırıp **yeni bir satıra `###`**
-yazınca JSON'a kaydeder. `atla` o örneği geçer, `cik` kaydedip çıkar.
+`deney_yapistir.py --paket 10` her seferinde 10 özeti talimatla birlikte JSON
+olarak ekrana basar; bunu modele verip modelin döndürdüğü JSON listesini
+terminale yapıştırın ve **yeni bir satıra `###`** yazın. Model JSON'un önüne
+açıklama ya da ```json işareti eklese de okunur; eksik gelen özetler sonra
+yeniden sorulur. `atla` paketi geçer, `cik` kaydedip çıkar. (`--paket`
+olmadan tek tek sorar.)
 
 ## Kurallar (karşılaştırmanın adil olması için)
 
-- **Komut her modelde aynı** (JSON'daki `komut` alanı; değiştirmeyin).
-- Her 10–20 örnekte bir **yeni sohbet** açın; ChatGPT'de **hafıza** kapalı
+- **Komut ve paket boyutu her modelde aynı** (JSON'daki `komut` alanı;
+  değiştirmeyin). Bütün dosyayı tek seferde bir modele vermeyin: toplu
+  işte modeller kısaltmaya/benzeştirmeye eğilimli, koşullar modeller arasında
+  farklı olursa fark modele mi yönteme mi ait bilinemez.
+- Claude cevapları claude.ai'dan alınmalı; bu çalışmanın kod asistanı
+  (Claude Code) hipotezi bildiği için üretmemeli.
+- Her pakette **yeni sohbet** açın; ChatGPT'de **hafıza** kapalı
   olsun. Önceki cevaplar sonrakileri etkilemesin.
 - Hangi model sürümünü kullandığınızı not edin (ör. ChatGPT'nin ücretsiz /
   ücretli sürümü, Claude ve Gemini'nin sürüm adı) → aşağıya yazın.

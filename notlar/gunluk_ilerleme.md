@@ -217,6 +217,12 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   model sürümleri not edilecek.
 - Bu deney hem ortak LLM işaretçilerini (kelime/kalıp/imla) hem ertelenen
   çok modelli ek profilini verecek.
+- Kullanıcı önerisi: Claude Pro'ya tüm dosyayı tek seferde vermek. Karar:
+  üç modele de **aynı** 10'arlı JSON paketleriyle sorulacak (`--paket 10`;
+  model başına ~20 yapıştırma). Gerekçe: koşullar modeller arasında aynı
+  olmalı; tek seferde toplu işte kısaltma/benzeşme olur ve çıktı sınırına
+  takılır. Claude cevapları claude.ai'dan; kod asistanı hipotezi bildiği
+  için üretmiyor.
 
 ### Durum (2026-10-24 sonu)
 - Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır (önce sözlük).
