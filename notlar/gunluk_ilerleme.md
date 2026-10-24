@@ -187,6 +187,23 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   geleneksel kalıpların yerini alıyor olabilir). `aday_liste_tr_kontrol.txt`
   kullanıcının katkısıyla hazırlanacak.
 
+### İlk LLM yeniden yazım denemesi (kullanıcı)
+- 3 DergiPark özeti bir LLM'e (muhtemelen ChatGPT) "akademik dile uygun
+  yeniden düzenle" komutuyla verildi. Eklenen ifadeler →
+  `analiz/aday_liste_tr_llm.txt` (orijinal aday liste değişmedi).
+- Gözlemler:
+  - Eklenenlerin çoğu geleneksel Türk akademik kalıbı ("elde edilen
+    bulgular", "çalışma kapsamında", "ortaya koymuştur"). İngilizcede
+    "delve" gibi yeni kelimeler gelirken Türkçede LLM'in mevcut kalıpları
+    abartıyor olabileceği hipotezi → iz daha zayıf, alt sınır daha düşük
+    çıkabilir; kontrol listesi daha da önemli.
+  - Ek düzeyi aday: "-ebilmektedir" (Able+Prog2+A3sg+Cop: "sunabilmektedir",
+    "etkileyebilmektedir").
+  - İmla adayı: şapkalı yazım ("hâline"; orijinalde "haline"). Kelime
+    seçiminden bağımsız bir işaret olabilir.
+- Sınırlılık: tek model, tek komut, 3 özet. Gemini/Claude/yerel modellerle
+  ve nötr komutla tekrarlanacak.
+
 ### Durum (2026-10-24 sonu)
 - Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır (önce sözlük).
 

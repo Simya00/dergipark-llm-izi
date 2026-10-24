@@ -47,6 +47,7 @@ python3 asiri_kullanim.py --dil en --hedef 2024
 # 2b) Hazır listeyi kontrol et
 python3 liste_kontrol.py --dil tr --liste aday_liste_tr.txt --hedef 2024
 python3 liste_kontrol.py --dil en --liste aday_liste_en.txt --hedef 2024
+python3 liste_kontrol.py --dil tr --liste aday_liste_tr_llm.txt --hedef 2024   # LLM yeniden yazımından
 
 # 2c) Ek düzeyi (bir kez: bash zemberek_kur.sh; ilk çalıştırma ~1–2 saat,
 #     kelime çözümlemeleri ek_onbellek.json.gz'ye kaydedilir)

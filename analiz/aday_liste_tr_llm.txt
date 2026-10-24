@@ -1,0 +1,58 @@
+# Türkçe aday LLM ifadeleri — LLM YENİDEN YAZIMINDAN (2026-10-24)
+# Kaynak: 3 DergiPark özeti bir LLM'e (kullanıcıya göre muhtemelen ChatGPT)
+# "akademik yazım diline uygun olacak şekilde yeniden düzenle" komutuyla
+# verildi; orijinalde olmayıp LLM'in EKLEDİĞİ ifadeler alındı.
+# Veriden (DergiPark sıklıklarından) değil, LLM çıktısından çıkarıldı.
+# Sınırlılık: tek model, tek komut, 3 özet; "daha akademik yap" komutu
+# akademik kalıpları kendiliğinden çağırıyor. Diğer modellerle (Gemini,
+# Claude, yerel Llama/Gemma) ve nötr komutla tekrarlanacak.
+# Not: Birçoğu geleneksel Türk akademik kalıbı; kontrol listesiyle birlikte
+# yorumlanmalı.
+
+# --- Bulgu sunma ---
+elde edilen bulgular
+araştırma sonuçlarına göre
+ortaya koymuştur
+incelenen koşullarda
+göstermiştir
+
+# --- Bağlaç / geçiş ---
+buna karşılık
+bu doğrultuda
+yanı sıra
+
+# --- Kapsam ---
+çalışma kapsamında
+bu çalışma kapsamında
+ele alınmaktadır
+
+# --- İstatistik vurgusu ---
+istatistiksel açıdan
+istatistiksel olarak önemli
+önemli bulunmamıştır
+
+# --- Etki dili ---
+üzerindeki etkileri incelenmiştir
+üzerinde etkili olduğu
+yol açtığını
+belirgin değişimlere
+aracılığıyla belirlenmiştir
+
+# --- Genel giriş ---
+teknolojik gelişmelerle birlikte
+gündelik yaşamın yanı sıra
+meydana gelen
+
+# --- Soyut / temkinli dil ---
+olanak tanımaktadır
+olanakları
+sunabilmektedir
+etkileyebilmektedir
+sınırlarını sorgulayan
+alternatif
+katkıda bulunmaktadır
+
+# --- İmla: şapkalı yazım (orijinal: "haline") ---
+hâline
+hâline gelmiştir
+hâlâ
