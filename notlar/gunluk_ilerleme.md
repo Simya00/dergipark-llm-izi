@@ -118,6 +118,21 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 - Sahte veri testi: gizlenen kalıplar 16–23 kat çıktı, içlerindeki yaygın
   kelimeler artmamış göründü (sadece kelimeye bakmak izi kaçırırdı).
 
+### Literatür taraması (ilk) — ayrıntı: `notlar/literatur.md`
+- Türkçe özetlerde aşırı kelime yöntemiyle LLM yaygınlığı ölçen çalışma
+  bulunamadı ("Türkçe için ilk" şimdilik geçerli). Türkçede sadece dedektör
+  çalışmaları var (Er & Çoğalmış 2024 vb.).
+- **Kritik:** Lee (2026, arXiv:2609.07447) Korece için biçimbilime duyarlı
+  aşırı kelime analizi + aynı makalelerin İngilizce özetleriyle karşılaştırma
+  + 2018–2026 zaman çizgisi yapmış. Koo, Kim, Kim (2026) de Korece. → Bizim
+  "eklemeli dil" ve "iki dilli" katkılarımız tek başına özgün değil.
+- Üstüne katılabilecekler (aday): Korece ile karşılaştırma (aynı tür LLM
+  tercihleri diller arası aktarılıyor mu?), kalıp ifade (n-gram) düzeyinde
+  alt sınır, ek düzeyi (-mektedir/-iyor, edilgen), DergiPark arşiv tarihi
+  sorununun yöntemsel çözümü, alanlara/üniversitelere göre kırılım, birden
+  çok LLM ile (Türkçe yerel modeller dahil) doğrulama deneyi, 2025–2026
+  düşüş/düzleşme. Lee (2026) tam metni okunduktan sonra kesinleşecek.
+
 ### Durum (2026-10-24 sonu)
 - Tüm DergiPark toplaması sürüyor: sayfa 7.079, ~708 bin makale (~%84).
 
