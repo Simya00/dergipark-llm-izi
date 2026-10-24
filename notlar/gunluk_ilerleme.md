@@ -227,9 +227,19 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 ### Durum (2026-10-24 sonu)
 - Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır (önce sözlük).
 
-### Bir sonraki adım
-1. Toplama bitince: `python3 oai_ayristir.py` → son tablo.
-2. `kelime_siklik.py` + `asiri_kullanim.py` (TR ve EN) → aday kelime listesi.
-3. İçerik kelimelerini (covid, deprem...) ayıklayıp üslup işaretçilerini seçmek
-   → `alt_sinir.py` ile ilk "en az %X" sonucu.
-4. Sonra: Zemberek ile kök düzeyi, n-gram, iki dilli karşılaştırma.
+### Bir sonraki adım (yarın)
+1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra
+   `rapor --dil tr` → yıllara göre birleşik kelime oranı ve yanlış bölme
+   kontrolü (kullanıcı listeye bakacak).
+2. `deney/`: `deney_hazirla.py` → 200 özet; `deney_yapistir.py <model>
+   --paket 10` ile ChatGPT, Claude, Gemini (hafıza kapalı, her pakette yeni
+   sohbet, model sürümleri not edilecek). Bitince `deney_ornekleri.json` push.
+3. İlk sonuçlar: `dergi_paneli.py`, `liste_kontrol.py` (TR, TR-panel, EN,
+   TR-LLM listesi); "hâline/haline" eğilimine özellikle bakılacak.
+4. Kullanıcıdan: geleneksel kalıplar kontrol listesi
+   (`aday_liste_tr_kontrol.txt`); Lee (2026) ve Koo vd. (2026) PDF'leri
+   (`notlar/kaynaklar/`).
+5. Bekleyen: ESOGÜ/eski dergilere e-posta (kullanıcı henüz göndermedi;
+   öncelik ESOGÜ: gönderilme/kabul tarihleri).
+6. Ben: deney cevapları gelince orijinal–yeniden yazım karşılaştırma analizi
+   (ortak/modele özgü kelime, kalıp, ek, imla).
