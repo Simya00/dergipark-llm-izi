@@ -24,6 +24,13 @@ Kök (Zemberek) düzeyi sonraki adım.
 ```bash
 cd analiz
 
+# 0) Birleşik kelime onarımı (PDF'ten kopyalamada kaybolan boşluklar:
+#    "rakımlaragöre", "arızadankaynaklanan"). Sözlük bir kez oluşturulur;
+#    dosya varsa TÜM analiz betikleri birleşik kelimeleri otomatik böler.
+python3 birlesik_kelime.py sozluk --dil tr
+python3 birlesik_kelime.py sozluk --dil en
+python3 birlesik_kelime.py rapor --dil tr      # yıllara göre birleşik kelime oranı
+
 # 1) Her kelimenin her yıl kaç özette geçtiği (her yıl için dosya bir kez okunur)
 python3 kelime_siklik.py --dil tr
 python3 kelime_siklik.py --dil en
@@ -58,6 +65,14 @@ python3 alt_sinir.py --dil tr --isaretciler isaretciler_tr.txt
 ```
 
 ## Yöntem
+
+- **Birleşik kelimeler:** Birçok özette satır sonu boşlukları kaybolmuş. Bir
+  kelime, her parçası ≥30 özette geçen 2 (gerekirse 3) kelimeye bölünebiliyor
+  ve kendisi ya <3 özette geçiyor ya da en seyrek parçasından ≥20 kat
+  seyrekse bölünür. Oran yıllar arasında farklıysa onarımsız analiz sahte
+  artış/azalış üretebileceği için onarım varsayılan olarak açık. Sahte
+  testte 10 gerçek örneğin (DergiPark'tan) hepsi doğru bölündü; "neden",
+  "bilgisayar", "kitaplarımızdan", "değerlendirilmektedir" bölünmedi.
 
 - **Dergi paneli:** Bazı dergiler DergiPark'a geç geçmiş (`gazimmfd` ilk
   güvenilir yıl 2023, `pajes` 2022). Bunlar 2021–2022 tabanında yok, 2024'te

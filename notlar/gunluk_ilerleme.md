@@ -164,8 +164,31 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   veride sahte artış (133 kat) panelde sıfıra indi. Ana sonuçlar hem tüm
   veride hem panelde raporlanacak.
 
+### Birleşik kelime sorunu
+- Örnek özetlerde (incelemeyi kullanıcı yaptı) çok sayıda boşluğu kaybolmuş
+  kelime: "küçükmeyve", "rakımlaragöre", "yaşamımızınayrılmaz",
+  "arızadankaynaklanan", "biryandan" (muhtemelen PDF'ten kopyalama).
+  Zemberek'i ve kelime sayımını bozar; oran yıllara göre farklıysa sahte
+  artış üretebilir.
+- Çözüm: `analiz/birlesik_kelime.py` (veriden sözlük + yıllık oran raporu);
+  `kelime_listesi()` sözlük varsa birleşik kelimeleri otomatik bölüyor
+  (parçalar ≥30 özet; kelime <3 özet veya parçadan ≥20 kat seyrek).
+  10 gerçek örneğin hepsi doğru bölündü, sağlam kelimeler bölünmedi.
+
+### Aday liste üzerine (kullanıcı)
+- Liste eksik görünüyor. 2025–2026 makalelerini okuyup eklemek "veriye
+  bakmış" olur → öneri: 2019 özetlerini birkaç LLM'e yeniden yazdırıp
+  eklenen ifadeleri toplamak. Mevcut liste git'te tarihli ("ön kayıtlı");
+  sonradan eklenenler ayrı dosyada (`aday_liste_tr_ek.txt`) raporlanacak.
+- Kullanıcı gözlemi: "bir parçası haline gelmiştir", "göre
+  değerlendirilmiştir", "nedeniyle" gibi klasik kalıplar LLM öncesi de çok
+  yaygın. → Yöntem "beklenenden fazla artış"a baktığı için bunlar elenir;
+  ayrıca **kontrol listesi** olarak kullanılacak (artmamalı; azalıyorsa LLM
+  geleneksel kalıpların yerini alıyor olabilir). `aday_liste_tr_kontrol.txt`
+  kullanıcının katkısıyla hazırlanacak.
+
 ### Durum (2026-10-24 sonu)
-- Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır.
+- Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır (önce sözlük).
 
 ### Bir sonraki adım
 1. Toplama bitince: `python3 oai_ayristir.py` → son tablo.

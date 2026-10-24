@@ -30,6 +30,7 @@ import argparse
 import gzip
 import json
 import re
+import sys
 import zlib
 from collections import Counter
 from pathlib import Path
@@ -58,13 +59,99 @@ def tr_kelime_kucult(kelime: str) -> str:
     return turkce_kucult(kelime)
 
 
-def kelime_listesi(metin: str, dil: str) -> list:
-    """Metindeki kelimeler, sirasiyla."""
+# ------------------------------------------------------------------
+# Birlesik kelime onarimi
+# ------------------------------------------------------------------
+# Bircok ozet PDF'ten kopyalanirken satir sonu bosluklari kaybolmus:
+# "rakımlaragöre", "yaşamımızınayrılmaz", "arızadankaynaklanan". Sozluk dosyasi
+# (birlesik_kelime.py sozluk ile uretilir) varsa, bir kelime her parcasi en az
+# SIK_ESIK ozette gecen 2 (gerekirse 3) kelimeye bolunebiliyorsa VE kendisi ya
+# cok nadirse (< NADIR_ESIK ozet) ya da en seyrek parcasindan en az KAT_ESIK
+# kat daha seyrekse bolunur ("biryandan" gibi tekrarlayan hatalar icin).
+# Sik kelimeler ("neden", "bilgisayar") bu yuzden bolunmez. Turkcenin eklemeli
+# yapisi yuzunden yanlis bolme riski dusuk: "kitaplarımızdan" bolunmez, cunku
+# "ımızdan" bir kelime degil.
+NADIR_ESIK = 3
+SIK_ESIK = 30
+KAT_ESIK = 20
+ADAY_UST_SINIR = 1000  # bundan cok ozette gecen kelime birlesik sayilmaz (hiz icin)
+EN_KISA_PARCA = 2
+EN_KISA_ONARILAN = 5
+_SOZLUKLER = {}
+
+
+def sozluk_dosyasi(dil: str) -> Path:
+    return KLASOR / f"sozluk_{dil}.tsv.gz"
+
+
+def sozluk(dil: str):
+    """{kelime: belge sayisi} (yalnizca >= NADIR_ESIK olanlar) veya dosya yoksa None."""
+    if dil not in _SOZLUKLER:
+        dosya = sozluk_dosyasi(dil)
+        if dosya.exists():
+            with gzip.open(dosya, "rt", encoding="utf-8") as f:
+                next(f)
+                _SOZLUKLER[dil] = {k: int(n) for k, n in (s.rstrip("\n").split("\t") for s in f)}
+            print(f"[birlesik kelime onarimi acik: {dosya.name}, {len(_SOZLUKLER[dil])} kelime]",
+                  file=sys.stderr)
+        else:
+            _SOZLUKLER[dil] = None
+    return _SOZLUKLER[dil]
+
+
+def bol(kelime: str, sz: dict, derinlik: int = 2):
+    """Birlesik kelimeyi sik kelimelere boler (parcalarin en az sik olani en sik
+    olacak sekilde); bolunemezse None."""
+    en_iyi, en_iyi_puan = None, 0
+    for i in range(EN_KISA_PARCA, len(kelime) - EN_KISA_PARCA + 1):
+        bas, son = kelime[:i], kelime[i:]
+        if sz.get(bas, 0) < SIK_ESIK:
+            continue
+        if sz.get(son, 0) >= SIK_ESIK:
+            parcalar = [bas, son]
+        elif derinlik > 1 and sz.get(son, 0) < NADIR_ESIK:
+            geri = bol(son, sz, derinlik - 1)
+            if not geri:
+                continue
+            parcalar = [bas] + geri
+        else:
+            continue
+        puan = min(sz[p] for p in parcalar)
+        if puan > en_iyi_puan:
+            en_iyi, en_iyi_puan = parcalar, puan
+    return en_iyi
+
+
+def onar(kelimeler: list, dil: str) -> list:
+    sz = sozluk(dil)
+    if not sz:
+        return kelimeler
+    sonuc = []
+    for k in kelimeler:
+        parcalar = birlesik_mi(k, sz)
+        sonuc.extend(parcalar or [k])
+    return sonuc
+
+
+def birlesik_mi(kelime: str, sz: dict):
+    """Kelime birlesikse parcalari, degilse None."""
+    adet = sz.get(kelime, 0)
+    if len(kelime) < EN_KISA_ONARILAN or adet >= ADAY_UST_SINIR:
+        return None
+    parcalar = bol(kelime, sz)
+    if parcalar and (adet < NADIR_ESIK or adet * KAT_ESIK <= min(sz[p] for p in parcalar)):
+        return parcalar
+    return None
+
+
+def kelime_listesi(metin: str, dil: str, onarim: bool = True) -> list:
+    """Metindeki kelimeler, sirasiyla (sozluk varsa birlesik kelimeler bolunmus)."""
     if dil == "tr":
         bulunan = (tr_kelime_kucult(k) for k in KELIME.findall(KESME_EKI.sub("", metin)))
     else:
         bulunan = KELIME.findall(metin.lower())
-    return [k for k in bulunan if len(k) >= 2]
+    kelimeler = [k for k in bulunan if len(k) >= 2]
+    return onar(kelimeler, dil) if onarim else kelimeler
 
 
 def kelimeler(metin: str, dil: str) -> set:
