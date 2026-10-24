@@ -90,6 +90,17 @@ def siklik_dosya_adi(dil: str, n: int) -> str:
     return f"siklik_{dil}.tsv.gz" if n == 1 else f"siklik_{dil}_{n}gram.tsv.gz"
 
 
+def dergi_filtresi(dosya):
+    """--dergiler dosyasindaki dergi kodlari (her satirda bir); dosya yoksa None (filtre yok)."""
+    if not dosya:
+        return None
+    return {s.strip() for s in Path(dosya).read_text(encoding="utf-8").splitlines() if s.strip()}
+
+
+def secili(m, dergiler):
+    return dergiler is None or m.get("dergi_kodu") in dergiler
+
+
 def yil_araligi(metin: str):
     bas, son = metin.split("-")
     return list(range(int(bas), int(son) + 1))
@@ -103,9 +114,11 @@ def main():
     p.add_argument("--n", type=int, default=1, help="1: tek kelime, 2-4: kelime gruplari")
     p.add_argument("--min-belge", type=int, default=5, help="Bir yilda bundan az ozette gecen oge atilir")
     p.add_argument("--parca", type=int, help="Her yilin sayimini kac parcaya bol (varsayilan n=1: 1, n>1: 8)")
+    p.add_argument("--dergiler", help="Sadece bu dergiler (orn. dergi_paneli_tr.txt)")
     p.add_argument("--cikti")
     arg = p.parse_args()
 
+    dergiler = dergi_filtresi(arg.dergiler)
     cikti = Path(arg.cikti or KLASOR / siklik_dosya_adi(arg.dil, arg.n))
     parca_sayisi = arg.parca or (1 if arg.n == 1 else 8)
     alan = f"ozet_{arg.dil}"
@@ -119,7 +132,7 @@ def main():
             with open(arg.girdi, encoding="utf-8") as g:
                 for satir in g:
                     m = json.loads(satir)
-                    if m.get("yil_guvenilir") == yil and m.get(alan):
+                    if m.get("yil_guvenilir") == yil and m.get(alan) and secili(m, dergiler):
                         ozet_ogeleri.append(gruplar(m[alan], arg.dil, arg.n))
             belge_sayisi[yil] = len(ozet_ogeleri)
             farkli = tutulan = 0

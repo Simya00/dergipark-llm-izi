@@ -149,8 +149,23 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   "-mAktAdIr" artışı ~11 kat, edilgen "-Il+mAktAdIr" ayrı zincir olarak
   bulundu. LLM ek profili deneyi (çok modelli) hâlâ ertelendi.
 
+### Toplama tamamlandı — son tablo
+- **8.468 sayfa, 844.745 makale, 3.124 dergi.**
+- Güvenilir yıllı makale: 2021: 57.347, 2022: 58.172, 2023: 58.416,
+  2024: 60.547, 2025: 65.057, 2026 (kısmi): 22.149. TR öz yılda 48–56 bin,
+  EN abstract 46–63 bin, TR+EN 36–53 bin.
+- Yıl kaynağı: tarih 624.728, arşiv 173.496, aralık dışı 40.665, cilt-yıl 5.856.
+- Bazı dergiler tamamen arşiv sayıldı (`aott`, `politeknik`, `opus`: muhtemelen
+  yakın zamanda toplu yeniden yüklenmiş) ya da geç başlıyor (`gazimmfd` 2023,
+  `pajes` 2022, `kefdergi` 2021).
+- → **Dergi karışımı sorunu:** geç katılan dergiler tabanda yok, hedef yılda
+  var; LLM olmadan sahte "artış" üretebilir. Çözüm: `analiz/dergi_paneli.py`
+  (2021–2025 her yıl ≥5 makale) + tüm analiz betiklerine `--dergiler`. Sahte
+  veride sahte artış (133 kat) panelde sıfıra indi. Ana sonuçlar hem tüm
+  veride hem panelde raporlanacak.
+
 ### Durum (2026-10-24 sonu)
-- Tüm DergiPark toplaması sürüyor: sayfa 7.079, ~708 bin makale (~%84).
+- Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır.
 
 ### Bir sonraki adım
 1. Toplama bitince: `python3 oai_ayristir.py` → son tablo.

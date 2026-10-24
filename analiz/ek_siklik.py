@@ -36,7 +36,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from asiri_kullanim import karsi_olgusal
-from kelime_siklik import VARSAYILAN_GIRDI, kelime_listesi, yil_araligi
+from kelime_siklik import VARSAYILAN_GIRDI, dergi_filtresi, kelime_listesi, secili, yil_araligi
 
 KLASOR = Path(__file__).resolve().parent
 ONBELLEK = KLASOR / "ek_onbellek.json.gz"
@@ -142,8 +142,10 @@ def main():
     p.add_argument("--hedef", type=int, default=2024)
     p.add_argument("--min-belge", type=int, default=5, help="Zincir bir yilda bundan az ozette geciyorsa atilir")
     p.add_argument("--onek", default="", help="Cikti dosyalarinin basina eklenecek on ek (test icin)")
+    p.add_argument("--dergiler", help="Sadece bu dergiler (orn. dergi_paneli_tr.txt)")
     arg = p.parse_args()
 
+    dergiler = dergi_filtresi(arg.dergiler)
     yillar = set(yil_araligi(arg.yillar))
     cozumleyici = EkCozumleyici()
     print(f"Onbellekte {len(cozumleyici.onbellek)} kelime bicimi var.")
@@ -158,7 +160,7 @@ def main():
         for satir in g:
             m = json.loads(satir)
             y = m.get("yil_guvenilir")
-            if y not in yillar or not m.get("ozet_tr"):
+            if y not in yillar or not m.get("ozet_tr") or not secili(m, dergiler):
                 continue
             sayac, ekler, zincirler, n_kelime, n_tanin = ozet_ekleri(m["ozet_tr"], cozumleyici)
             belge[y] += 1

@@ -25,7 +25,7 @@ import json
 from pathlib import Path
 
 from asiri_kullanim import karsi_olgusal
-from kelime_siklik import VARSAYILAN_GIRDI, gruplar, yil_araligi
+from kelime_siklik import VARSAYILAN_GIRDI, dergi_filtresi, gruplar, secili, yil_araligi
 
 
 def main():
@@ -35,7 +35,9 @@ def main():
     p.add_argument("--isaretciler", required=True)
     p.add_argument("--yillar", default="2015-2026")
     p.add_argument("--taban", type=int, default=2022)
+    p.add_argument("--dergiler", help="Sadece bu dergiler (orn. dergi_paneli_tr.txt)")
     arg = p.parse_args()
+    dergiler = dergi_filtresi(arg.dergiler)
 
     isaretciler = {" ".join(s.split()) for s in Path(arg.isaretciler).read_text(encoding="utf-8").splitlines()
                    if s.strip() and not s.startswith("#")}
@@ -48,7 +50,7 @@ def main():
         for satir in g:
             m = json.loads(satir)
             y = m.get("yil_guvenilir")
-            if y not in n or not m.get(alan):
+            if y not in n or not m.get(alan) or not secili(m, dergiler):
                 continue
             n[y] += 1
             ogeler = set().union(*(gruplar(m[alan], arg.dil, u) for u in uzunluklar))

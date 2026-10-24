@@ -22,7 +22,7 @@ from collections import Counter
 from pathlib import Path
 
 from asiri_kullanim import karsi_olgusal
-from kelime_siklik import VARSAYILAN_GIRDI, gruplar, yil_araligi
+from kelime_siklik import VARSAYILAN_GIRDI, dergi_filtresi, gruplar, secili, yil_araligi
 
 KLASOR = Path(__file__).resolve().parent
 
@@ -40,7 +40,9 @@ def main():
     p.add_argument("--yillar", default="2015-2026")
     p.add_argument("--taban", type=int, default=2022)
     p.add_argument("--hedef", type=int, default=2024)
+    p.add_argument("--dergiler", help="Sadece bu dergiler (orn. dergi_paneli_tr.txt)")
     arg = p.parse_args()
+    dergiler = dergi_filtresi(arg.dergiler)
 
     liste = list(dict.fromkeys(liste_oku(arg.liste)))  # tekrarlari at, sirayi koru
     aranan = set(liste)
@@ -53,7 +55,7 @@ def main():
         for satir in g:
             m = json.loads(satir)
             y = m.get("yil_guvenilir")
-            if y not in sayi or not m.get(alan):
+            if y not in sayi or not m.get(alan) or not secili(m, dergiler):
                 continue
             n[y] += 1
             ogeler = set().union(*(gruplar(m[alan], arg.dil, u) for u in uzunluklar))
@@ -71,7 +73,8 @@ def main():
                          "oran": oran[T] / max(q, 1 / n[b]), **{f"p{y}": v for y, v in oran.items()}})
     satirlar.sort(key=lambda r: -r["delta"])
 
-    cikti = KLASOR / f"liste_{Path(arg.liste).stem}_{T}.tsv"
+    ek = f"_{Path(arg.dergiler).stem}" if arg.dergiler else ""
+    cikti = KLASOR / f"liste_{Path(arg.liste).stem}{ek}_{T}.tsv"
     with open(cikti, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(satirlar[0]), delimiter="\t")
         w.writeheader()

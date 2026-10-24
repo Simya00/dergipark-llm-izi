@@ -46,12 +46,26 @@ python3 liste_kontrol.py --dil en --liste aday_liste_en.txt --hedef 2024
 zemberek_env/bin/python3 ek_siklik.py --hedef 2024
 python3 asiri_kullanim.py --dil tr --siklik siklik_tr_ekzinciri.tsv.gz --hedef 2024 --en-az-belge 50
 
+# 4) Sabit dergi paneliyle tekrar (geç katılan dergilerin etkisini ayıklar):
+python3 dergi_paneli.py --dil tr                  # -> dergi_paneli_tr.txt
+python3 kelime_siklik.py --dil tr --dergiler dergi_paneli_tr.txt --cikti siklik_tr_panel.tsv.gz
+python3 asiri_kullanim.py --dil tr --siklik siklik_tr_panel.tsv.gz --hedef 2024
+python3 liste_kontrol.py --dil tr --liste aday_liste_tr.txt --dergiler dergi_paneli_tr.txt
+
 # 3) Aday listeden içerik kelimelerini (covid, deprem...) ayıklayıp üslup
 #    kelimelerini/gruplarını isaretciler_tr.txt'ye yaz, sonra alt sınırı hesapla:
 python3 alt_sinir.py --dil tr --isaretciler isaretciler_tr.txt
 ```
 
 ## Yöntem
+
+- **Dergi paneli:** Bazı dergiler DergiPark'a geç geçmiş (`gazimmfd` ilk
+  güvenilir yıl 2023, `pajes` 2022). Bunlar 2021–2022 tabanında yok, 2024'te
+  var → dergi karışımı değiştiği için kelimeler LLM olmadan da "artmış"
+  görünebilir. `dergi_paneli.py` 2021–2025'in her yılında ≥5 makalesi olan
+  dergileri seçer; tüm analizler `--dergiler` ile panelde tekrarlanır. Sahte
+  veride geç katılan bir derginin "beton" kelimesi tüm veride 133 kat artmış
+  görünürken panelde artış sıfır çıktı.
 
 - `p_y`: kelimenin y yılında geçtiği özet oranı.
 - Karşı-olgusal: `q_T = p_2022 + (T − 2022) · max(p_2022 − p_2021, 0)`
