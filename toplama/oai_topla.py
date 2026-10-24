@@ -60,7 +60,7 @@ NS = {
 }
 KULLANICI_AJANI = "TR-LLM-Analiz arastirma toplayicisi (akademik, OAI-PMH; 429 gelince yavaslar)"
 ZAMAN_ASIMI = 120
-MAKS_DENEME = 6
+MAKS_DENEME = 12  # 2+4+...+300 sn: sunucu ~40 dk dusse de bekler
 
 # Uyarlanir ek bekleme: sunucu 429 ("cok hizli") dedikce artar, basarili
 # isteklerle yavasca azalir. Boylece hiz sunucunun sinirina kendiliginden oturur.
