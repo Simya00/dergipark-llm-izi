@@ -15,3 +15,8 @@ venv/
 toplama/ham/
 toplama/makaleler.jsonl
 toplama/deneme_ornek.xml
+
+# Analiz ara ciktilari (buyuk / veriden yeniden uretilebilir)
+analiz/siklik_*.tsv.gz
+analiz/siklik_*.tsv.gz.belge.json
+analiz/asiri_*.tsv

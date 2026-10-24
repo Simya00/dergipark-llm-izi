@@ -23,12 +23,16 @@ Bu çalışmanın katkıları:
 | Klasör | İçerik |
 |---|---|
 | `toplama/` | DergiPark OAI-PMH toplayıcı ve ayrıştırıcı ([talimatlar](toplama/README.md)) |
+| `analiz/` | Kelime sıklıkları, aşırı kullanım, alt sınır ([talimatlar](analiz/README.md)) |
 | `notlar/` | Veri planı, ESOGÜ dergi listesi, e-posta taslakları |
 
 ## Durum
 
-- [x] Toplama betikleri (sahte OAI sunucusuyla test edildi)
-- [ ] Gerçek DergiPark'ta `deneme` + `setler`
-- [ ] ESOGÜ pilotu
-- [ ] Tüm DergiPark
-- [ ] Analiz (kök çıkarma, aşırı kelime, alt sınır, iki dilli karşılaştırma)
+- [x] Toplama betikleri
+- [x] Gerçek DergiPark'ta `deneme` + `setler`
+- [x] ESOGÜ pilotu (arşiv tarihi sorunu bulundu ve çözüldü)
+- [ ] Tüm DergiPark (sürüyor)
+- [x] Kelime düzeyi analiz kodu (sahte veriyle doğrulandı)
+- [ ] Gerçek veride kelime düzeyi sonuçlar
+- [ ] Kök (Zemberek) ve n-gram düzeyi
+- [ ] İki dilli karşılaştırma, 2025–2026 düşüşü
