@@ -133,6 +133,18 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   çok LLM ile (Türkçe yerel modeller dahil) doğrulama deneyi, 2025–2026
   düşüş/düzleşme. Lee (2026) tam metni okunduktan sonra kesinleşecek.
 
+### Ek (suffix) düzeyi analiz — ertelendi
+- Fikir: Tez çalışmasındaki (TR-LLM-Analiz) "LLM'in en çok kullandığı ekler"
+  analizini buraya bağlamak. İki parça: (1) eski DergiPark özetlerini
+  LLM'lere yeniden yazdırıp orijinalle ek yoğunluğunu karşılaştırmak (LLM ek
+  profili), (2) DergiPark'ta eklerin yıllara göre beklenenden fazla artıp
+  artmadığı (Kobak hesabı eklere).
+- Zemberek hızı ~600 kelime biçimi/sn → tüm özetler için önbellekle ~1–2 saat.
+- **Karar:** Şimdilik ertelendi. Ek profili tek bir modelden çıkarılırsa
+  güvenilir sayılmaz; birden çok LLM'den (ör. Llama, Gemma, Qwen + ChatGPT,
+  Claude, Gemini) alınıp birleştirilmeli (ortak ve modele özgü ekler ayrı).
+- Taslak kod `taslak/ek-analizi` dalında (test edilmedi, main'de değil).
+
 ### Durum (2026-10-24 sonu)
 - Tüm DergiPark toplaması sürüyor: sayfa 7.079, ~708 bin makale (~%84).
 
