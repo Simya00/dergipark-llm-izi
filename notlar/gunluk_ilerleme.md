@@ -188,7 +188,7 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   kullanıcının katkısıyla hazırlanacak.
 
 ### İlk LLM yeniden yazım denemesi (kullanıcı)
-- 3 DergiPark özeti bir LLM'e (muhtemelen ChatGPT) "akademik dile uygun
+- 3 DergiPark özeti ChatGPT'ye "akademik dile uygun
   yeniden düzenle" komutuyla verildi. Eklenen ifadeler →
   `analiz/aday_liste_tr_llm.txt` (orijinal aday liste değişmedi).
 - Gözlemler:

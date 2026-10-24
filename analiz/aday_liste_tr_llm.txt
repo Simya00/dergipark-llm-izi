@@ -1,5 +1,5 @@
 # Türkçe aday LLM ifadeleri — LLM YENİDEN YAZIMINDAN (2026-10-24)
-# Kaynak: 3 DergiPark özeti bir LLM'e (kullanıcıya göre muhtemelen ChatGPT)
+# Kaynak: 3 DergiPark özeti ChatGPT'ye
 # "akademik yazım diline uygun olacak şekilde yeniden düzenle" komutuyla
 # verildi; orijinalde olmayıp LLM'in EKLEDİĞİ ifadeler alındı.
 # Veriden (DergiPark sıklıklarından) değil, LLM çıktısından çıkarıldı.
