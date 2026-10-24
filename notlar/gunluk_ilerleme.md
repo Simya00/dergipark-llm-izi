@@ -204,6 +204,20 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 - Sınırlılık: tek model, tek komut, 3 özet. Gemini/Claude/yerel modellerle
   ve nötr komutla tekrarlanacak.
 
+### LLM yeniden yazım deneyi (200 özet × 3 model) — kurulum
+- Kullanıcı kararı: 3 özet yetmez; 2018–2021'den rastgele 200 özet,
+  ChatGPT + Claude + Gemini'ye aynı komutla verilecek, cevaplar elle
+  yapıştırılacak.
+- `deney/deney_hazirla.py`: seçim (her dergiden ≤1, 400–1500 karakter,
+  birleşik kelimeli özetler hariç, sabit tohum 20261024) →
+  `deney/deney_ornekleri.json` (model cevapları boş).
+- `deney/deney_yapistir.py <model>`: sırayla komut + özeti gösterir, cevap
+  terminale yapıştırılıp `###` ile kaydedilir (elle JSON düzenleme hatası
+  olmasın diye). Kurallar: aynı komut, sık sık yeni sohbet, hafıza kapalı,
+  model sürümleri not edilecek.
+- Bu deney hem ortak LLM işaretçilerini (kelime/kalıp/imla) hem ertelenen
+  çok modelli ek profilini verecek.
+
 ### Durum (2026-10-24 sonu)
 - Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır (önce sözlük).
 

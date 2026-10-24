@@ -26,3 +26,4 @@ analiz/ek_onbellek.json.gz
 analiz/zemberek_env
 analiz/liste_*.tsv
 analiz/sozluk_*.tsv.gz
+deney/*.gecici
