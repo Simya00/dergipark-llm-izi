@@ -295,19 +295,48 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   tıklanabilir link, satırlara bölünmüş metin, E/K/H açılır listesi);
   `hesapla` Excel'i doğrudan okuyor.
 
+### Sınır hatalarını azaltma — kararlar (kod yarın)
+- Doğrulama örneklerinde iki dilli bölmede sınır hataları görüldü: TR ve
+  EN öz arasında nokta/boşluk yok ("…osteopontin AbstractOligodendrogliomas
+  are…"), "Keywords:" satırı yanlış tarafa gidiyor, "LaryngealSquamous",
+  "RampantCariesLaringealskuamoz" gibi yapışmalar.
+- Kullanıcının gözlemleri ve önerileri:
+  - Dergiler önce bir dili sonra diğerini yazıyor → **tek geçiş noktası**
+    aranabilir (başlık kelimeleri "Abstract/Özet/Keywords/Anahtar Kelimeler"
+    ipucu; yoksa en iyi tek kesim noktası).
+  - **Anahtar kelime bölümleri özetten atılsın** (konu listesi, üslupla
+    ilgisi yok; DergiPark zaten `dc:subject`'te veriyor). Önerilen bitiş:
+    nokta / sonraki başlık kelimesi / en fazla 20 kelime. (Tüm özetlerden mi
+    yoksa sadece iki dillilerden mi: Claude tüm özetleri önerdi; kesin karar
+    bekliyor.)
+  - Birleşik kelime onarımı neden çalışmadı sorusu: onarım analiz
+    aşamasında ve sadece TR+TR yapışmalar için; dil temizliği ondan önce
+    çalışıyor; sözlük de henüz oluşturulmadı. "Laringealskuamoz" = iki
+    Türkçe tıp terimi ("Laringeal skuamoz").
+  - Büyük harf kuralı (küçük→BÜYÜK harf geçişinde böl) için kullanıcı:
+    "istisna listesi yerine **sözlük** daha mantıklı." → **Karar:** ortasında
+    büyük harf olan kelime YALNIZCA (a) kendisi verimizde nadirse (<5 öz)
+    ve (b) iki parçası da TR/EN sözlükte varsa (≥3 öz) bölünür
+    ("LaryngealSquamous" bölünür; "DergiPark", "pH", "McDonald" korunur).
+    Elle istisna listesi yedek olarak kalır.
+  - **Kısaltma sözlüğü** de yapılacak (Dr., Prof., Doç., vb., vd., örn., s.,
+    et al., e.g., i.e. …): bu kısaltmalardan sonraki nokta cümle sonu
+    sayılmaz; noktadan sonra büyük harf geliyorsa araya boşluk eklenir.
+- Eşikler (5 / 3, 20 kelime) Claude'un önerisi; kullanıcı yaklaşımı onayladı,
+  eşiklere yarın son kez bakılacak.
+
 ### Bir sonraki adım (yarın)
-1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra
-   `rapor --dil tr` → yıllara göre birleşik kelime oranı ve yanlış bölme
-   kontrolü (kullanıcı listeye bakacak).
-2. `deney/`: `deney_hazirla.py` → 200 özet; `deney_yapistir.py <model>
-   --paket 10` ile ChatGPT, Claude, Gemini (hafıza kapalı, her pakette yeni
-   sohbet, model sürümleri not edilecek). Bitince `deney_ornekleri.json` push.
-3. İlk sonuçlar: `dergi_paneli.py`, `liste_kontrol.py` (TR, TR-panel, EN,
-   TR-LLM listesi); "hâline/haline" eğilimine özellikle bakılacak.
-4. Kullanıcıdan: geleneksel kalıplar kontrol listesi
-   (`aday_liste_tr_kontrol.txt`); Lee (2026) ve Koo vd. (2026) PDF'leri
-   (`notlar/kaynaklar/`).
-5. Bekleyen: ESOGÜ/eski dergilere e-posta (kullanıcı henüz göndermedi;
-   öncelik ESOGÜ: gönderilme/kabul tarihleri).
-6. Ben: deney cevapları gelince orijinal–yeniden yazım karşılaştırma analizi
-   (ortak/modele özgü kelime, kalıp, ek, imla).
+1. Kullanıcıyla netleştir: anahtar kelime silme tüm özetlerden mi; tek
+   geçiş noktası yöntemi de eklensin mi; Excel doğrulaması düzeltmelerden
+   önce mi sonra mı (Claude önerisi: önce mevcut hali ölç, sonra düzelt ve
+   aynı örneklerde tekrar ölç).
+2. Kodla (önce anlat, sonra kodu sohbette göster): TR/EN kelime sözlüğüne
+   dayalı büyük harf bölme, kısaltma sözlüğü, noktadan sonra boşluk,
+   anahtar kelime bölümünü silme, (onaylanırsa) tek geçiş noktası.
+   Sözlükler kullanıcının bilgisayarında: `analiz/birlesik_kelime.py sozluk
+   --dil tr` ve `--dil en`.
+3. Excel doğrulaması: `toplama/dil_dogrulama.py excel` → doldur → `hesapla`.
+4. Deney: ChatGPT/Claude/Gemini cevapları (`deney_hazirla.py --degistir`
+   önce).
+5. Bekleyenler: geleneksel kalıplar kontrol listesi, Lee (2026) PDF'i,
+   ESOGÜ e-postası.
