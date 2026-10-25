@@ -8,11 +8,17 @@ degistirmez):
   1. Yanlis etiket: "tr" etiketli alanda tamamen Ingilizce metin (veya tersi).
   2. Iki dilli alan: ayni alanda hem Turkce oz hem Ingilizce abstract.
 
-Yontem: Metin cumlelere bolunur, her cumlenin dili islev kelimeleri (ve, bir,
-bu / the, and, of ...) ve Turkceye ozgu harflerle (ğ, ı, ş, İ) belirlenir.
+Yontem (oai_ayristir.metin_dili): Metin cumlelere bolunur, her cumlenin dili
+islev kelimeleri (ve, bir, bu / the, and, of ...) ve Turkceye ozgu harflerle
+(ğ, ı, ş, İ) belirlenir.
   - cumlelerin (kelime agirlikli) >= %80'i diger dildeyse -> yanlis etiket
   - her iki dilde de >= 2 cumle ve azinlik dil >= %20 ise -> iki dilli
   - aksi halde etiketle uyumlu (veya belirsiz)
+
+oai_ayristir.py bu sorunlari artik ayristirirken temizliyor (dil_kaynagi:
+etiket_duzeltildi / iki_dilli_bolundu / bozuk_metin). Yeni ayristirilmis
+dosyada bu betik (1) kac ozun temizlendigini ve (2) temizlikten sonra KALAN
+sorunlari gosterir; eski dosyada temizlik oncesi durumu gosterir.
 
 Ciktilar:
   - ekrana: yillara gore sayilar, sorunlarin en cok gorueldugu dergiler, ornekler
@@ -26,56 +32,17 @@ Kullanim:
 import argparse
 import csv
 import json
-import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from oai_ayristir import EN_KELIMELER, KELIME, TR_HARFLER, TR_KELIMELER, turkce_kucult
+from oai_ayristir import metin_dili
 
 KLASOR = Path(__file__).resolve().parent
-CUMLE = re.compile(r"(?<=[.!?])\s+")
-YANLIS_ESIK = 0.8
-IKI_DILLI_ESIK = 0.2
 
 
-def cumle_dili(cumle):
-    """("tr" | "en" | None, kelime sayisi)"""
-    kelimeler = KELIME.findall(turkce_kucult(cumle))
-    tr = sum(k in TR_KELIMELER for k in kelimeler) + 2 * sum(ch in TR_HARFLER for ch in cumle)
-    en = sum(k in EN_KELIMELER for k in kelimeler)
-    if len(kelimeler) < 4 or tr == en:
-        return None, len(kelimeler)
-    return ("tr" if tr > en else "en"), len(kelimeler)
-
-
-def metin_dili(metin):
-    """(tespit, tr_payi, en_payi, tr_cumle, en_cumle); tespit: "tr" | "en" | "iki_dilli" | "belirsiz"."""
-    agirlik, cumle_say = Counter(), Counter()
-    for c in CUMLE.split(metin):
-        dil, n = cumle_dili(c)
-        if dil:
-            agirlik[dil] += n
-            cumle_say[dil] += 1
-    toplam = agirlik["tr"] + agirlik["en"]
-    if not toplam:
-        return "belirsiz", 0, 0, 0, 0
-    tr_payi, en_payi = agirlik["tr"] / toplam, agirlik["en"] / toplam
-    if min(cumle_say["tr"], cumle_say["en"]) >= 2 and min(tr_payi, en_payi) >= IKI_DILLI_ESIK:
-        tespit = "iki_dilli"
-    elif tr_payi >= YANLIS_ESIK:
-        tespit = "tr"
-    elif en_payi >= YANLIS_ESIK:
-        tespit = "en"
-    else:
-        tespit = "belirsiz"
-    return tespit, tr_payi, en_payi, cumle_say["tr"], cumle_say["en"]
-
-
-def orijinal_etiket(oz):
-    """oai_ayristir.py etiketi duzelttiyse (etiket_duzeltildi) asil etiketi geri bul."""
-    if oz["dil_kaynagi"] == "etiket_duzeltildi":
-        return {"tr": "en", "en": "tr"}.get(oz["dil"])
-    return oz["dil"] if oz["dil_kaynagi"] == "etiket" else None
+def son_etiket(oz):
+    """Kontrol edilecek etiket: ozun (temizlik sonrasi) dili; bozuk/etiketsiz olanlar atlanir."""
+    return oz["dil"] if oz["dil_kaynagi"] != "tahmin" and oz["dil"] in ("tr", "en") else None
 
 
 def main():
@@ -88,6 +55,7 @@ def main():
     dergi_sorun = defaultdict(Counter)  # (etiket, tespit) -> dergi -> adet
     ornekler = defaultdict(list)
     toplam = Counter()
+    temizlik = Counter()  # dil_kaynagi -> adet
     with open(arg.girdi, encoding="utf-8") as g, \
             open(KLASOR / "dil_sorunlari.tsv", "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, delimiter="\t")
@@ -96,10 +64,11 @@ def main():
             m = json.loads(satir)
             yil = m.get("yil_guvenilir")
             for oz in m["ozler"]:
-                etiket = orijinal_etiket(oz)
-                if etiket not in ("tr", "en"):
+                temizlik[oz["dil_kaynagi"]] += 1
+                etiket = son_etiket(oz)
+                if etiket is None:
                     continue
-                tespit, trp, enp, _, _ = metin_dili(oz["metin"])
+                tespit, _, trp, enp = metin_dili(oz["metin"])
                 anahtar = (etiket, tespit)
                 sayac[yil][anahtar] += 1
                 toplam[anahtar] += 1
@@ -114,6 +83,10 @@ def main():
     sorunlar = [("tr", "en"), ("tr", "iki_dilli"), ("en", "tr"), ("en", "iki_dilli")]
     adlar = {("tr", "en"): "TR etiket, metin EN", ("tr", "iki_dilli"): "TR etiket, iki dilli",
              ("en", "tr"): "EN etiket, metin TR", ("en", "iki_dilli"): "EN etiket, iki dilli"}
+    print("Ayristirmada yapilan temizlik (dil_kaynagi):")
+    for k, v in temizlik.most_common():
+        print(f"   {k:>18}: {v}")
+    print("\nTemizlik SONRASI kontrol:")
     for etiket in ("tr", "en"):
         n = sum(v for (e, _), v in toplam.items() if e == etiket)
         print(f"'{etiket}' etiketli oz: {n}")

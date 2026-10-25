@@ -30,10 +30,20 @@ YIL_ALT..YIL_UST disindaki yillar (orn. 1902, 2068: veri giris hatasi) None olur
 
 Oz dili: once xml:lang etiketine bakilir; yoksa basit bir sezgisel dil
 tespiti yapilir (Turkceye ozgu harfler + sik gecen ilgec/baglaclar).
-dil_kaynagi alani hangisinin kullanildigini soyler ("etiket" / "tahmin" /
-"etiket_duzeltildi"). Bazi dergiler Ingilizce abstract'i Turkce alanina (veya
-tersini) girmis; etiket ile metnin dili ACIKCA celisiyorsa (dil_kesin) metnin
-diline gore duzeltilir.
+dil_kaynagi alani hangisinin kullanildigini soyler. Etiketli (tr/en) ozler
+cumle duzeyinde dil tespitiyle (metin_dili) kontrol edilir; dil_kontrol.py ile
+olculen sorunlar (2026-10-25: TR etiketlilerin %3,2'si Ingilizce, %1,4'u iki
+dilli) soyle temizlenir:
+  "etiket"            etiket ile metin uyumlu
+  "etiket_duzeltildi" cumlelerin >= %80'i diger dilde -> o dile tasindi
+  "iki_dilli_bolundu" ayni alanda TR + EN -> Turkce cumleler TR oze,
+                      Ingilizce cumleler EN abstract'a (iki ayri oz)
+  "bozuk_metin"       harflerin > %20'si Turkce/Latin alfabesi disinda (PDF'ten
+                      bozuk kodlamayla kopyalanmis: "^ŝŶĂŶ 'ƺůŚĂŶ͛ŦŶ"); dil "bozuk",
+                      analize girmez
+  "diger_dil"         metin cogunlukla baska bir dilde (Almanca, Fransizca...); dil "diger"
+  "tahmin"            etiketsiz; dil_tahmin ile
+Ozlerin basindaki "Özet", "Öz", "Abstract" baslik kelimeleri atilir.
 
 Kullanim:
   python3 oai_ayristir.py                  # ham/ altindaki her seyi ayristir
@@ -78,7 +88,10 @@ TR_KELIMELER = {"ve", "bir", "bu", "ile", "için", "olarak", "olan", "da", "de",
 EN_KELIMELER = {"the", "and", "of", "in", "to", "is", "was", "were", "this",
                 "that", "with", "for", "study", "results", "are", "by", "on",
                 "an", "as", "which", "from"}
+DIGER_KELIMELER = {"der", "die", "das", "und", "ist", "mit", "nicht", "sich", "auf", "werden",
+                   "les", "des", "est", "une", "dans", "pour", "qui", "sur", "avec", "sont"}
 KELIME = re.compile(r"\w+", re.UNICODE)
+BASLIK = re.compile(r"^\s*(?:ÖZET|Özet|ÖZ|Öz|ABSTRACT|Abstract)(?=[\s:.\-–]|[A-ZÇĞİÖŞÜ])[\s:.\-–]*")
 
 
 def turkce_kucult(metin: str) -> str:
@@ -98,6 +111,72 @@ def dil_tahmin(metin: str) -> str:
     if en > tr:
         return "en"
     return "bilinmiyor"
+
+
+CUMLE = re.compile(r"(?<=[.!?])\s+")
+YANLIS_ETIKET_ESIK = 0.8
+IKI_DILLI_ESIK = 0.2
+BOZUK_ESIK = 0.2
+NORMAL_HARFLER = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                     "çğıöşüâîûÇĞİÖŞÜÂÎÛ") | {chr(c) for c in range(0xC0, 0x100) if chr(c).isalpha()}
+
+
+def bozuk_mu(metin: str) -> bool:
+    """Bozuk kodlamali metin: harflerin > BOZUK_ESIK'i Turkce/Latin-1 alfabesi disinda."""
+    harfler = [ch for ch in metin if ch.isalpha()]
+    return bool(harfler) and sum(ch not in NORMAL_HARFLER for ch in harfler) / len(harfler) > BOZUK_ESIK
+
+
+def baslik_at(metin: str) -> str:
+    """Basindaki "Özet" / "Abstract" baslik kelimesini atar ("ÖzetÇalışmanın" -> "Çalışmanın")."""
+    return BASLIK.sub("", metin)
+
+
+def cumle_dili(cumle: str):
+    """("tr" | "en" | "diger" | None, kelime sayisi)"""
+    kelimeler = KELIME.findall(turkce_kucult(cumle))
+    tr = sum(k in TR_KELIMELER for k in kelimeler) + 2 * sum(ch in TR_HARFLER for ch in cumle)
+    en = sum(k in EN_KELIMELER for k in kelimeler)
+    diger = sum(k in DIGER_KELIMELER for k in kelimeler)
+    if len(kelimeler) < 4:
+        return None, len(kelimeler)
+    if diger > max(tr, en):
+        return "diger", len(kelimeler)
+    if tr == en:
+        return None, len(kelimeler)
+    return ("tr" if tr > en else "en"), len(kelimeler)
+
+
+def metin_dili(metin: str):
+    """Cumle duzeyinde dil: (tespit, parcalar, tr_payi, en_payi).
+    tespit: "tr" | "en" | "iki_dilli" | "diger" | "belirsiz"; parcalar: {"tr": metin, "en": metin}
+    (dili belirsiz cumleler bir onceki cumlenin diline, ilk cumleler ilk belirli dile katilir)."""
+    cumleler = [c for c in CUMLE.split(metin) if c.strip()]
+    diller = [cumle_dili(c) for c in cumleler]
+    agirlik, sayi = {"tr": 0, "en": 0, "diger": 0}, {"tr": 0, "en": 0, "diger": 0}
+    for dil, n in diller:
+        if dil:
+            agirlik[dil] += n
+            sayi[dil] += 1
+    if agirlik["diger"] * 2 > sum(agirlik.values()):
+        return "diger", {}, 0.0, 0.0
+    diller = [(d if d != "diger" else None, n) for d, n in diller]
+    toplam = agirlik["tr"] + agirlik["en"]
+    if not toplam:
+        return "belirsiz", {}, 0.0, 0.0
+    trp, enp = agirlik["tr"] / toplam, agirlik["en"] / toplam
+    if min(sayi["tr"], sayi["en"]) >= 2 and min(trp, enp) >= IKI_DILLI_ESIK:
+        onceki = next(d for d, _ in diller if d)
+        parcalar = {"tr": [], "en": []}
+        for c, (dil, _) in zip(cumleler, diller):
+            onceki = dil or onceki
+            parcalar[onceki].append(c)
+        return "iki_dilli", {d: baslik_at(" ".join(p)) for d, p in parcalar.items()}, trp, enp
+    if trp >= YANLIS_ETIKET_ESIK:
+        return "tr", {"tr": metin}, trp, enp
+    if enp >= YANLIS_ETIKET_ESIK:
+        return "en", {"en": metin}, trp, enp
+    return "belirsiz", {}, trp, enp
 
 
 def dil_kesin(metin: str):
@@ -153,12 +232,24 @@ def kayit_ayristir(kayit: ET.Element):
 
     ozler = []
     for metin, etiket in alanlar.get("description", []):
-        if etiket:
-            kesin = dil_kesin(metin) if etiket in ("tr", "en") else None
-            if kesin and kesin != etiket:
-                ozler.append({"dil": kesin, "dil_kaynagi": "etiket_duzeltildi", "metin": metin})
+        metin = baslik_at(metin)
+        if not metin:
+            continue
+        if bozuk_mu(metin):
+            ozler.append({"dil": "bozuk", "dil_kaynagi": "bozuk_metin", "etiket": etiket, "metin": metin})
+        elif etiket in ("tr", "en"):
+            tespit, parcalar, _, _ = metin_dili(metin)
+            if tespit == "diger":
+                ozler.append({"dil": "diger", "dil_kaynagi": "diger_dil", "etiket": etiket, "metin": metin})
+            elif tespit == "iki_dilli":
+                for d, parca in parcalar.items():
+                    ozler.append({"dil": d, "dil_kaynagi": "iki_dilli_bolundu", "etiket": etiket, "metin": parca})
+            elif tespit in ("tr", "en") and tespit != etiket:
+                ozler.append({"dil": tespit, "dil_kaynagi": "etiket_duzeltildi", "etiket": etiket, "metin": metin})
             else:
                 ozler.append({"dil": etiket, "dil_kaynagi": "etiket", "metin": metin})
+        elif etiket:
+            ozler.append({"dil": etiket, "dil_kaynagi": "etiket", "metin": metin})
         else:
             ozler.append({"dil": dil_tahmin(metin), "dil_kaynagi": "tahmin", "metin": metin})
 

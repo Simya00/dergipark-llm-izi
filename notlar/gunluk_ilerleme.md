@@ -252,6 +252,21 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   değiştirmeden sayar (yanlış etiket / iki dilli / belirsiz), yıllara ve
   dergilere göre dağılım, örnekler, `dil_sorunlari.tsv`. Sonuca göre
   çıkarma/bölme kararı verilecek.
+- **Dil kontrolü sonucu (temizlik öncesi):** TR etiketli 674.199 özün
+  %3,17'si (21.345) İngilizce, %1,38'i (9.334) iki dilli; EN etiketli
+  626.547 özün %1,96'sı (12.264) Türkçe, %0,72'si (4.508) iki dilli.
+  TR→EN yanlış etiket yıllara göre sabit (2017'den beri ~1.300–1.600/yıl,
+  ~%3) → sonuçları çarpıtmaz, gürültü. İki dilli alanlar azalıyor
+  (2016: 1.017 → 2025: 58). Örneklerde ek sorunlar: PDF'ten bozuk
+  kodlamayla kopyalanmış metin ("^ŝŶĂŶ 'ƺůŚĂŶ͛ŦŶ", Türkçe sanılmıştı),
+  Almanca özetler, başta "Özet"/"Abstract" başlıkları.
+- **Temizlik (`oai_ayristir.py`):** bozuk metin atılır (harflerin >%20'si
+  alfabe dışı); cümlelerin ≥%80'i diğer dildeyse etiket düzeltilir; iki
+  dilli alan bölünür (TR cümleler TR öze, EN cümleler EN abstract'a); başka
+  dildeki metin ("diğer") ayrılır; "Özet"/"Abstract" başlığı atılır
+  ("Özetle", "Özellikle" korunur). `dil_kontrol.py` artık temizlik
+  sayılarını ve temizlik SONRASI kalan sorunları gösteriyor. Sahte testte
+  temizlik sonrası kalan sorun sıfır. → `makaleler.jsonl` yeniden üretilmeli.
 
 ### Bir sonraki adım (yarın)
 1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra

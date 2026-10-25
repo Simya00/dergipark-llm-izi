@@ -85,6 +85,13 @@ alanında İngilizce metin ya da tersi), (2) aynı alanda hem Türkçe hem
 İngilizce özet (iki dilli). Sahte testte Türkçe metindeki İngilizce
 terimler ("machine learning") yanlış alarm vermedi.
 
+`oai_ayristir.py` bu sorunları ayrıştırırken temizler (`dil_kaynagi`):
+`etiket_duzeltildi` (≥%80 diğer dil), `iki_dilli_bolundu` (TR cümleler TR
+öze, EN cümleler EN abstract'a), `bozuk_metin` (bozuk kodlama, atılır),
+`diger_dil` (Almanca vb.). İlk ölçüm (temizlik öncesi): TR etiketlilerin
+%3,2'si İngilizce, %1,4'ü iki dilli; EN etiketlilerin %2,0'ı Türkçe, %0,7'si
+iki dilli.
+
 ## Bilinen belirsizlikler
 
 - `--from/--until` kaydın **değiştirilme** tarihine göre süzer, yayın yılına
