@@ -279,6 +279,11 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 - Eşiklerin çoğunun Claude'un seçimi olduğu ve elle doğrulanmadığı yöntem
   notunda açıkça belirtildi; dil temizliği için elle kontrol planlanıyor.
 
+### Dil temizliğinin elle doğrulanması — kurulum
+- Kullanıcı onayıyla: kategori başına 50 örnek. `toplama/dil_dogrulama.py
+  ornekle` → `dil_dogrulama.tsv` (E/H sütunu), `hesapla` → doğruluk + %95
+  Wilson aralığı. "Dokunulmadı" kategorisi kaçırılan sorunlar için.
+
 ### Bir sonraki adım (yarın)
 1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra
    `rapor --dil tr` → yıllara göre birleşik kelime oranı ve yanlış bölme

@@ -28,3 +28,4 @@ analiz/liste_*.tsv
 analiz/sozluk_*.tsv.gz
 deney/*.gecici
 toplama/dil_sorunlari.tsv
+toplama/dil_dogrulama.tsv
