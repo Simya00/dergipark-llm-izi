@@ -284,6 +284,11 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   ornekle` → `dil_dogrulama.tsv` (E/H sütunu), `hesapla` → doğruluk + %95
   Wilson aralığı. "Dokunulmadı" kategorisi kaçırılan sorunlar için.
 
+- TSV dosyası uzun metinler yüzünden okunamıyordu → `dil_dogrulama.py
+  incele`: örnekleri terminalde tek tek, satırlara bölünmüş gösterir, cevabı
+  kaydeder. Ölçek kullanıcıya önerildi: E / K (kısmen) / H; hesaplama hem
+  "sadece E" hem "E+K" doğruluğunu veriyor.
+
 ### Bir sonraki adım (yarın)
 1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra
    `rapor --dil tr` → yıllara göre birleşik kelime oranı ve yanlış bölme

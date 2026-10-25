@@ -104,7 +104,9 @@ karşılaştırmayı çarpıtmaz. İki dilli alanlar zamanla azalıyor (2016: 1.
   **Doğrulama: yapılacak** — `toplama/dil_dogrulama.py`: 5 kategoriden
   (etiket düzeltildi, iki dilli bölündü, bozuk, diğer dil, dokunulmadı)
   rastgele 50'şer öz (sabit tohum 20261025, kategoriler karışık sırada)
-  kullanıcı tarafından E/H işaretlenir; kategori başına doğruluk ve %95
+  kullanıcı tarafından E (doğru) / K (kısmen: karar doğru, küçük pürüz,
+  ör. bölmede sınırdaki bir cümle yanlış tarafta) / H (yanlış) işaretlenir;
+  "sadece E" ve "E+K" doğrulukları ayrı raporlanır; kategori başına doğruluk ve %95
   Wilson güven aralığı raporlanır. "Dokunulmadı" kategorisi kodun
   kaçırdığı sorunları ölçer. (50 örnekte 48 doğru → %96, aralık %86,5–98,9.)
 

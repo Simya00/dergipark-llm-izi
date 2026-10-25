@@ -6,9 +6,11 @@ oai_ayristir.py'nin dil temizligi kararlarini (etiket duzeltme, iki dilli
 bolme, bozuk metin, diger dil) kullanicinin elle kontrol etmesi icin.
 
   ornekle: Her kategoriden rastgele --adet oz secip dil_dogrulama.tsv'ye yazar.
-           "dogru_mu" sutununu E (dogru) / H (yanlis) diye doldurun; istersen
-           "not" sutununa aciklama yazin. (LibreOffice/Excel'de acilir.)
-  hesapla: Doldurulmus dosyadan kategori basina dogruluk oranini ve %95 guven
+  incele:  Bos kalan ornekleri terminalde TEK TEK, okunakli gosterir; cevabi
+           (E / K / H, istege bagli aciklamayla) dosyaya kaydeder.
+             E = dogru, K = kismen dogru (karar dogru, kucuk purus: orn. bolmede
+             sinirdaki bir cumle yanlis tarafta), H = yanlis
+  hesapla: Kategori basina dogruluk oranini (sadece E ve E+K) ve %95 guven
            araligini (Wilson) hesaplar.
 
 Kategoriler:
@@ -28,6 +30,8 @@ import csv
 import json
 import math
 import random
+import shutil
+import textwrap
 from collections import defaultdict
 from pathlib import Path
 
@@ -83,6 +87,62 @@ def komut_ornekle(arg):
     print(f"\n{len(satirlar)} satir -> {DOSYA}\n'dogru_mu' sutununu E / H diye doldurun.")
 
 
+SORULAR = {
+    "etiket_duzeltildi": "Metin gercekten 'karar' dilinde mi? (etiket {etiket} idi, kod {karar} yapti)",
+    "iki_dilli_bolundu": "TR parca Turkce, EN parca Ingilizce mi? Bolme dogru yerden mi?",
+    "bozuk_metin": "Metin gercekten bozuk/okunamaz mi (ya da TR/EN disi bir alfabede mi)?",
+    "diger_dil": "Metin gercekten Turkce ve Ingilizce disinda bir dilde mi?",
+    "dokunulmadi": "Metin gercekten SADECE Turkce mi? (Ingilizce oz ya da iki dil varsa: H)",
+}
+
+
+def satirlari_oku():
+    with open(DOSYA, encoding="utf-8") as f:
+        return list(csv.DictReader(f, delimiter="\t"))
+
+
+def satirlari_yaz(satirlar):
+    gecici = DOSYA.with_suffix(".tsv.gecici")
+    with open(gecici, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=SUTUNLAR, delimiter="\t")
+        w.writeheader()
+        w.writerows(satirlar)
+    gecici.replace(DOSYA)  # yarim yazilmis dosya kalmasin
+
+
+def komut_incele(arg):
+    satirlar = satirlari_oku()
+    genislik = min(shutil.get_terminal_size().columns, 110) - 4
+    bekleyen = [s for s in satirlar if not s["dogru_mu"].strip()]
+    print(f"{len(bekleyen)}/{len(satirlar)} ornek bekliyor. Cevap: E / K / H (istersen bosluk + aciklama), "
+          f"'atla' ya da 'cik'.\n")
+    for s in bekleyen:
+        print("=" * (genislik + 4))
+        print(f"[{s['no']}/{len(satirlar)}]  KATEGORI: {s['kategori']}   etiket: {s['etiket']}   karar: {s['karar']}")
+        print(f"  {s['url']}")
+        print(f"  SORU: {SORULAR[s['kategori']].format(**s)}\n")
+        bolumler = ([("TR PARCA", s["tr_parca"]), ("EN PARCA", s["en_parca"])]
+                    if s["kategori"] == "iki_dilli_bolundu" else [("METIN", s["metin"])])
+        for baslik, metin in bolumler:
+            print(f"  --- {baslik} ---")
+            print(textwrap.fill(metin or "(bos)", genislik, initial_indent="  ", subsequent_indent="  "))
+            print()
+        while True:
+            cevap = input("  Cevap (E/K/H): ").strip()
+            if cevap.lower() in ("cik", "atla"):
+                break
+            harf, _, aciklama = cevap.partition(" ")
+            if harf.upper() in ("E", "K", "H"):
+                s["dogru_mu"], s["not"] = harf.upper(), aciklama.strip()
+                satirlari_yaz(satirlar)
+                break
+            print("  E, K, H, 'atla' ya da 'cik' yazin.")
+        if cevap.lower() == "cik":
+            break
+    kalan = sum(1 for s in satirlar if not s["dogru_mu"].strip())
+    print(f"\nKaydedildi. Kalan: {kalan}. Sonuc icin: python3 dil_dogrulama.py hesapla")
+
+
 def wilson(dogru, n, z=1.96):
     """Oran icin %95 guven araligi (Wilson). Kucuk orneklerde ve %100'e yakin oranlarda guvenilir."""
     if n == 0:
@@ -94,33 +154,35 @@ def wilson(dogru, n, z=1.96):
 
 
 def komut_hesapla(arg):
-    sayac = defaultdict(lambda: {"E": 0, "H": 0, "bos": 0})
-    with open(DOSYA, encoding="utf-8") as f:
-        for s in csv.DictReader(f, delimiter="\t"):
-            cevap = s["dogru_mu"].strip().upper()[:1]
-            sayac[s["kategori"]][cevap if cevap in ("E", "H") else "bos"] += 1
-    print(f"{'kategori':>18} {'E':>4} {'H':>4} {'bos':>4} {'dogruluk':>9} {'%95 aralik':>14}")
+    sayac = defaultdict(lambda: {"E": 0, "K": 0, "H": 0, "bos": 0})
+    for s in satirlari_oku():
+        cevap = s["dogru_mu"].strip().upper()[:1]
+        sayac[s["kategori"]][cevap if cevap in ("E", "K", "H") else "bos"] += 1
+    print(f"{'kategori':>18} {'E':>4} {'K':>4} {'H':>4} {'bos':>4}   {'sadece E (%95 aralik)':>24}   "
+          f"{'E+K (%95 aralik)':>22}")
     for kat in KATEGORILER:
         c = sayac[kat]
-        n = c["E"] + c["H"]
+        n = c["E"] + c["K"] + c["H"]
         if not n:
-            print(f"{kat:>18} {'-':>4} {'-':>4} {c['bos']:>4}")
+            print(f"{kat:>18} {'-':>4} {'-':>4} {'-':>4} {c['bos']:>4}")
             continue
-        alt, ust = wilson(c["E"], n)
-        print(f"{kat:>18} {c['E']:>4} {c['H']:>4} {c['bos']:>4} {100 * c['E'] / n:>8.1f}% "
-              f"{100 * alt:>6.1f}–{100 * ust:.1f}%")
+        sonuc = []
+        for dogru in (c["E"], c["E"] + c["K"]):
+            alt, ust = wilson(dogru, n)
+            sonuc.append(f"{100 * dogru / n:5.1f}% ({100 * alt:4.1f}–{100 * ust:5.1f})")
+        print(f"{kat:>18} {c['E']:>4} {c['K']:>4} {c['H']:>4} {c['bos']:>4}   {sonuc[0]:>24}   {sonuc[1]:>22}")
     print("\nNot: 'dokunulmadi' satirinda H = kodun KACIRDIGI bir sorun (yanlis etiket ya da iki dilli).")
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("komut", choices=["ornekle", "hesapla"])
+    p.add_argument("komut", choices=["ornekle", "incele", "hesapla"])
     p.add_argument("--girdi", default=str(KLASOR / "makaleler.jsonl"))
     p.add_argument("--adet", type=int, default=50, help="Kategori basina ornek sayisi")
     p.add_argument("--tohum", type=int, default=20261025)
     p.add_argument("--uzerine-yaz", action="store_true")
     arg = p.parse_args()
-    {"ornekle": komut_ornekle, "hesapla": komut_hesapla}[arg.komut](arg)
+    {"ornekle": komut_ornekle, "incele": komut_incele, "hesapla": komut_hesapla}[arg.komut](arg)
 
 
 if __name__ == "__main__":
