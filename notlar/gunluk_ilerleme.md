@@ -289,6 +289,12 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   kaydeder. Ölçek kullanıcıya önerildi: E / K (kısmen) / H; hesaplama hem
   "sadece E" hem "E+K" doğruluğunu veriyor.
 
+- Kullanıcı terminal incelemesini de anlamadı; amaç (özetin dili hakkında
+  kodun kararını doğrulamak) sade dille yeniden anlatıldı. İsteği üzerine
+  Excel: `dil_dogrulama.py excel` → `dil_dogrulama.xlsx` (sade soru,
+  tıklanabilir link, satırlara bölünmüş metin, E/K/H açılır listesi);
+  `hesapla` Excel'i doğrudan okuyor.
+
 ### Bir sonraki adım (yarın)
 1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra
    `rapor --dil tr` → yıllara göre birleşik kelime oranı ve yanlış bölme

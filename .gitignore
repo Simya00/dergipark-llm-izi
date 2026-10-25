@@ -30,3 +30,4 @@ deney/*.gecici
 toplama/dil_sorunlari.tsv
 toplama/dil_dogrulama.tsv
 toplama/*.tsv.gecici
+toplama/dil_dogrulama.xlsx
