@@ -27,3 +27,4 @@ analiz/zemberek_env
 analiz/liste_*.tsv
 analiz/sozluk_*.tsv.gz
 deney/*.gecici
+toplama/dil_sorunlari.tsv

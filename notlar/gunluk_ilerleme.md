@@ -246,6 +246,12 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   - `deney/deney_hazirla.py`: Türkçe olmayan özetler seçilmiyor;
     `--degistir` var olan dosyadaki uygun olmayan örnekleri yenileriyle
     değiştiriyor (diğer cevaplar korunuyor).
+- Kullanıcı: önce kaç özetin yanlış etiketli olduğunu ölçmek, ayrıca aynı
+  alanda iki özet (TR + EN) olan kayıtları tespit etmek gerekiyor; adım
+  adım. → `toplama/dil_kontrol.py`: cümle düzeyinde dil tespiti, hiçbir şeyi
+  değiştirmeden sayar (yanlış etiket / iki dilli / belirsiz), yıllara ve
+  dergilere göre dağılım, örnekler, `dil_sorunlari.tsv`. Sonuca göre
+  çıkarma/bölme kararı verilecek.
 
 ### Bir sonraki adım (yarın)
 1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra

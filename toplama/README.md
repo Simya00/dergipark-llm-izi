@@ -74,6 +74,17 @@ python3 oai_topla.py topla
 - 1902, 2068 gibi veri giriş hataları: 1990–2027 dışı yıllar `null`.
 - `yil_kaynagi`: `tarih` / `cilt_yil` / `arsiv` / `aralik_disi`.
 
+## Dil kontrolü
+
+```bash
+python3 dil_kontrol.py      # hiçbir şeyi değiştirmez; sayar, örnek gösterir -> dil_sorunlari.tsv
+```
+
+İki sorunu cümle düzeyinde dil tespitiyle yakalar: (1) yanlış etiket ("tr"
+alanında İngilizce metin ya da tersi), (2) aynı alanda hem Türkçe hem
+İngilizce özet (iki dilli). Sahte testte Türkçe metindeki İngilizce
+terimler ("machine learning") yanlış alarm vermedi.
+
 ## Bilinen belirsizlikler
 
 - `--from/--until` kaydın **değiştirilme** tarihine göre süzer, yayın yılına
