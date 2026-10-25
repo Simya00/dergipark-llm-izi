@@ -27,6 +27,10 @@ python3 deney_yapistir.py gemini --paket 10
 
 # Ne kadar doldu?
 python3 deney_yapistir.py --durum
+
+# Uygun olmayan örnekleri (ör. Türkçe etiketli İngilizce özet) yenileriyle
+# değiştir; diğer cevaplar korunur:
+python3 deney_hazirla.py --degistir
 ```
 
 `deney_yapistir.py --paket 10` her seferinde 10 özeti talimatla birlikte JSON

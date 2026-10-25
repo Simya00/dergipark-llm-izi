@@ -30,7 +30,10 @@ YIL_ALT..YIL_UST disindaki yillar (orn. 1902, 2068: veri giris hatasi) None olur
 
 Oz dili: once xml:lang etiketine bakilir; yoksa basit bir sezgisel dil
 tespiti yapilir (Turkceye ozgu harfler + sik gecen ilgec/baglaclar).
-dil_kaynagi alani hangisinin kullanildigini soyler ("etiket" / "tahmin").
+dil_kaynagi alani hangisinin kullanildigini soyler ("etiket" / "tahmin" /
+"etiket_duzeltildi"). Bazi dergiler Ingilizce abstract'i Turkce alanina (veya
+tersini) girmis; etiket ile metnin dili ACIKCA celisiyorsa (dil_kesin) metnin
+diline gore duzeltilir.
 
 Kullanim:
   python3 oai_ayristir.py                  # ham/ altindaki her seyi ayristir
@@ -97,6 +100,20 @@ def dil_tahmin(metin: str) -> str:
     return "bilinmiyor"
 
 
+def dil_kesin(metin: str):
+    """Yalnizca acik durumlarda "tr"/"en", yoksa None (etiket duzeltmek icin;
+    karisik ya da kisa metinlerde etikete dokunulmaz)."""
+    kelimeler = KELIME.findall(turkce_kucult(metin))
+    tr = sum(k in TR_KELIMELER for k in kelimeler)
+    en = sum(k in EN_KELIMELER for k in kelimeler)
+    tr_harf = sum(ch in TR_HARFLER for ch in metin)
+    if en >= 5 and en > 3 * tr and tr_harf < 3:
+        return "en"
+    if tr >= 5 and tr > 3 * en and tr_harf >= 3:
+        return "tr"
+    return None
+
+
 def dil_normalle(etiket):
     if not etiket:
         return None
@@ -137,7 +154,11 @@ def kayit_ayristir(kayit: ET.Element):
     ozler = []
     for metin, etiket in alanlar.get("description", []):
         if etiket:
-            ozler.append({"dil": etiket, "dil_kaynagi": "etiket", "metin": metin})
+            kesin = dil_kesin(metin) if etiket in ("tr", "en") else None
+            if kesin and kesin != etiket:
+                ozler.append({"dil": kesin, "dil_kaynagi": "etiket_duzeltildi", "metin": metin})
+            else:
+                ozler.append({"dil": etiket, "dil_kaynagi": "etiket", "metin": metin})
         else:
             ozler.append({"dil": dil_tahmin(metin), "dil_kaynagi": "tahmin", "metin": metin})
 

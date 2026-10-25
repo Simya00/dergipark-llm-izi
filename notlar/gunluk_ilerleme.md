@@ -227,6 +227,26 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 ### Durum (2026-10-24 sonu)
 - Toplama ve ayrıştırma bitti; analiz çalıştırılmaya hazır (önce sözlük).
 
+## 2026-10-25 — Deney başladı; yanlış dil etiketleri
+
+- Kullanıcı ChatGPT ile ilk paketi denedi. Sorunlar ve düzeltmeler:
+  - ChatGPT cevabı ekrandan seçilip kopyalanınca köşeli parantezler `\[ \]`
+    geliyor; `###` metnin sonunda aynı satırda kalabiliyor → yapıştırma
+    yardımcısı ikisini de kabul ediyor.
+  - **9. örnek İngilizceydi** ama DergiPark'ta Türkçe öz olarak etiketliydi
+    (Irak telekomünikasyon makalesi); ChatGPT akademikleştirmek yerine
+    çevirdi. → Bazı dergiler İngilizce abstract'ı Türkçe alanına (ya da
+    tersini) girmiş.
+- Düzeltmeler:
+  - `toplama/oai_ayristir.py`: etiket ile metnin dili açıkça çelişiyorsa
+    (`dil_kesin`: ≥5 işlev kelimesi, 3 kat baskın, Türkçe harf kontrolü)
+    metnin diline göre düzeltiliyor (`dil_kaynagi: etiket_duzeltildi`).
+    Karışık/kısa metinlerde etikete dokunulmuyor. → `makaleler.jsonl`
+    yeniden üretilmeli.
+  - `deney/deney_hazirla.py`: Türkçe olmayan özetler seçilmiyor;
+    `--degistir` var olan dosyadaki uygun olmayan örnekleri yenileriyle
+    değiştiriyor (diğer cevaplar korunuyor).
+
 ### Bir sonraki adım (yarın)
 1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra
    `rapor --dil tr` → yıllara göre birleşik kelime oranı ve yanlış bölme
