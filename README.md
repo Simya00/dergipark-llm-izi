@@ -25,7 +25,7 @@ Bu çalışmanın katkıları:
 | `toplama/` | DergiPark OAI-PMH toplayıcı ve ayrıştırıcı ([talimatlar](toplama/README.md)) |
 | `deney/` | LLM yeniden yazım deneyi: 200 özet × ChatGPT/Claude/Gemini ([talimatlar](deney/README.md)) |
 | `analiz/` | Kelime sıklıkları, aşırı kullanım, alt sınır ([talimatlar](analiz/README.md)) |
-| `notlar/` | [Günlük ilerleme](notlar/gunluk_ilerleme.md), [literatür](notlar/literatur.md), veri planı, ESOGÜ dergi listesi, e-posta taslakları |
+| `notlar/` | [Günlük ilerleme](notlar/gunluk_ilerleme.md), [yöntem notu](notlar/yontem.md), [literatür](notlar/literatur.md), veri planı, ESOGÜ dergi listesi, e-posta taslakları |
 
 ## Durum
 

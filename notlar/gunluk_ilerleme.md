@@ -268,6 +268,17 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   sayılarını ve temizlik SONRASI kalan sorunları gösteriyor. Sahte testte
   temizlik sonrası kalan sorun sıfır. → `makaleler.jsonl` yeniden üretilmeli.
 
+### Çalışma şekli değişti
+- Kullanıcı: "Kodun doğru olduğunu nasıl bileceğim? Anlatmam lazım, yoksa
+  bu benim değil senin çalışman olur." → Üç karar:
+  1. Kod birlikte okunacak; her seferinde kod sohbette gösterilip satır
+     satır açıklanacak (ilk olarak dil temizliği kodu okundu).
+  2. Yeni kural/eşik eklemeden önce anlatılacak, kararı kullanıcı verecek.
+  3. Her adım `notlar/yontem.md`'ye (eşik + gerekçe + doğrulama durumu).
+- Kurallar repo köküne `CLAUDE.md` olarak yazıldı (sonraki oturumlar da uysun).
+- Eşiklerin çoğunun Claude'un seçimi olduğu ve elle doğrulanmadığı yöntem
+  notunda açıkça belirtildi; dil temizliği için elle kontrol planlanıyor.
+
 ### Bir sonraki adım (yarın)
 1. `analiz/`: `birlesik_kelime.py sozluk --dil tr` (+ `en`), sonra
    `rapor --dil tr` → yıllara göre birleşik kelime oranı ve yanlış bölme
