@@ -31,6 +31,7 @@ Kullanim:
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -54,7 +55,8 @@ def cevap_oku():
     satirlar = []
     for satir in sys.stdin:
         s = satir.rstrip("\n")
-        if s.strip() == "###":
+        if s.rstrip().endswith("###"):  # ### ayri satirda ya da metnin sonunda
+            satirlar.append(s.rstrip()[:-3])
             return "\n".join(satirlar).strip()
         if not satirlar and s.strip().lower() in ("atla", "cik"):
             return s.strip().lower()
@@ -71,7 +73,9 @@ PAKET_TALIMATI = (
 
 
 def json_listesi_ayikla(metin):
-    """Model cevabindaki JSON listesini bulur (```json ... ``` ve oncesi/sonrasi yazilar olabilir)."""
+    """Model cevabindaki JSON listesini bulur (```json ... ``` ve oncesi/sonrasi yazilar olabilir).
+    ChatGPT ekrandan secilerek kopyalaninca koseli parantezler \\[ \\] olarak gelebiliyor."""
+    metin = re.sub(r"\\([\[\]])", r"\1", metin)
     bas, son = metin.find("["), metin.rfind("]")
     if bas < 0 or son <= bas:
         raise ValueError("Cevapta JSON listesi ([ ... ]) bulunamadi")
