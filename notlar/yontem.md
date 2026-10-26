@@ -24,7 +24,13 @@ Son güncelleme: 2026-10-25
 
 ## 2. Ayrıştırma ve metin temizliği (`toplama/oai_ayristir.py`)
 
-- HTML kaçışları çözülür (`&#039;` → `'`), HTML etiketleri atılır.
+- HTML kaçışları çözülür (`&#039;` → `'`), HTML etiketleri atılır. **Yalnızca
+  gerçek etiketler** (`<p>`, `<br>`, `<span …>` gibi; `<`'den hemen sonra
+  bilinen etiket adı) silinir. **Hata düzeltmesi (2026-10-27):** ilk kural
+  `<` ile `>` arasındaki her şeyi siliyordu; istatistik yazan özetlerde
+  "p<0,05 … p>0,05" arasındaki metin kayboluyordu (doğrulamada kullanıcı
+  #30'da fark etti, makale sayfasıyla karşılaştırarak doğruladı). Etkilenen
+  öz sayısı ayrıştırma raporunda ("Eski HTML kuraliyla metin kaybi…").
 - Dergi, makale URL'sindeki kısa addan belirlenir (`dergi_kodu`).
 - Cilt/sayı `dc:source` alanından ("Vol. X No. Y") okunur.
 

@@ -203,7 +203,15 @@ def dil_normalle(etiket):
 # ------------------------------------------------------------------
 # Kayit ayristirma
 # ------------------------------------------------------------------
-HTML_ETIKET = re.compile(r"<[^>]+>")
+# Yalnizca GERCEK HTML etiketleri silinir: "<" isaretinden hemen sonra bilinen
+# bir etiket adi gelmeli. Eski kural (r"<[^>]+>") "<" ile ">" arasindaki her seyi
+# siliyordu; istatistik yazan ozetlerde "p<0,05 ... p>0,05" arasindaki metin
+# kayboluyordu (dogrulamada kullanici fark etti, 2026-10-27).
+HTML_ETIKET = re.compile(
+    r"</?(?:p|br|i|b|u|em|strong|sup|sub|span|div|a|font|ul|ol|li|h[1-6]|table|tbody|thead|"
+    r"tr|td|th|small|big|center|blockquote|img|hr)\b[^<>]*>", re.IGNORECASE)
+ESKI_HTML_ETIKET = re.compile(r"<[^>]+>")  # sadece kac ozetin etkilendigini olcmek icin
+html_kayip_sayaci = Counter()
 
 
 def temiz(metin):
@@ -212,6 +220,12 @@ def temiz(metin):
     metin = html.unescape(html.unescape(metin or ""))
     metin = HTML_ETIKET.sub(" ", metin)
     return " ".join(metin.split())
+
+
+def eski_kural_kaybi(metin):
+    """Eski HTML kurali bu metinden kac karakter fazladan silerdi (olcum icin)."""
+    metin = html.unescape(html.unescape(metin or ""))
+    return len(HTML_ETIKET.sub(" ", metin)) - len(ESKI_HTML_ETIKET.sub(" ", metin))
 
 
 def kayit_ayristir(kayit: ET.Element):
@@ -224,6 +238,8 @@ def kayit_ayristir(kayit: ET.Element):
 
     alanlar = {}
     for e in md.iter():
+        if e.tag == DC + "description" and eski_kural_kaybi(e.text) > 20:
+            html_kayip_sayaci["eski kuralla metin kaybi olan oz"] += 1
         if e.tag.startswith(DC) and temiz(e.text):
             alanlar.setdefault(e.tag[len(DC):], []).append((temiz(e.text), dil_normalle(e.get(XML_LANG))))
 
@@ -416,6 +432,8 @@ def main():
     print(f"Oz dilleri: {dict(oz_dil)}")
     print(f"Ozu hic olmayan makale: {ozsuz}")
     print(f"Dergi kodu bulunamayan: {kodsuz}")
+    print(f"Eski HTML kuraliyla metin kaybi olacak oz (simdi duzeltildi): "
+          f"{html_kayip_sayaci['eski kuralla metin kaybi olan oz']}")
 
 
 if __name__ == "__main__":

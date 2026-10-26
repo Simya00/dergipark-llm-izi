@@ -358,6 +358,18 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   #39 Fransızca metin "diğer dil" kategorisinde H işaretlenmiş (E olmalı
   mı, kullanıcıya soruldu).
 
+### HTML etiket hatası (kullanıcının doğrulamasından)
+- "Özet yarım kalmış" notları: #30 metni "(sırasıyla p" diye kesik; makale
+  sayfasında "(p <0.001, …)" devam ediyor. Sebep: HTML temizliği
+  `r"<[^>]+>"` istatistikteki "<" ile ">" arasını siliyordu. → Yalnızca
+  bilinen HTML etiketleri silinecek şekilde düzeltildi; eski kuralın kaç
+  özette kayba yol açtığı ayrıştırma raporunda sayılıyor. Kullanıcı
+  `oai_ayristir.py`'yi yeniden çalıştırmalı.
+- Kullanıcı kontrolleri: #39 → E (Fransızca, "diğer dil" doğru; Excel'de
+  düzeltildi), #40/#41/#94 sorun yok (#41'deki bozuk semboller makalenin
+  matematik ifadeleri, sitede de öyle). Linkler LibreOffice'te açılmadı
+  (Ctrl+tık gerekiyor); sonraki Excel'de adres metin olarak da yazılacak.
+
 ### Bir sonraki adım (yarın)
 1. Kullanıcıyla netleştir: anahtar kelime silme tüm özetlerden mi; tek
    geçiş noktası yöntemi de eklensin mi; Excel doğrulaması düzeltmelerden
