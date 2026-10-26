@@ -370,18 +370,27 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   matematik ifadeleri, sitede de öyle). Linkler LibreOffice'te açılmadı
   (Ctrl+tık gerekiyor); sonraki Excel'de adres metin olarak da yazılacak.
 
+### Durum özeti (kullanıcıyla)
+- Dil temizliğinde tek ciddi sorun: iki dilli alanların **bölünmesi** (%32
+  doğru). **Tespit** iyi (yanlış bölünenlerin hemen hepsi gerçekten iki
+  dilli). "Bende Türkçe, sitede İngilizce" farkı linkteki `/en/` yüzünden
+  (veri hatası değil). İki dilli alanlar TR özlerin ~%1,4'ü ve azalıyor.
+- Karar yolu: önce bölme düzeltmeleri → aynı 50 örnekte yeniden ölçüm;
+  doğruluk ~%85–90'ı geçmezse iki dilli alanlar analizden çıkarılır. Her
+  durumda "iki dilliler hariç" sağlamlık analizi yapılacak.
+
 ### Bir sonraki adım (yarın)
-1. Kullanıcıyla netleştir: anahtar kelime silme tüm özetlerden mi; tek
-   geçiş noktası yöntemi de eklensin mi; Excel doğrulaması düzeltmelerden
-   önce mi sonra mı (Claude önerisi: önce mevcut hali ölç, sonra düzelt ve
-   aynı örneklerde tekrar ölç).
-2. Kodla (önce anlat, sonra kodu sohbette göster): TR/EN kelime sözlüğüne
-   dayalı büyük harf bölme, kısaltma sözlüğü, noktadan sonra boşluk,
-   anahtar kelime bölümünü silme, (onaylanırsa) tek geçiş noktası.
-   Sözlükler kullanıcının bilgisayarında: `analiz/birlesik_kelime.py sozluk
-   --dil tr` ve `--dil en`.
-3. Excel doğrulaması: `toplama/dil_dogrulama.py excel` → doldur → `hesapla`.
-4. Deney: ChatGPT/Claude/Gemini cevapları (`deney_hazirla.py --degistir`
-   önce).
+1. Kullanıcı: `git pull` + `toplama/oai_ayristir.py` (HTML düzeltmesiyle);
+   raporun sonundaki "Eski HTML kuraliyla metin kaybi" sayısı yöntem notuna.
+2. Bölme düzeltmeleri (önce anlat, sonra kodu sohbette göster): başlık
+   kelimelerinde bölme ("Abstract", "Keywords", "Özet", "Anahtar
+   Kelimeler"), anahtar kelimeler dil kararında görmezden gelinsin, tek
+   geçiş noktası, kısaltma sözlüğü, sözlüğe dayalı büyük harf bölmesi,
+   noktadan sonra boşluk. Sözlükler: `analiz/birlesik_kelime.py sozluk
+   --dil tr` ve `--dil en` (kullanıcının bilgisayarında).
+3. Aynı 50 iki dilli örnekte yeniden doğrulama (yeni Excel: Türkçe metne
+   `/tr/` linki, adres ayrıca düz metin); kelime ayırma doğrulaması için
+   ayrı sayfa.
+4. Sonra: deney (ChatGPT/Claude/Gemini), ilk liste kontrolleri, dergi paneli.
 5. Bekleyenler: geleneksel kalıplar kontrol listesi, Lee (2026) PDF'i,
    ESOGÜ e-postası.
