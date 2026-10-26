@@ -110,6 +110,24 @@ karşılaştırmayı çarpıtmaz. İki dilli alanlar zamanla azalıyor (2016: 1.
   Wilson güven aralığı raporlanır. "Dokunulmadı" kategorisi kodun
   kaçırdığı sorunları ölçer. (50 örnekte 48 doğru → %96, aralık %86,5–98,9.)
 
+  **1. doğrulama sonucu (düzeltmelerden ÖNCE; kullanıcı, 2026-10-27;
+  250 örnek, `toplama/dil_dogrulama.xlsx`):**
+  | Kategori | Doğru | Oran | %95 aralık |
+  |---|---|---|---|
+  | Etiket düzeltildi | 45/50 | %90 | %78,6–95,7 |
+  | İki dilli bölündü | 16/50 | **%32** | %20,8–45,8 |
+  | Bozuk / okunamaz | 50/50 | %100 | %92,9–100 |
+  | Diğer dil | 49/50 | %98 | %89,5–99,6 |
+  | Dokunulmadı | 50/50 | %100 | %92,9–100 |
+  - İki dilli bölmedeki hataların neredeyse tamamı sınırda (TR ve EN öz
+    arasındaki geçiş yanlış yerde; "Abstract"/"Keywords" yanlış tarafta).
+    → Düzeltmeler (başlık kelimeleri, tek geçiş noktası, kısaltmalar,
+    büyük harf bölmesi) bu kategori için gerekli.
+  - "Bozuk" kategorisindekilerin çoğu aslında bozuk değil, Arapça/Yunanca/
+    Kiril alfabesinde metin; analiz dışı kalmaları doğru, kategori adı
+    "Türkçe/İngilizce dışı alfabe veya bozuk" olarak düzeltilmeli.
+  - "Dokunulmadı"da hiç kaçırılmış dil sorunu bulunmadı.
+
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 
 - **Sorun:** PDF'ten kopyalamada satır sonu boşlukları kaybolmuş

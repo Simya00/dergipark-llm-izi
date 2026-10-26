@@ -348,6 +348,16 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   elle girilen araştırma verisi (`dil_dogrulama.xlsx`,
   `deney/deney_ornekleri.json`) bilerek repoda tutulacak.
 
+### Dil temizliği 1. doğrulama sonucu (kullanıcı işaretledi)
+- Etiket düzeltme %90 (45/50), iki dilli bölme **%32** (16/50), bozuk
+  %100, diğer dil %98, dokunulmadı %100. Ayrıntı: `notlar/yontem.md` §4.3.
+- İki dilli bölme hataları sınırda → planlanan düzeltmeler doğrulandı.
+- Kullanıcı notları: bozuk sayılanların çoğu Arapça/Yunanca; bazı özetler
+  "Amaç: … Yöntem: …" biçiminde (yapılandırılmış özet, özetin kendisi);
+  birkaçında "özet eksik/yarım gibi" notu → link üzerinden kontrol edilecek;
+  #39 Fransızca metin "diğer dil" kategorisinde H işaretlenmiş (E olmalı
+  mı, kullanıcıya soruldu).
+
 ### Bir sonraki adım (yarın)
 1. Kullanıcıyla netleştir: anahtar kelime silme tüm özetlerden mi; tek
    geçiş noktası yöntemi de eklensin mi; Excel doğrulaması düzeltmelerden
