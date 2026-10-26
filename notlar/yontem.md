@@ -29,8 +29,9 @@ Son güncelleme: 2026-10-25
   bilinen etiket adı) silinir. **Hata düzeltmesi (2026-10-27):** ilk kural
   `<` ile `>` arasındaki her şeyi siliyordu; istatistik yazan özetlerde
   "p<0,05 … p>0,05" arasındaki metin kayboluyordu (doğrulamada kullanıcı
-  #30'da fark etti, makale sayfasıyla karşılaştırarak doğruladı). Etkilenen
-  öz sayısı ayrıştırma raporunda ("Eski HTML kuraliyla metin kaybi…").
+  #30'da fark etti, makale sayfasıyla karşılaştırarak doğruladı).
+  **Etkilenen öz: 7.376** (eski kural ≥20 karakter fazladan silerdi);
+  düzeltildi.
 - Dergi, makale URL'sindeki kısa addan belirlenir (`dergi_kodu`).
 - Cilt/sayı `dc:source` alanından ("Vol. X No. Y") okunur.
 
@@ -62,6 +63,12 @@ Son güncelleme: 2026-10-25
 2023: 58.416, 2024: 60.547, 2025: 65.057, 2026 (kısmi): 22.149.
 
 ## 4. Öz dili temizliği
+
+**Temizlik sonrası tam veri (2026-10-27, `oai_ayristir.py` raporu):**
+öz başına `dil_kaynagi`: etiket 1.243.627; etiket düzeltildi 32.264; iki
+dilli bölündü 27.502 parça (~13.750 alan); bozuk/Latin dışı 7.870; diğer
+dil 3.230. Öz dilleri: Türkçe 667.475, İngilizce 635.918. Özü olmayan makale
+46.540 (toplam 844.745).
 
 ### 4.1 Ölçüm (temizlik öncesi, `toplama/dil_kontrol.py`)
 | | Sayı | Oran |

@@ -379,6 +379,11 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   doğruluk ~%85–90'ı geçmezse iki dilli alanlar analizden çıkarılır. Her
   durumda "iki dilliler hariç" sağlamlık analizi yapılacak.
 
+### HTML düzeltmesiyle yeniden ayrıştırma (kullanıcı çalıştırdı)
+- Eski HTML kuralıyla metin kaybı olan öz: **7.376** (düzeltildi).
+- Temizlik: etiket düzeltildi 32.264, iki dilli bölündü 27.502 parça,
+  bozuk 7.870, diğer dil 3.230. Türkçe öz 667.475, İngilizce 635.918.
+
 ### Bir sonraki adım (yarın)
 1. Kullanıcı: `git pull` + `toplama/oai_ayristir.py` (HTML düzeltmesiyle);
    raporun sonundaki "Eski HTML kuraliyla metin kaybi" sayısı yöntem notuna.
