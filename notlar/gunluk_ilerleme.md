@@ -340,6 +340,14 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   bölmesi için ayrı Excel sayfası (orijinal / bölünmüş / özetten kesit /
   link, E-K-H).
 
+### Git: yanlışlıkla eklenen dosyalar (2026-10-27)
+- Kullanıcının yerel commit'ine deneme/sonuç dosyaları girmişti (küçük;
+  GitHub'a gitmedi). İşaretlenmiş `dil_dogrulama.xlsx` ise `.gitignore`
+  yüzünden girmemişti. → Commit `git reset --mixed HEAD~1` ile geri alındı;
+  `.gitignore` düzeltildi: deneme ve `sonuc_*.txt` çıktıları dışarıda,
+  elle girilen araştırma verisi (`dil_dogrulama.xlsx`,
+  `deney/deney_ornekleri.json`) bilerek repoda tutulacak.
+
 ### Bir sonraki adım (yarın)
 1. Kullanıcıyla netleştir: anahtar kelime silme tüm özetlerden mi; tek
    geçiş noktası yöntemi de eklensin mi; Excel doğrulaması düzeltmelerden
