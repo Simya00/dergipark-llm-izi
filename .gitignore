@@ -30,4 +30,11 @@ deney/*.gecici
 toplama/dil_sorunlari.tsv
 toplama/dil_dogrulama.tsv
 toplama/*.tsv.gecici
-toplama/dil_dogrulama.xlsx
+
+# Deneme ve sonuc ciktilari (yeniden uretilebilir; repoya girmesin)
+toplama/deneme*.jsonl
+toplama/setler.tsv
+sonuc_*.txt
+**/sonuc_*.txt
+# NOT: toplama/dil_dogrulama.xlsx ve deney/deney_ornekleri.json elle
+# girilmis arastirma verisidir; BILEREK repoda tutulur.
