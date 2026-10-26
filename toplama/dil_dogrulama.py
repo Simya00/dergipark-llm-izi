@@ -170,7 +170,17 @@ EXCEL_SUTUNLAR = [("no", 6), ("kategori", 22), ("soru", 40), ("link", 18), ("met
                   ("EN parça", 60), ("cevap (E/K/H)", 10), ("açıklama", 30)]
 
 
+def openpyxl_gerekli():
+    try:
+        import openpyxl  # noqa: F401
+    except ImportError:
+        raise SystemExit("Excel dosyasi icin 'openpyxl' kutuphanesi gerekli. Kurmak icin:\n"
+                         "  sudo dnf install python3-openpyxl      (Fedora)\n"
+                         "  ya da: pip install --user openpyxl")
+
+
 def komut_excel(arg):
+    openpyxl_gerekli()
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Font, PatternFill
     from openpyxl.worksheet.datavalidation import DataValidation
@@ -210,6 +220,7 @@ def komut_excel(arg):
 
 def excel_oku():
     """dil_dogrulama.xlsx'teki cevaplari TSV satirlariyla eslestirip dondurur (no -> (cevap, aciklama))."""
+    openpyxl_gerekli()
     from openpyxl import load_workbook
     ws = load_workbook(EXCEL).active
     basliklar = [c.value for c in ws[1]]
