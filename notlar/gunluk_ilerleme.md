@@ -325,6 +325,21 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 - Eşikler (5 / 3, 20 kelime) Claude'un önerisi; kullanıcı yaklaşımı onayladı,
   eşiklere yarın son kez bakılacak.
 
+### Kullanıcının kararları (aynı gün, sonradan)
+- **Anahtar kelime bölümü SİLİNMEYECEK**; yalnızca dil tespitinde
+  görmezden gelinecek (dil kararını etkilemesin). Bölmede başlığına göre
+  ilgili tarafa gidecek ("Anahtar Kelimeler" → TR, "Keywords" → EN).
+  (Claude'un yorumu; kullanıcı teyidi bekleniyor.)
+- **Tek geçiş noktası:** kullanıcı ne olduğunu sordu, sade anlatıldı
+  (bütün olası kesim noktalarını deneyip "solu bir dil, sağı diğer dil"e en
+  iyi uyanı seçmek; başlık kelimeleri öncelikli kesim noktası). Ekleme
+  kararı kullanıcıda.
+- **Excel doğrulaması iki kez:** düzeltmelerden ÖNCE ve SONRA, aynı
+  örneklerde.
+- **Kelime ayırma da doğrulanacak:** birleşik kelime onarımı ve büyük harf
+  bölmesi için ayrı Excel sayfası (orijinal / bölünmüş / özetten kesit /
+  link, E-K-H).
+
 ### Bir sonraki adım (yarın)
 1. Kullanıcıyla netleştir: anahtar kelime silme tüm özetlerden mi; tek
    geçiş noktası yöntemi de eklensin mi; Excel doğrulaması düzeltmelerden
