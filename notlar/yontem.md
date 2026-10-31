@@ -171,8 +171,27 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
     "Başlık:" satırı silme, 2 bozuk karakter temizliği) iki kural eklendi:
     hiçbir şeyi düzeltme; özet gibi görünmeyen kısımlar (başlık vb.) dahil
     hiçbir şeyi silme, kendi dilinin tarafına koy.
+  - v2 sonucu (ayar, gemma4): 46/52 harf kontrolünden geçti; kalan redlerin
+    ikisi kopyalama hatası ("saptanan"→"saptananan"), ikisi bozuk karakter
+    (`\'`, `¬`), ikisi silme.
+  - v3: model metni KOPYALAMAZ; yalnızca ikinci özün ilk 8 kelimesini
+    (8: Claude'un seçimi) ve ilk özün dilini yazar. Kod bu kelimeleri
+    orijinalde (boşluklar yok sayılarak) arar; tam olarak bir kez bulunursa
+    orijinal o noktadan kesilir. Bulunamazsa ya da birden fazla yerde
+    bulunursa reddedilir (teknik red; doğruluk kararı yine kullanıcıda).
+    Bilinen sınır: tek kesim noktası, TR–EN–TR gibi metinleri bölemez.
 - **Bilinen sınır:** Harf kontrolü modelin metni değiştirdiğini yakalar ama
   sınırın doğru yerde olduğunu garanti etmez; bunu yalnızca elle kontrol ölçer.
+
+### 4.5 Bozuk karakterler (ölçüm aşaması, `toplama/karakter_kontrol.py`)
+- LLM bölme denemesinde görüldü: `Üniversitesi\'nde` (kaçış hatası),
+  `bu¬lunmaktadır` (PDF tirelemesi). Kelime sıklığını da bozar.
+- Düzeltme modele değil kurala bırakıldı (tekrarlanabilir, sayılabilir,
+  tüm özetlere uygulanabilir). Kural yazılmadan önce ölçüm: tür başına
+  sayım + 10 rastgele örnek (tohum 20261031) Excel'de kullanıcı tarafından
+  D/Y işaretlenir. `¬` yalnızca iki harf arasındaysa (arada boşluk olabilir)
+  tireleme sayılır; diğer `¬` (mantıkta "değil") ve diğer `\` kullanımlarına
+  dokunulmaz, yalnızca sayılır.
 
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 

@@ -456,3 +456,17 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   kodda ve dosyalarda korunuyor.
 - Önerilen ama bu denemeye girmeyen: `oai_ayristir.py`'de `\'` ve `¬`
   temizliği (kelime sıklığını da etkiliyor) — karar bekliyor.
+
+### v2 sonucu ve sonraki yol (kullanıcı onayı: "senin dediğin gibi")
+- gemma4 v2: 46/52 kabul (v1: 43). Düzelenler #11, #17, #19, #52; kalanlar
+  #5, #26 (silme), #28, #42 (bozuk karakter), #29 ve yeni #23 (kopyalama
+  hatası).
+- Kullanıcı ücretsiz API'yi (daha güçlü model) sordu. Claude'un önerisi
+  kabul edildi: önce yerel Gemma ile v3 (yalnızca sınırı sordurmak), sonra
+  D/Y işaretleme; Gemma yetersizse ayar setinde Groq/Gemini karşılaştırması
+  (ücretsiz sınırlar pilot için yeterli; tüm veri için haftalar sürer,
+  tekrarlanabilirlik zayıf).
+- Bozuk karakterler: modele değil kurala bırakıldı. Önce
+  `karakter_kontrol.py` ile sayım + örnek (metne dokunmaz); kullanıcı
+  "hepsini nasıl kontrol edeceğim" diye sordu → hepsi değil, tür başına 10
+  rastgele örnek.

@@ -75,11 +75,41 @@ KOMUT_V2 = KOMUT.replace(
    an abstract (article titles, "Başlık:" lines, headings). Put each
    such part with its language.
 """)
-KOMUTLAR = {"v1": KOMUT, "v2": KOMUT_V2}  # eski surumler silinmez (tekrarlanabilirlik)
+
+# v3 (2026-10-31): v2'de kalan redlerin cogu kopyalama hatasi ("saptanan" -> "saptananan").
+# Model artik metni kopyalamiyor; yalnizca IKINCI dilin basladigi ilk kelimeleri yaziyor,
+# kesmeyi kod yapiyor (bkz. sinirdan_kes).
+KOMUT_V3 = """You are given one field from an academic journal record. It contains a
+Turkish abstract and an English abstract written one after the other
+(either one may come first).
+
+Find the point where the first abstract ends and the second abstract
+begins.
+
+Rules:
+1. "ikinci_baslangic": copy the FIRST 8 WORDS of the second abstract
+   EXACTLY as they appear in the text: same spelling, capitalization and
+   punctuation, even if they contain typos or words glued together.
+   If the second abstract starts with a heading such as "Abstract",
+   "ABSTRACT:", "Özet" or "Öz", the heading is part of the second abstract.
+2. Article titles and keywords sections belong to the abstract in the
+   same language ("Anahtar Kelimeler" with Turkish, "Keywords" with English).
+3. "ilk_dil": the language of the FIRST abstract, "tr" or "en".
+
+Return only JSON:
+{"ikinci_baslangic": "<first 8 words of the second abstract>", "ilk_dil": "tr"}
+
+Text:
+"""
+KOMUTLAR = {"v1": KOMUT, "v2": KOMUT_V2, "v3": KOMUT_V3}  # eski surumler silinmez (tekrarlanabilirlik)
 
 SEMA = {"type": "object",
         "properties": {"tr": {"type": "string"}, "en": {"type": "string"}},
         "required": ["tr", "en"]}
+SEMA_V3 = {"type": "object",
+           "properties": {"ikinci_baslangic": {"type": "string"}, "ilk_dil": {"enum": ["tr", "en"]}},
+           "required": ["ikinci_baslangic", "ilk_dil"]}
+SEMALAR = {"v1": SEMA, "v2": SEMA, "v3": SEMA_V3}
 
 
 # ---------------------------------------------------------------- ornekleme
@@ -142,7 +172,7 @@ def komut_ornekle(arg):
 
 # ---------------------------------------------------------------- model + kontrol
 def ollama_sor(model, metin, surum):
-    istek = {"model": model, "prompt": KOMUTLAR[surum] + metin, "stream": False, "format": SEMA,
+    istek = {"model": model, "prompt": KOMUTLAR[surum] + metin, "stream": False, "format": SEMALAR[surum],
              "options": {"temperature": SICAKLIK, "seed": TOHUM, "num_ctx": NUM_CTX}}
     req = urllib.request.Request(OLLAMA, data=json.dumps(istek).encode(),
                                  headers={"Content-Type": "application/json"})
@@ -188,6 +218,28 @@ def kontrol(orijinal, cevap):
     return "kabul", tr, en
 
 
+def sinirdan_kes(orijinal, cevap):
+    """v3: (durum, tr, en). Modelin yazdigi baslangic kelimeleri orijinalde (bosluklar yok
+    sayilarak) aranir; TAM OLARAK BIR KEZ bulunursa orijinal o noktadan kesilir.
+    durum: kabul | reddedildi_bulunamadi | reddedildi_birden_fazla | reddedildi_json"""
+    try:
+        c = json.loads(cevap)
+        baslangic, ilk_dil = c["ikinci_baslangic"], c["ilk_dil"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return "reddedildi_json", "", ""
+    metin = unicodedata.normalize("NFC", orijinal)
+    konum = [i for i, ch in enumerate(metin) if not ch.isspace()]  # sade metindeki harf -> orijinaldeki yeri
+    o, hedef = sade(metin), sade(baslangic)
+    yer = o.find(hedef) if hedef else -1
+    if yer < 0:
+        return "reddedildi_bulunamadi", "", ""
+    if o.find(hedef, yer + 1) >= 0:
+        return "reddedildi_birden_fazla", "", ""
+    kesim = konum[yer]
+    ilk, ikinci = metin[:kesim].strip(), metin[kesim:].strip()
+    return ("kabul", ilk, ikinci) if ilk_dil == "tr" else ("kabul", ikinci, ilk)
+
+
 def cikti_yolu(arg, uzanti):
     ek = "" if arg.surum == "v1" else f"_{arg.surum}"  # v1 dosyalari eski adlariyla kalir
     return KLASOR / f"llm_bol_{arg.set}_{arg.model.replace(':', '_')}{ek}.{uzanti}"
@@ -205,7 +257,7 @@ def komut_calistir(arg):
                 continue
             bas = time.time()
             cevap = ollama_sor(arg.model, g["orijinal"], arg.surum)
-            durum, tr, en = kontrol(g["orijinal"], cevap)
+            durum, tr, en = (sinirdan_kes if arg.surum == "v3" else kontrol)(g["orijinal"], cevap)
             s = {**g, "model": arg.model, "komut_surum": arg.surum, "durum": durum, "llm_tr": tr, "llm_en": en,
                  "ham_cevap": cevap, "sure_sn": round(time.time() - bas, 1)}
             f.write(json.dumps(s, ensure_ascii=False) + "\n")
@@ -237,6 +289,9 @@ def farklari_bul(orijinal, tr, en, en_fazla=3):
 def komut_farklar(arg):
     """Reddedilen (metni degistirilen) orneklerde modelin neyi degistirdigini yazar."""
     for s in oku(cikti_yolu(arg, "jsonl")):
+        if s["durum"] in ("reddedildi_bulunamadi", "reddedildi_birden_fazla", "reddedildi_json"):
+            print(f"#{s['no']}  {s['durum']}  {s['url']}\n    model: {s['ham_cevap'][:200]}\n")
+            continue
         if s["durum"] != "reddedildi_degisti":
             continue
         n, metin = farklari_bul(s["orijinal"], s["llm_tr"], s["llm_en"])
@@ -294,8 +349,9 @@ def komut_hesapla(arg):
     y = sum(cevap.get(no) == "Y" for no in kabul)
     bos = len(kabul) - d - y
     print(f"model: {arg.model}  komut: {arg.surum}  set: {arg.set}  toplam: {n}")
-    for durum in ("kabul", "reddedildi_degisti", "reddedildi_json"):
-        print(f"  {durum:<22} {sum(s['durum'] == durum for s in sonuc.values()):>4}")
+    from collections import Counter
+    for durum, sayi in Counter(s["durum"] for s in sonuc.values()).most_common():
+        print(f"  {durum:<24} {sayi:>4}")
     sure = [s["sure_sn"] for s in sonuc.values()]
     print(f"  ortalama sure: {sum(sure) / len(sure):.1f} sn/alan")
     if bos:
