@@ -437,3 +437,12 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   belirleyeceğim." → Komuttan 4. kural ve JSON'dan `emin` alanı çıkarıldı.
   Tek dil döndürse bile sonuç Excel'e gider, kullanıcı işaretler. Harf harf
   kontrol (teknik güvence) kaldı.
+
+### Ayar seti, ilk çalıştırma (kullanıcı, 52 alan)
+- gemma4:latest: 43 kabul / 9 metni değiştirdi (%83 harf kontrolünden
+  geçti), ~6 sn/alan. llama3.1:latest: 20 kabul / 32 değiştirdi, ~15 sn/alan
+  (bir örnekte 375 sn). → gemma4 açık ara önde; llama3.1 elendi (öneri).
+- Tahmini tüm veri süresi (gemma4): ~27.500 × 6 sn ≈ 46 saat (Claude'un
+  hesabı; birkaç gece).
+- `llm_bol.py farklar` eklendi: reddedilenlerde modelin neyi değiştirdiğini
+  kelime düzeyinde gösterir (komutu düzeltmeden önce sebebi görmek için).

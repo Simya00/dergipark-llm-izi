@@ -20,6 +20,7 @@ Komutlar:
   ornekle   ayar ve test setlerini llm_bol_ayar.jsonl / llm_bol_test.jsonl'e yazar
   calistir  --set ayar|test --model gemma4:latest  -> llm_bol_<set>_<model>.jsonl
             (kesilirse ayni komut kaldigi yerden devam eder)
+  farklar   --set ... --model ...  -> reddedilenlerde modelin metinde neyi degistirdigi
   excel     --set ... --model ...  -> llm_bol_<set>_<model>.xlsx (D/Y listesi)
   hesapla   --set ... --model ...  -> kapsama, dogruluk, %95 Wilson araligi
 
@@ -197,6 +198,36 @@ def komut_calistir(arg):
             print(f"  {g['no']:>3}/{len(girdiler)}  {durum:<22} {s['sure_sn']:>6} sn")
 
 
+def farklari_bul(orijinal, tr, en, en_fazla=3):
+    """Modelin metni nerede degistirdigini kelime duzeyinde gosterir (iki siradan daha az farkli olani)."""
+    import difflib
+    o = unicodedata.normalize("NFC", orijinal).split()
+    en_iyi = None
+    for birlesik in (tr + " " + en, en + " " + tr):
+        m = unicodedata.normalize("NFC", birlesik).split()
+        sm = difflib.SequenceMatcher(None, o, m, autojunk=False)
+        farklar = [op for op in sm.get_opcodes() if op[0] != "equal"]
+        if en_iyi is None or len(farklar) < len(en_iyi[0]):
+            en_iyi = (farklar, m)
+    farklar, m = en_iyi
+    satirlar = []
+    for tur, i1, i2, j1, j2 in farklar[:en_fazla]:
+        satirlar.append(f"    {tur:<8} orijinal: {' '.join(o[i1:i2])[:120]!r}\n"
+                        f"    {'':<8} model:    {' '.join(m[j1:j2])[:120]!r}")
+    if len(farklar) > en_fazla:
+        satirlar.append(f"    ... (+{len(farklar) - en_fazla} fark daha)")
+    return len(farklar), "\n".join(satirlar)
+
+
+def komut_farklar(arg):
+    """Reddedilen (metni degistirilen) orneklerde modelin neyi degistirdigini yazar."""
+    for s in oku(cikti_yolu(arg, "jsonl")):
+        if s["durum"] != "reddedildi_degisti":
+            continue
+        n, metin = farklari_bul(s["orijinal"], s["llm_tr"], s["llm_en"])
+        print(f"#{s['no']}  ({n} fark)  {s['url']}\n{metin}\n")
+
+
 # ---------------------------------------------------------------- excel + hesap
 SORU = ("Bölme doğru mu? TR sütununda YALNIZCA Türkçe öz, EN sütununda YALNIZCA İngilizce öz "
         "olmalı; hiçbir cümle yanlış tarafta ya da eksik olmamalı. D = doğru, Y = yanlış")
@@ -263,7 +294,7 @@ def komut_hesapla(arg):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("komut", choices=["ornekle", "calistir", "excel", "hesapla"])
+    p.add_argument("komut", choices=["ornekle", "calistir", "farklar", "excel", "hesapla"])
     p.add_argument("--set", choices=["ayar", "test"], default="ayar")
     p.add_argument("--model", default="gemma4:latest")
     p.add_argument("--girdi", default=str(KLASOR / "makaleler.jsonl"))
@@ -271,7 +302,7 @@ def main():
     p.add_argument("--uzerine-yaz", action="store_true")
     arg = p.parse_args()
     {"ornekle": komut_ornekle, "calistir": komut_calistir,
-     "excel": komut_excel, "hesapla": komut_hesapla}[arg.komut](arg)
+     "farklar": komut_farklar, "excel": komut_excel, "hesapla": komut_hesapla}[arg.komut](arg)
 
 
 if __name__ == "__main__":
