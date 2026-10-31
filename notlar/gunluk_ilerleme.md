@@ -431,3 +431,9 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 2. Ayar setinde iki model (`calistir --set ayar`), hız ve red oranları;
    gerekirse komut düzeltilir; model seçilir.
 3. Test seti → Excel → kullanıcı D/Y → `hesapla`; eşik 98/100.
+
+### Düzeltme (aynı gün): modelin "emin" alanı kaldırıldı
+- Kullanıcı: "Modele yetki vermeyelim, sadece ayırsın; doğruluğu ben
+  belirleyeceğim." → Komuttan 4. kural ve JSON'dan `emin` alanı çıkarıldı.
+  Tek dil döndürse bile sonuç Excel'e gider, kullanıcı işaretler. Harf harf
+  kontrol (teknik güvence) kaldı.

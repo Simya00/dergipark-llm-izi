@@ -55,19 +55,16 @@ Rules:
    belong to.
 3. A keywords section goes with its language: "Anahtar Kelimeler: ..."
    with Turkish, "Keywords: ..." with English.
-4. If the text is not one Turkish part plus one English part (for
-   example, only one language, a third language, or the languages
-   alternate more than once), set "emin" to false.
 
 Return only JSON:
-{"tr": "<Turkish part>", "en": "<English part>", "emin": true}
+{"tr": "<Turkish part>", "en": "<English part>"}
 
 Text:
 """
 
 SEMA = {"type": "object",
-        "properties": {"tr": {"type": "string"}, "en": {"type": "string"}, "emin": {"type": "boolean"}},
-        "required": ["tr", "en", "emin"]}
+        "properties": {"tr": {"type": "string"}, "en": {"type": "string"}},
+        "required": ["tr", "en"]}
 
 
 # ---------------------------------------------------------------- ornekleme
@@ -156,10 +153,12 @@ def orijinalden_kes(orijinal, ilk_parca):
 
 
 def kontrol(orijinal, cevap):
-    """(durum, tr, en). durum: kabul | reddedildi_degisti | reddedildi_emin_degil | reddedildi_json"""
+    """(durum, tr, en). durum: kabul | reddedildi_degisti | reddedildi_json
+    Model yalnizca boler; dogru/yanlis kararini kullanici verir (2026-10-31).
+    Tek otomatik red: model metni degistirdiyse (orijinalden kesilemez)."""
     try:
         c = json.loads(cevap)
-        tr, en, emin = c["tr"], c["en"], c["emin"]
+        tr, en = c["tr"], c["en"]
     except (json.JSONDecodeError, KeyError, TypeError):
         return "reddedildi_json", "", ""
     o = sade(orijinal)
@@ -171,10 +170,6 @@ def kontrol(orijinal, cevap):
         en, tr = bas, son
     else:
         return "reddedildi_degisti", tr, en
-    if not emin:
-        return "reddedildi_emin_degil", tr, en
-    if not tr or not en:
-        return "reddedildi_emin_degil", tr, en  # tek dil: bolme yok
     return "kabul", tr, en
 
 
@@ -253,7 +248,7 @@ def komut_hesapla(arg):
     y = sum(cevap.get(no) == "Y" for no in kabul)
     bos = len(kabul) - d - y
     print(f"model: {arg.model}  set: {arg.set}  toplam: {n}")
-    for durum in ("kabul", "reddedildi_degisti", "reddedildi_emin_degil", "reddedildi_json"):
+    for durum in ("kabul", "reddedildi_degisti", "reddedildi_json"):
         print(f"  {durum:<22} {sum(s['durum'] == durum for s in sonuc.values()):>4}")
     sure = [s["sure_sn"] for s in sonuc.values()]
     print(f"  ortalama sure: {sum(sure) / len(sure):.1f} sn/alan")

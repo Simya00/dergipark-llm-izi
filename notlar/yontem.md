@@ -151,8 +151,10 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
 - **Metin değiştirilmez:** Model iki parçayı yazar; parçalar art arda konup
   (boşluklar yok sayılarak, Unicode NFC) orijinalle harf harf karşılaştırılır.
   Tek harf farkında sonuç reddedilir. Kabul edilirse parçalar **orijinal
-  metinden** kesilir (modelin yazdığı metin veriye girmez). Model "emin
-  değilim" derse ya da tek dil verirse de reddedilir.
+  metinden** kesilir (modelin yazdığı metin veriye girmez). Model yalnızca
+  böler; kendi kararına ("emin değilim") yer yok, doğru/yanlış kararını
+  kullanıcı verir (kullanıcı kararı, 2026-10-31). Tek otomatik red, metnin
+  değiştirilmesidir (o zaman orijinalden kesilemez).
 - **Ayar seti:** 1. doğrulamadaki 50 iki dilli örnek (komut burada denenip
   düzeltilebilir). **Test seti:** bu makaleler hariç rastgele 100 iki dilli
   alan (tohum 20261031); komut ve model test öncesi sabitlenir.
