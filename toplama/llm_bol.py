@@ -102,7 +102,39 @@ Return only JSON:
 
 Text:
 """
-KOMUTLAR = {"v1": KOMUT, "v2": KOMUT_V2, "v3": KOMUT_V3}  # eski surumler silinmez (tekrarlanabilirlik)
+
+# v4 (2026-10-31): v3 ayar dogrulamasi 39/50. Hatalar: ikinci ozun basligi yanlis tarafta (5),
+# dil iki kez degisiyor: "... Turkish Başlık: ... Anahtar Kelimeler: ..." (4), aslinda tek dil (3).
+# Model artik metnin TUM dil parcalarini sirayla listeler (yine yalnizca baslangic kelimeleri).
+KOMUT_V4 = """You are given one field from an academic journal record. It contains a
+Turkish abstract and an English abstract, and sometimes other parts such as
+article titles, keywords ("Anahtar Kelimeler", "Keywords") or a line like
+"Turkish Başlık: ...". The languages may alternate more than once.
+
+List the parts of the text IN ORDER. A new part starts every time the
+language changes between Turkish and English.
+
+Rules:
+1. "baslangic": copy the FIRST 8 WORDS of the part EXACTLY as they appear
+   in the text: same spelling, capitalization and punctuation, even if they
+   contain typos or words glued together. If the part is shorter than 8
+   words, copy all of it.
+2. "dil": the language of the part, "tr" or "en".
+3. An article title belongs to the abstract that follows it. If an English
+   title comes right before "Abstract", the English part STARTS AT THE FIRST
+   WORD OF THAT TITLE. Headings ("Abstract", "ABSTRACT:", "Özet", "Öz",
+   "Turkish Başlık:") belong to the part they introduce.
+4. Keywords go with their language: "Anahtar Kelimeler" with Turkish,
+   "Keywords" with English.
+5. Do not start a new part for a single foreign word, name or term inside
+   a sentence.
+
+Return only JSON:
+{"parcalar": [{"baslangic": "<first 8 words>", "dil": "tr"}, {"baslangic": "<first 8 words>", "dil": "en"}]}
+
+Text:
+"""
+KOMUTLAR = {"v1": KOMUT, "v2": KOMUT_V2, "v3": KOMUT_V3, "v4": KOMUT_V4}  # eski surumler silinmez (tekrarlanabilirlik)
 
 SEMA = {"type": "object",
         "properties": {"tr": {"type": "string"}, "en": {"type": "string"}},
@@ -110,7 +142,13 @@ SEMA = {"type": "object",
 SEMA_V3 = {"type": "object",
            "properties": {"ikinci_baslangic": {"type": "string"}, "ilk_dil": {"enum": ["tr", "en"]}},
            "required": ["ikinci_baslangic", "ilk_dil"]}
-SEMALAR = {"v1": SEMA, "v2": SEMA, "v3": SEMA_V3}
+SEMA_V4 = {"type": "object",
+           "properties": {"parcalar": {"type": "array", "items": {
+               "type": "object",
+               "properties": {"baslangic": {"type": "string"}, "dil": {"enum": ["tr", "en"]}},
+               "required": ["baslangic", "dil"]}}},
+           "required": ["parcalar"]}
+SEMALAR = {"v1": SEMA, "v2": SEMA, "v3": SEMA_V3, "v4": SEMA_V4}
 
 
 # ---------------------------------------------------------------- ornekleme
@@ -157,17 +195,27 @@ def oku(yol):
 
 
 def komut_ornekle(arg):
-    for s in ("ayar", "test"):
-        if (KLASOR / f"llm_bol_{s}.jsonl").exists() and not arg.uzerine_yaz:
-            raise SystemExit(f"llm_bol_{s}.jsonl zaten var. Yeniden olusturmak icin --uzerine-yaz.")
+    ayar_yol, test_yol = KLASOR / "llm_bol_ayar.jsonl", KLASOR / "llm_bol_test.jsonl"
+    if test_yol.exists() and not arg.uzerine_yaz:
+        raise SystemExit("llm_bol_test.jsonl zaten var. Yeniden olusturmak icin --uzerine-yaz.")
     alanlar = iki_dilli_alanlar(arg.girdi)
     ayar_url = ayar_urlleri()
-    ayar = [a for a in alanlar if a["url"] in ayar_url]
-    kalan = [a for a in alanlar if a["url"] not in ayar_url]  # ayar makaleleri testte OLAMAZ
+    if not ayar_yol.exists():  # ayar seti bir kez olusturulur; isaretli Excel'ler onun numaralarina bagli
+        ayar = [a for a in alanlar if a["url"] in ayar_url]
+        yaz(ayar_yol, [{"no": i, **a} for i, a in enumerate(ayar, 1)])
+        print(f"ayar: {len(ayar)} alan ({len(ayar_url)} makale adresi)")
+    # Test: ayar makaleleri haric; ayni makalede ayni metin (TR ve EN etiketli alanda tekrar) bir kez
+    # (2026-10-31 karari: ayar setinde 2 makale ikiser kez gecti).
+    kalan, gorulen = [], set()
+    for a in alanlar:
+        anahtar = (a["url"], sade(a["orijinal"]))
+        if a["url"] in ayar_url or anahtar in gorulen:
+            continue
+        gorulen.add(anahtar)
+        kalan.append(a)
     test = random.Random(TOHUM).sample(kalan, arg.adet)
-    for ad, liste in (("ayar", ayar), ("test", test)):
-        yaz(KLASOR / f"llm_bol_{ad}.jsonl", [{"no": i, **a} for i, a in enumerate(liste, 1)])
-    print(f"iki dilli alan: {len(alanlar)}; ayar: {len(ayar)} alan ({len(ayar_url)} makale adresi); "
+    yaz(test_yol, [{"no": i, **a} for i, a in enumerate(test, 1)])
+    print(f"iki dilli alan: {len(alanlar)}; tekrar ve ayar haric: {len(kalan)}; "
           f"test: {len(test)} (tohum {TOHUM})")
 
 
@@ -241,6 +289,48 @@ def sinirdan_kes(orijinal, cevap):
     return ("kabul", ilk, ikinci) if ilk_dil == "tr" else ("kabul", ikinci, ilk)
 
 
+def parcalardan_kes(orijinal, cevap):
+    """v4: (durum, tr, en). Her parcanin baslangici orijinalde, bir onceki parcadan SONRA
+    (bosluklar yok sayilarak) aranir; orada tam olarak bir kez bulunmali. Orijinal bu
+    noktalardan kesilir; Turkce parcalar TR oze, Ingilizce parcalar EN oze (sirayla) gider.
+    Ilk parca her zaman metnin basindan baslar (oncesinde kalan metin kaybolmasin).
+    durum: kabul | tek_dil (taraflardan biri bos: bolme yapilmaz) |
+           reddedildi_bulunamadi | reddedildi_birden_fazla | reddedildi_json"""
+    try:
+        parcalar = [(p["baslangic"], p["dil"]) for p in json.loads(cevap)["parcalar"]]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return "reddedildi_json", "", ""
+    parcalar = [(b, d) for b, d in parcalar if sade(b)]
+    if not parcalar:
+        return "reddedildi_json", "", ""
+    metin = unicodedata.normalize("NFC", orijinal)
+    konum = [i for i, ch in enumerate(metin) if not ch.isspace()]
+    o = sade(metin)
+    yerler, onceki = [], -1
+    for baslangic, _ in parcalar:
+        hedef = sade(baslangic)
+        yer = o.find(hedef, onceki + 1)
+        if yer < 0:
+            return "reddedildi_bulunamadi", "", ""
+        if o.find(hedef, yer + 1) >= 0:
+            return "reddedildi_birden_fazla", "", ""
+        yerler.append(yer)
+        onceki = yer
+    yerler[0] = 0
+    sinirlar = [konum[y] for y in yerler] + [len(metin)]
+    diller = {"tr": [], "en": []}
+    for (_, dil), bas, son in zip(parcalar, sinirlar, sinirlar[1:]):
+        if metin[bas:son].strip():
+            diller[dil].append(metin[bas:son].strip())
+    tr, en = " ".join(diller["tr"]), " ".join(diller["en"])
+    if not tr or not en:
+        return "tek_dil", tr, en
+    return "kabul", tr, en
+
+
+KESICI = {"v3": sinirdan_kes, "v4": parcalardan_kes}
+
+
 def cikti_yolu(arg, uzanti):
     ek = "" if arg.surum == "v1" else f"_{arg.surum}"  # v1 dosyalari eski adlariyla kalir
     return KLASOR / f"llm_bol_{arg.set}_{arg.model.replace(':', '_')}{ek}.{uzanti}"
@@ -258,7 +348,7 @@ def komut_calistir(arg):
                 continue
             bas = time.time()
             cevap = ollama_sor(arg.model, g["orijinal"], arg.surum)
-            durum, tr, en = (sinirdan_kes if arg.surum == "v3" else kontrol)(g["orijinal"], cevap)
+            durum, tr, en = KESICI.get(arg.surum, kontrol)(g["orijinal"], cevap)
             s = {**g, "model": arg.model, "komut_surum": arg.surum, "durum": durum, "llm_tr": tr, "llm_en": en,
                  "ham_cevap": cevap, "sure_sn": round(time.time() - bas, 1)}
             f.write(json.dumps(s, ensure_ascii=False) + "\n")
@@ -304,6 +394,26 @@ SORU = ("Bölme doğru mu? TR sütununda YALNIZCA Türkçe öz, EN sütununda YA
         "olmalı; hiçbir cümle yanlış tarafta ya da eksik olmamalı. D = doğru, Y = yanlış")
 
 
+SORU_TEK_DIL = ("Kod bu alanı BÖLMEDİ (model tek dil gördü; metin bir sütunda). Metin gerçekten "
+                "tek dilli mi (bölünmemesi doğru mu)? D = doğru, Y = yanlış")
+ISARETLENECEK = ("kabul", "tek_dil")
+
+
+def onceki_cevaplar(arg):
+    """Onceki surumun sonuc + Excel'i: no -> ((tr, en), cevap, aciklama)."""
+    from openpyxl import load_workbook
+    from types import SimpleNamespace
+    eski = SimpleNamespace(set=arg.set, model=arg.model, surum=arg.onceki)
+    sonuc = {s["no"]: s for s in oku(cikti_yolu(eski, "jsonl"))}
+    ws = load_workbook(cikti_yolu(eski, "xlsx")).active
+    cikti = {}
+    for r in ws.iter_rows(min_row=2, values_only=True):
+        s = sonuc.get(r[0])
+        if s and r[6]:
+            cikti[r[0]] = ((s["llm_tr"], s["llm_en"]), str(r[6]).strip().upper()[:1], str(r[7] or ""))
+    return cikti
+
+
 def komut_excel(arg):
     openpyxl_gerekli()
     from openpyxl import Workbook
@@ -321,11 +431,17 @@ def komut_excel(arg):
     for i, (_, gen) in enumerate(sutunlar, 1):
         ws.column_dimensions[ws.cell(1, i).column_letter].width = gen
         ws.cell(1, i).font = Font(bold=True)
+    onceki = onceki_cevaplar(arg) if arg.onceki else {}
+    aktarilan = 0
     for s in oku(cikti_yolu(arg, "jsonl")):
-        kabul = s["durum"] == "kabul"
+        soru = {"kabul": SORU, "tek_dil": SORU_TEK_DIL}.get(s["durum"], "Model reddetti: işaretlemeye gerek yok")
         url_tr = s["url"].replace("/en/", "/tr/") if s["url"] else ""  # Turkce sayfa (bkz. 2026-10-27 notu)
-        ws.append([s["no"], SORU if kabul else "Model reddetti: işaretlemeye gerek yok", url_tr,
-                   s["durum"], s["llm_tr"], s["llm_en"], "", ""])
+        cevap, aciklama = "", ""
+        o = onceki.get(s["no"])
+        if o and o[0] == (s["llm_tr"], s["llm_en"]) and s["durum"] in ISARETLENECEK:
+            cevap, aciklama = o[1], f"({arg.onceki}'ten aynen aktarıldı) {o[2]}".strip()
+            aktarilan += 1
+        ws.append([s["no"], soru, url_tr, s["durum"], s["llm_tr"], s["llm_en"], cevap, aciklama])
         ws.cell(ws.max_row, 3).hyperlink = url_tr
     for satir in ws.iter_rows():
         for h in satir:
@@ -336,6 +452,9 @@ def komut_excel(arg):
     ws.freeze_panes = "A2"
     wb.save(yol)
     print(f"{ws.max_row - 1} satir -> {yol}")
+    if arg.onceki:
+        print(f"{aktarilan} satirin bolmesi {arg.onceki} ile AYNI: cevabi aktarildi; "
+              f"bos kalan isaretlenecek satirlara bakin.")
 
 
 def komut_yanlislar(arg):
@@ -347,9 +466,9 @@ def komut_yanlislar(arg):
     for r in ws.iter_rows(min_row=2, values_only=True):
         no, cevap, aciklama = r[0], str(r[6] or "").strip().upper()[:1], r[7] or ""
         s = sonuc.get(no)
-        if s is None or s["durum"] != "kabul" or cevap == "D":
+        if s is None or s["durum"] not in ISARETLENECEK or cevap == "D":
             continue
-        print(f"#{no}  cevap: {cevap or 'BOS'}  not: {aciklama}\n    {s['url']}\n"
+        print(f"#{no}  {s['durum']}  cevap: {cevap or 'BOS'}  not: {aciklama}\n    {s['url']}\n"
               f"    TR ({len(s['llm_tr'])} kr) sonu: ...{s['llm_tr'][-120:]!r}\n"
               f"    EN ({len(s['llm_en'])} kr) basi: {s['llm_en'][:120]!r}...\n")
 
@@ -361,7 +480,7 @@ def komut_hesapla(arg):
     ws = load_workbook(cikti_yolu(arg, "xlsx")).active
     cevap = {r[0]: str(r[6] or "").strip().upper()[:1] for r in ws.iter_rows(min_row=2, values_only=True)}
     n = len(sonuc)
-    kabul = [no for no, s in sonuc.items() if s["durum"] == "kabul"]
+    kabul = [no for no, s in sonuc.items() if s["durum"] in ISARETLENECEK]
     d = sum(cevap.get(no) == "D" for no in kabul)
     y = sum(cevap.get(no) == "Y" for no in kabul)
     bos = len(kabul) - d - y
@@ -372,8 +491,8 @@ def komut_hesapla(arg):
     sure = [s["sure_sn"] for s in sonuc.values()]
     print(f"  ortalama sure: {sum(sure) / len(sure):.1f} sn/alan")
     if bos:
-        print(f"  UYARI: {bos} kabul edilen satir isaretlenmemis")
-    for ad, dogru, payda in (("kabul edilenlerde dogruluk", d, d + y),
+        print(f"  UYARI: {bos} isaretlenecek satir bos")
+    for ad, dogru, payda in (("isaretlenenlerde dogruluk", d, d + y),
                              ("tumunde (reddedilen = yanlis)", d, n)):
         if payda:
             alt, ust = wilson(dogru, payda)
@@ -389,6 +508,8 @@ def main():
     p.add_argument("--girdi", default=str(KLASOR / "makaleler.jsonl"))
     p.add_argument("--adet", type=int, default=100)
     p.add_argument("--uzerine-yaz", action="store_true")
+    p.add_argument("--onceki", choices=sorted(KOMUTLAR), help="excel: bolmesi bu surumle ayni olan satirlarin "
+                   "cevabini aktar")
     arg = p.parse_args()
     {"ornekle": komut_ornekle, "calistir": komut_calistir,
      "farklar": komut_farklar, "excel": komut_excel, "yanlislar": komut_yanlislar, "hesapla": komut_hesapla}[arg.komut](arg)

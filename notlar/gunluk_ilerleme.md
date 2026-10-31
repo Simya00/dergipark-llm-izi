@@ -488,3 +488,14 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   gösterir (sebepleri görmek için; metne dokunmaz).
 - Açık öneriler (karar bekliyor): test setinde aynı makalenin aynı metinli
   alanları bir kez sayılsın; "tek dil" çıkan alan nasıl işaretlensin.
+
+### v3 hatalarının sebepleri ve v4 (kullanıcı: "deneyelim")
+- Kullanıcı #15, #16, #18'i açtı: EN özün sonunda "Turkish Başlık: …
+  Anahtar Kelimeler: …" (TR–EN–TR). 12 hata: başlık yanlış tarafta 5, çift
+  dil geçişi 4, aslında tek dil 3.
+- Ayrıca görüldü: `p&amp;lt; 0.01` — çok katmanlı HTML kaçışı iki kez
+  çözmekle gitmiyor ("amp", "lt" sahte kelime). Öneri: değişmeyene kadar
+  çöz (en fazla 5) — karar bekliyor, bozuk karakter kuralıyla birlikte.
+- Kod: v4 (parça listesi), `tek_dil` kontrolü, testte tekrar ayıklama,
+  `excel --onceki v3` (bölmesi v3 ile aynı satırların cevabını aktarır,
+  yalnızca değişenler işaretlenir). Sahte veriyle test edildi.

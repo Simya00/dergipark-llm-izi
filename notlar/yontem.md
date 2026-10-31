@@ -182,6 +182,19 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
     orijinal o noktadan kesilir. Bulunamazsa ya da birden fazla yerde
     bulunursa reddedilir (teknik red; doğruluk kararı yine kullanıcıda).
     Bilinen sınır: tek kesim noktası, TR–EN–TR gibi metinleri bölemez.
+  - v3 elle doğrulama (ayar, kullanıcı): 39/50 D (%78). Hatalar: ikinci
+    özün başlığı yanlış tarafta (5), dil iki kez değişiyor — ör. bmj
+    dergisinde EN özün sonunda "Turkish Başlık: … Anahtar Kelimeler: …" (4),
+    metin aslında tek dilli, eski kural iki dilli sanmış (3).
+  - v4: model metnin TÜM dil parçalarını sırayla listeler (her parçanın ilk
+    8 kelimesi + dili). Kod her başlangıcı bir öncekinden sonra arar (tam bir
+    kez bulunmalı), orijinali bu noktalardan keser; TR parçalar TR öze, EN
+    parçalar EN öze (sırayla) gider. İlk parça metnin başından başlar.
+    Başlık, kendisinden sonra gelen öze aittir. Taraflardan biri boş kalırsa
+    alan **bölünmez** (`tek_dil`; mekanik kontrol), kullanıcı "tek dilli mi"
+    diye D/Y işaretler.
+  - Test setinde aynı makalenin aynı metinli alanları (TR ve EN etiketli
+    alanda tekrar) bir kez sayılır; ayar seti değiştirilmedi.
 - **Bilinen sınır:** Harf kontrolü modelin metni değiştirdiğini yakalar ama
   sınırın doğru yerde olduğunu garanti etmez; bunu yalnızca elle kontrol ölçer.
 
