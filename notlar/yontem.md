@@ -163,6 +163,14 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   (98/100 → %95 Wilson %93,0–99,4). Altında kalırsa iki dilli alanlar analiz
   dışı. Reddedilen örneklerin yanlış mı sayılacağı / kapsamın ayrı mı
   raporlanacağı: karar bekliyor (kod ikisini de hesaplıyor).
+- **Komut sürümleri** (eski sürümler kodda korunur, `KOMUTLAR`; çıktı
+  dosyası sürüm adını taşır):
+  - v1: ilk komut. Ayar setinde gemma4 43/52, llama3.1 20/52 harf
+    kontrolünden geçti.
+  - v2: v1'in 9 reddinden sonra (3 yazım/büyük harf düzeltmesi, 4 başlık /
+    "Başlık:" satırı silme, 2 bozuk karakter temizliği) iki kural eklendi:
+    hiçbir şeyi düzeltme; özet gibi görünmeyen kısımlar (başlık vb.) dahil
+    hiçbir şeyi silme, kendi dilinin tarafına koy.
 - **Bilinen sınır:** Harf kontrolü modelin metni değiştirdiğini yakalar ama
   sınırın doğru yerde olduğunu garanti etmez; bunu yalnızca elle kontrol ölçer.
 

@@ -63,6 +63,20 @@ Return only JSON:
 Text:
 """
 
+# v2 (2026-10-31): ayar setinde v1 9/52 alanda metni degistirdi: yazim/buyuk harf
+# duzeltti ("ABSRACT" -> "ABSTRACT"), makale basliklarini ve "Başlık:" satirlarini sildi.
+KOMUT_V2 = KOMUT.replace(
+    """with Turkish, "Keywords: ..." with English.
+""",
+    """with Turkish, "Keywords: ..." with English.
+4. Never fix anything: keep typos, capitalization and headings exactly
+   as written (for example "ABSRACT" stays "ABSRACT").
+5. Keep EVERY part of the text, even if it does not look like part of
+   an abstract (article titles, "Başlık:" lines, headings). Put each
+   such part with its language.
+""")
+KOMUTLAR = {"v1": KOMUT, "v2": KOMUT_V2}  # eski surumler silinmez (tekrarlanabilirlik)
+
 SEMA = {"type": "object",
         "properties": {"tr": {"type": "string"}, "en": {"type": "string"}},
         "required": ["tr", "en"]}
@@ -127,8 +141,8 @@ def komut_ornekle(arg):
 
 
 # ---------------------------------------------------------------- model + kontrol
-def ollama_sor(model, metin):
-    istek = {"model": model, "prompt": KOMUT + metin, "stream": False, "format": SEMA,
+def ollama_sor(model, metin, surum):
+    istek = {"model": model, "prompt": KOMUTLAR[surum] + metin, "stream": False, "format": SEMA,
              "options": {"temperature": SICAKLIK, "seed": TOHUM, "num_ctx": NUM_CTX}}
     req = urllib.request.Request(OLLAMA, data=json.dumps(istek).encode(),
                                  headers={"Content-Type": "application/json"})
@@ -175,7 +189,8 @@ def kontrol(orijinal, cevap):
 
 
 def cikti_yolu(arg, uzanti):
-    return KLASOR / f"llm_bol_{arg.set}_{arg.model.replace(':', '_')}.{uzanti}"
+    ek = "" if arg.surum == "v1" else f"_{arg.surum}"  # v1 dosyalari eski adlariyla kalir
+    return KLASOR / f"llm_bol_{arg.set}_{arg.model.replace(':', '_')}{ek}.{uzanti}"
 
 
 def komut_calistir(arg):
@@ -189,9 +204,9 @@ def komut_calistir(arg):
             if g["no"] in bitti:
                 continue
             bas = time.time()
-            cevap = ollama_sor(arg.model, g["orijinal"])
+            cevap = ollama_sor(arg.model, g["orijinal"], arg.surum)
             durum, tr, en = kontrol(g["orijinal"], cevap)
-            s = {**g, "model": arg.model, "durum": durum, "llm_tr": tr, "llm_en": en,
+            s = {**g, "model": arg.model, "komut_surum": arg.surum, "durum": durum, "llm_tr": tr, "llm_en": en,
                  "ham_cevap": cevap, "sure_sn": round(time.time() - bas, 1)}
             f.write(json.dumps(s, ensure_ascii=False) + "\n")
             f.flush()
@@ -278,7 +293,7 @@ def komut_hesapla(arg):
     d = sum(cevap.get(no) == "D" for no in kabul)
     y = sum(cevap.get(no) == "Y" for no in kabul)
     bos = len(kabul) - d - y
-    print(f"model: {arg.model}  set: {arg.set}  toplam: {n}")
+    print(f"model: {arg.model}  komut: {arg.surum}  set: {arg.set}  toplam: {n}")
     for durum in ("kabul", "reddedildi_degisti", "reddedildi_json"):
         print(f"  {durum:<22} {sum(s['durum'] == durum for s in sonuc.values()):>4}")
     sure = [s["sure_sn"] for s in sonuc.values()]
@@ -297,6 +312,7 @@ def main():
     p.add_argument("komut", choices=["ornekle", "calistir", "farklar", "excel", "hesapla"])
     p.add_argument("--set", choices=["ayar", "test"], default="ayar")
     p.add_argument("--model", default="gemma4:latest")
+    p.add_argument("--surum", choices=sorted(KOMUTLAR), default="v2", help="komut surumu")
     p.add_argument("--girdi", default=str(KLASOR / "makaleler.jsonl"))
     p.add_argument("--adet", type=int, default=100)
     p.add_argument("--uzerine-yaz", action="store_true")

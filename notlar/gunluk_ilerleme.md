@@ -446,3 +446,13 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   hesabı; birkaç gece).
 - `llm_bol.py farklar` eklendi: reddedilenlerde modelin neyi değiştirdiğini
   kelime düzeyinde gösterir (komutu düzeltmeden önce sebebi görmek için).
+
+### v1 reddlerinin sebepleri ve komut v2 (kullanıcı: "bir deneme daha")
+- gemma4 v1'in 9 reddi: 3 düzeltme (#52 "ABSRACT"→"ABSTRACT", #19 büyük
+  harf, #29 kelimeyi bozan "düzeltme"), 4 silme (#5, #11, #17: alan içindeki
+  makale başlıkları / "Turkish Başlık:"; #26 "Abstract" kelimesi), 2 bozuk
+  karakter temizliği (#28 `\'` → `'`, #42 PDF tirelemesi `¬`).
+- v2 komutuna iki kural eklendi (düzeltme yapma; hiçbir şeyi silme). v1
+  kodda ve dosyalarda korunuyor.
+- Önerilen ama bu denemeye girmeyen: `oai_ayristir.py`'de `\'` ve `¬`
+  temizliği (kelime sıklığını da etkiliyor) — karar bekliyor.
