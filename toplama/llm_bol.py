@@ -22,6 +22,7 @@ Komutlar:
             (kesilirse ayni komut kaldigi yerden devam eder)
   farklar   --set ... --model ...  -> reddedilenlerde modelin metinde neyi degistirdigi
   excel     --set ... --model ...  -> llm_bol_<set>_<model>.xlsx (D/Y listesi)
+  yanlislar --set ... --model ...  -> Y (ve bos) satirlarda kesimin iki yani
   hesapla   --set ... --model ...  -> kapsama, dogruluk, %95 Wilson araligi
 
 Gerekli: Ollama calisiyor olmali (ollama serve), openpyxl (excel/hesapla icin).
@@ -337,6 +338,22 @@ def komut_excel(arg):
     print(f"{ws.max_row - 1} satir -> {yol}")
 
 
+def komut_yanlislar(arg):
+    """Excel'de Y isaretlenen (ve bos birakilan) satirlarda kesim noktasinin iki yanini gosterir."""
+    openpyxl_gerekli()
+    from openpyxl import load_workbook
+    sonuc = {s["no"]: s for s in oku(cikti_yolu(arg, "jsonl"))}
+    ws = load_workbook(cikti_yolu(arg, "xlsx")).active
+    for r in ws.iter_rows(min_row=2, values_only=True):
+        no, cevap, aciklama = r[0], str(r[6] or "").strip().upper()[:1], r[7] or ""
+        s = sonuc.get(no)
+        if s is None or s["durum"] != "kabul" or cevap == "D":
+            continue
+        print(f"#{no}  cevap: {cevap or 'BOS'}  not: {aciklama}\n    {s['url']}\n"
+              f"    TR ({len(s['llm_tr'])} kr) sonu: ...{s['llm_tr'][-120:]!r}\n"
+              f"    EN ({len(s['llm_en'])} kr) basi: {s['llm_en'][:120]!r}...\n")
+
+
 def komut_hesapla(arg):
     openpyxl_gerekli()
     from openpyxl import load_workbook
@@ -365,7 +382,7 @@ def komut_hesapla(arg):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("komut", choices=["ornekle", "calistir", "farklar", "excel", "hesapla"])
+    p.add_argument("komut", choices=["ornekle", "calistir", "farklar", "excel", "yanlislar", "hesapla"])
     p.add_argument("--set", choices=["ayar", "test"], default="ayar")
     p.add_argument("--model", default="gemma4:latest")
     p.add_argument("--surum", choices=sorted(KOMUTLAR), default="v2", help="komut surumu")
@@ -374,7 +391,7 @@ def main():
     p.add_argument("--uzerine-yaz", action="store_true")
     arg = p.parse_args()
     {"ornekle": komut_ornekle, "calistir": komut_calistir,
-     "farklar": komut_farklar, "excel": komut_excel, "hesapla": komut_hesapla}[arg.komut](arg)
+     "farklar": komut_farklar, "excel": komut_excel, "yanlislar": komut_yanlislar, "hesapla": komut_hesapla}[arg.komut](arg)
 
 
 if __name__ == "__main__":

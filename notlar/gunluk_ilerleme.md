@@ -477,3 +477,14 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   bulunamadı (doğru davranış: kod uydurma bir yerden kesmedi).
 - Tüm iki dilli alanlar için tahmini süre: ~27.500 × 1,4 sn ≈ 11 saat (bir gece).
 - Kabul ≠ doğru: sıradaki adım ayar setinin D/Y işaretlenmesi.
+
+### v3 ayar seti elle doğrulama (kullanıcı, D/Y)
+- Kabul edilen 51'den işaretlenen 50: **39 D / 11 Y → %78** (%95: 64,8–87,2).
+  Tümünde (red = yanlış) 39/52 = %75. Eşik (98) çok uzakta.
+- Kullanıcı notları: işaretlenmeyen 1 alanda aslında tek dil vardı (kural
+  iki dilli sanmış: tespit hatası, bölme değil). 2 makale ikişer kez geçiyor
+  (aynı makalede TR ve EN etiketli iki iki dilli alan → ayar 52, 50 değil).
+- `llm_bol.py yanlislar` eklendi: Y ve boş satırlarda kesimin iki yanını
+  gösterir (sebepleri görmek için; metne dokunmaz).
+- Açık öneriler (karar bekliyor): test setinde aynı makalenin aynı metinli
+  alanları bir kez sayılsın; "tek dil" çıkan alan nasıl işaretlensin.
