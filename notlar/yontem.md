@@ -141,6 +141,29 @@ karşılaştırmayı çarpıtmaz. İki dilli alanlar zamanla azalıyor (2016: 1.
     "Türkçe/İngilizce dışı alfabe veya bozuk" olarak düzeltilmeli.
   - "Dokunulmadı"da hiç kaçırılmış dil sorunu bulunmadı.
 
+### 4.4 İki dilli alanların yerel LLM ile bölünmesi (pilot, `toplama/llm_bol.py`)
+Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
+(kullanıcı kararı, 2026-10-31).
+- **Model:** yerel, Ollama üzerinden (`gemma4:latest`, `llama3.1:latest`;
+  kullanıcının bilgisayarı: RTX 5060 Laptop 8 GB, 32 GB RAM). temperature 0,
+  seed 20261031, num_ctx 8192; cevap JSON şemasına zorlanır. Komutun tam
+  metni koddadır (`KOMUT`), test setinde değiştirilmez.
+- **Metin değiştirilmez:** Model iki parçayı yazar; parçalar art arda konup
+  (boşluklar yok sayılarak, Unicode NFC) orijinalle harf harf karşılaştırılır.
+  Tek harf farkında sonuç reddedilir. Kabul edilirse parçalar **orijinal
+  metinden** kesilir (modelin yazdığı metin veriye girmez). Model "emin
+  değilim" derse ya da tek dil verirse de reddedilir.
+- **Ayar seti:** 1. doğrulamadaki 50 iki dilli örnek (komut burada denenip
+  düzeltilebilir). **Test seti:** bu makaleler hariç rastgele 100 iki dilli
+  alan (tohum 20261031); komut ve model test öncesi sabitlenir.
+- **Doğrulama:** kullanıcı, yalnızca D (doğru) / Y (yanlış); "kısmen" yok.
+- **Kabul eşiği (kullanıcı, veriden önce):** test setinde **≥98/100 doğru**
+  (98/100 → %95 Wilson %93,0–99,4). Altında kalırsa iki dilli alanlar analiz
+  dışı. Reddedilen örneklerin yanlış mı sayılacağı / kapsamın ayrı mı
+  raporlanacağı: karar bekliyor (kod ikisini de hesaplıyor).
+- **Bilinen sınır:** Harf kontrolü modelin metni değiştirdiğini yakalar ama
+  sınırın doğru yerde olduğunu garanti etmez; bunu yalnızca elle kontrol ölçer.
+
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 
 - **Sorun:** PDF'ten kopyalamada satır sonu boşlukları kaybolmuş

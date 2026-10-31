@@ -258,8 +258,10 @@ def kayit_ayristir(kayit: ET.Element):
             if tespit == "diger":
                 ozler.append({"dil": "diger", "dil_kaynagi": "diger_dil", "etiket": etiket, "metin": metin})
             elif tespit == "iki_dilli":
+                # orijinal_metin: bolunmeden onceki alan (LLM ile bolme denemesi icin, llm_bol.py)
                 for d, parca in parcalar.items():
-                    ozler.append({"dil": d, "dil_kaynagi": "iki_dilli_bolundu", "etiket": etiket, "metin": parca})
+                    ozler.append({"dil": d, "dil_kaynagi": "iki_dilli_bolundu", "etiket": etiket,
+                                  "metin": parca, "orijinal_metin": metin})
             elif tespit in ("tr", "en") and tespit != etiket:
                 ozler.append({"dil": tespit, "dil_kaynagi": "etiket_duzeltildi", "etiket": etiket, "metin": metin})
             else:

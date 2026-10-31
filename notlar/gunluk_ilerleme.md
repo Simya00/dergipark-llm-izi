@@ -399,3 +399,35 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 4. Sonra: deney (ChatGPT/Claude/Gemini), ilk liste kontrolleri, dergi paneli.
 5. Bekleyenler: geleneksel kalıplar kontrol listesi, Lee (2026) PDF'i,
    ESOGÜ e-postası.
+
+## 2026-10-31 — İki dilli bölme için yerel LLM pilotu
+
+### Literatür taraması (dil temizliği yöntemi)
+- Aynı problemi (TR + EN öz aynı alanda yapışık) çözen çalışma bulunamadı.
+  Yakın olanlar: Icelandic Parallel Abstracts Corpus (2021; başlık eş
+  anlamlılarıyla özet sınırı), "dil bölütleme" (language segmentation;
+  geçiş cezalı Viterbi), SciPar / TURNA / OpenAlex çalışması (fastText,
+  langid ile dil kontrolü), Rose vd. (2025; özet temizliği, 9.000 elle
+  etiketli özet). arxiv.org bu oturumda erişime kapalıydı; tam metinler
+  okunmadı. `literatur.md`'ye eklenmesi kullanıcı onayı bekliyor.
+
+### Karar: iki dilli alanları yerel LLM bölsün (kullanıcı)
+- Kullanıcı önerisi: metni doğrudan modele verip ikiye böldürmek, 100
+  örnekte denemek, doğruluk yüksekse tümüne uygulamak.
+- Claude'un eklediği güvence: modelin parçaları orijinalle harf harf
+  karşılaştırılır, kabul edilirse orijinalden kesilir (veriye LLM metni
+  girmez). Kullanıcı itiraz etmedi.
+- Kararlar: ayar seti (eski 50 örnek) / test seti (yeni 100) ayrı; eşik
+  **98/100**; işaretleme yalnızca D/Y (kısmen yok); kontrolleri kullanıcı
+  yapacak. Bilgisayar: RTX 5060 Laptop 8 GB (16 değil), 32 GB RAM; Ollama'da
+  gemma4:latest, llama3.1:latest (llama3.2 kullanıcı tercih etmiyor).
+- Kod: `oai_ayristir.py` iki dilli alanların orijinalini `orijinal_metin`
+  olarak saklıyor (bölme kuralı değişmedi); yeni `toplama/llm_bol.py`
+  (ornekle / calistir / excel / hesapla). Sahte veri ve sahte modelle test
+  edildi; gerçek modelle henüz çalıştırılmadı.
+
+### Bir sonraki adım
+1. Kullanıcı: `git pull`, `oai_ayristir.py` yeniden, `llm_bol.py ornekle`.
+2. Ayar setinde iki model (`calistir --set ayar`), hız ve red oranları;
+   gerekirse komut düzeltilir; model seçilir.
+3. Test seti → Excel → kullanıcı D/Y → `hesapla`; eşik 98/100.
