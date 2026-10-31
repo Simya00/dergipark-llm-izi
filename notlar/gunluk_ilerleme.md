@@ -470,3 +470,10 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   `karakter_kontrol.py` ile sayım + örnek (metne dokunmaz); kullanıcı
   "hepsini nasıl kontrol edeceğim" diye sordu → hepsi değil, tür başına 10
   rastgele örnek.
+
+### v3 sonucu (ayar seti, gemma4)
+- **51/52 kabul**, ~1,4 sn/alan (v2: 46/52, ~6 sn). Tek red #52: orijinalde
+  yazım hatası "ABSRACTObjective", model "ABSTRACTObjective" yazdı →
+  bulunamadı (doğru davranış: kod uydurma bir yerden kesmedi).
+- Tüm iki dilli alanlar için tahmini süre: ~27.500 × 1,4 sn ≈ 11 saat (bir gece).
+- Kabul ≠ doğru: sıradaki adım ayar setinin D/Y işaretlenmesi.

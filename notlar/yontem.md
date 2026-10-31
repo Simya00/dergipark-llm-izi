@@ -174,6 +174,8 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   - v2 sonucu (ayar, gemma4): 46/52 harf kontrolünden geçti; kalan redlerin
     ikisi kopyalama hatası ("saptanan"→"saptananan"), ikisi bozuk karakter
     (`\'`, `¬`), ikisi silme.
+  - v3 sonucu (ayar, gemma4): 51/52 kabul, ~1,4 sn/alan (red: orijinaldeki
+    yazım hatasını model düzeltti, başlangıç bulunamadı).
   - v3: model metni KOPYALAMAZ; yalnızca ikinci özün ilk 8 kelimesini
     (8: Claude'un seçimi) ve ilk özün dilini yazar. Kod bu kelimeleri
     orijinalde (boşluklar yok sayılarak) arar; tam olarak bir kez bulunursa
