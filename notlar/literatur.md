@@ -41,3 +41,18 @@ dağılım düzeyinde.
 - [ ] Kobak vd. ek materyal: kelime listesi ve eşikler; `berenslab/llm-excess-vocab` kodu.
 - [ ] Tübingen tam metin çalışması (asıl kaynak).
 - [ ] Liang vd. (2024) dağılımsal tahmin; Gray (2024); Geng & Trotta (2024).
+
+## Dil temizliği yöntemi için (tarama: 2026-10-31; arxiv.org erişimi kapalıydı, tam metinler okunmadı)
+
+Aynı problemi (TR + EN öz aynı alanda yapışık) çözen çalışma bulunamadı.
+Yöntemin parçaları için dayanak olabilecekler:
+
+| Çalışma | Ne yapmış | Bizimle ilişkisi |
+|---|---|---|
+| Símonarson & Snæbjarnarson (2021), *Icelandic Parallel Abstracts Corpus*, arXiv:2108.05289 | Tezlerden İzlandaca–İngilizce özet çiftleri; özet sınırını bölüm başlıklarının eş anlamlıları ve uzunluk sınırlarıyla bulmuşlar; 7.845 çift | Başlık kelimesine göre bölme. İkincil kaynağa göre 100 çiftte elle %71 doğru (doğrulanmadı) |
+| Dil bölütleme (language segmentation): SIGUL 2022 Korsikaca makalesi; CoSwID (HAL 03722821); US patent 9400787 | Belgeyi tek dilli parçalara ayırma; cümle puanları + dil değiştirme cezası, Viterbi | "Tek geçiş noktası" fikrinin literatürdeki adı |
+| SciPar (LREC 2022); TURNA (ACL Findings 2024); "Sorting the Babble in Babel" (OpenAlex, arXiv:2502.03627) | Dil etiketine güvenmeyip fastText / langid ile yeniden kontrol; TURNA Türkçe akademik metni satır satır langid ile | Hakem "neden standart araç değil" diye sorabilir; fastText çapraz kontrolü bir seçenek |
+| Rose, Herrmann, Erhardt (2025), *Cleaning English Abstracts of Scientific Publications*, arXiv:2512.24459 | Özetlerden başlık/telif vb. fazlalıkları silen spaCy modeli; 9.000 elle etiketli Scopus özeti; %98 doğru temizlik, %0 fazla silme; model Hugging Face'te | Elle doğrulama tasarımına benzer; yalnızca İngilizce |
+
+Sonuç (2026-11-01): iki dilli alanlar analiz dışı bırakıldı (`yontem.md`
+§4.4); bu kaynaklar yöntem bölümünde "denenen yaklaşımlar" için.

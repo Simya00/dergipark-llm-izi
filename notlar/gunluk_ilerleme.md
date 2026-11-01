@@ -521,3 +521,50 @@ eklenir; böylece kronolojik bir kayıt oluşur.
   sayılar yöntem notuna girecek.
 - Sırada: bozuk karakter temizliği (`karakter_kontrol.xlsx` işaretlenince)
   + çok katmanlı HTML kaçışı; sonra deney / aday listeler / dergi paneli.
+
+### Oturum özeti (2026-10-31 / 11-01)
+**İki dilli alanların bölünmesi — sonuç tablosu (ayar seti, 52 alan):**
+
+| Yöntem | Kontrolden geçen | Elle doğru (D) | Süre/alan |
+|---|---|---|---|
+| Kural (1. doğrulama, 50 örnek) | — | 16/50 (%32) | — |
+| gemma4 v1 (metni kopyala) | 43/52 | işaretlenmedi | ~6 sn |
+| llama3.1 v1 | 20/52 | işaretlenmedi | ~15 sn |
+| gemma4 v2 (+ düzeltme yapma, silme) | 46/52 | işaretlenmedi | ~6 sn |
+| gemma4 v3 (yalnızca sınırın ilk 8 kelimesi) | 51/52 | **39/50 (%78)** | ~1,4 sn |
+| gemma4 v4 (tüm parçaların listesi) | 27/52 | 20/27 (%74) | ~8,5 sn |
+
+- v3 hataları: ikinci özün başlığı yanlış tarafta 5, TR–EN–TR (ör. bmj:
+  "Turkish Başlık: … Anahtar Kelimeler: …") 4, aslında tek dil 3.
+- Eşik %98 (veriden önce, kullanıcı). Test setine geçilmedi → **iki dilli
+  alanlar analiz dışı** (ön kayıtlı yedek plan).
+
+**Yeni / değişen dosyalar:**
+- `toplama/llm_bol.py` — ornekle / calistir / farklar / excel (`--onceki`)
+  / yanlislar / hesapla; komut sürümleri v1–v4 kodda korunuyor.
+- `toplama/karakter_kontrol.py` — bozuk karakter sayımı + 70 örneklik
+  Excel (metne dokunmaz).
+- `toplama/oai_ayristir.py` — `orijinal_metin` saklanıyor; iki dilli
+  parçalar `ozet_tr`/`ozet_en` olarak seçilmiyor; raporda sayılıyor.
+
+**Bozuk karakter sayımı (1.314.493 öz):** görünmez tire 4.359 öz (%0,33),
+diğer `\` 3.702 (%0,28; muhtemelen LaTeX, dokunulmayacak), `harf¬harf`
+1.819 (%0,14), `\'` 1.770 (%0,13), `¬` diğer 138, `\"` 83, `harf¬ harf` 35.
+Analizin kelime ayırıcısı bunları kelimeyi bölen işaret sayıyor
+("bu¬lunmaktadır" → "bu" + "lunmaktadır"). Ayrıca çok katmanlı HTML
+kaçışı (`p&amp;lt; 0.01`) görüldü.
+
+**Kullanıcıda bekleyenler:**
+1. `oai_ayristir.py`'yi yeniden çalıştırmak; rapordaki "iki dilli alan
+   yüzünden özeti analiz dışı kalan makale" sayısı yöntem notuna.
+2. `karakter_kontrol.xlsx` (70 satır) D/Y.
+
+**Sıradaki adımlar:**
+1. Bozuk karakter + çok katmanlı HTML kaçışı kuralı (`temiz()`), Excel
+   sonucuna göre; kod önce sohbette gösterilecek.
+2. LLM yeniden yazım deneyi (ChatGPT/Claude/Gemini), aday listelerin ilk
+   kontrolleri, dergi paneli.
+3. Bekleyenler (eskiden): geleneksel kalıplar kontrol listesi, Lee (2026)
+   tam metni, ESOGÜ e-postası, sözlüğe dayalı büyük harf bölmesi ve
+   kısaltma sözlüğü (iki dilli bölme kalktığı için öncelik düştü; birleşik
+   kelime onarımı için hâlâ gerekli olabilir).
