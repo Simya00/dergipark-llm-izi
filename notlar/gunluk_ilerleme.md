@@ -568,3 +568,16 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
    tam metni, ESOGÜ e-postası, sözlüğe dayalı büyük harf bölmesi ve
    kısaltma sözlüğü (iki dilli bölme kalktığı için öncelik düştü; birleşik
    kelime onarımı için hâlâ gerekli olabilir).
+
+### Bozuk karakter temizliğinin gerekçesi (kullanıcı sordu) ve ölçümün genişletilmesi
+- Gerekçe: analizin kelime kuralı (`[^\W\d_]+`) görünmez tireyi ve `¬`'yı
+  kelime sınırı sayıyor ("bu¬lunmaktadır" → "bu" + "lunmaktadır");
+  `&amp;lt;` "amp", "lt" sahte kelimeleri üretiyor. Asıl risk: bozukluk
+  yıllara göre değişirse kelime sıklığında sahte eğilim.
+- Düzeltme (Claude): `\'` kelime sayımını DEĞİŞTİRMİYOR (normal kesme
+  işareti de kelimeyi böler); yalnızca ek çözümlemesi / deney için, öncelik
+  düşük. Öncelik: görünmez tire, harf¬harf; sonra HTML kalıntısı.
+- `karakter_kontrol.py`'ye eklendi: yıllara göre tablo (10.000 özde kaç
+  özde) ve `html_kalinti` türü (değişmeyene kadar çözülür). Excel varsa
+  yalnızca sayım yapılır; yeni tür Excel'in sonuna eklenir (ilk 70 örnek
+  aynı kalır, aynı tohum).

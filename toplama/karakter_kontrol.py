@@ -15,13 +15,20 @@ Turler:
   tire_bosluklu    harf¬ harf -> harfharf  (tireleme + satir sonu boslugu)
   tire_diger       baska bir ¬ kullanimi (ornegin mantikta "degil": ¬p) -> dokunulmaz
   yumusak_tire     gorunmez tire (U+00AD) -> silinir
+  html_kalinti     iki kez cozulmesine ragmen kalan HTML kacisi (&amp;lt; -> <): metin
+                   en az 3 kez kacislanmis; degismeyene kadar cozulur ("amp", "lt" sahte kelime)
+
+Yillara gore: her turun 10.000 ozde kac ozde gectigi (yil_guvenilir). Amac: bozukluk
+yillara gore degisiyorsa kelime sikliginda SAHTE egilim yaratabilir (2026-11-01).
 
 Kullanim:
   python3 karakter_kontrol.py              # sayim + karakter_kontrol.xlsx
   python3 karakter_kontrol.py --adet 20
+  (Excel zaten varsa yalnizca sayim yapilir; yeniden olusturmak icin --uzerine-yaz)
 """
 
 import argparse
+import html
 import json
 import random
 import re
@@ -43,13 +50,27 @@ TURLER = [
     ("tire_bosluklu", re.compile(r"(?<=[^\W\d_])¬\s+(?=[^\W\d_])"), ""),
     ("tire_diger", re.compile(r"(?<![^\W\d_])¬|¬(?!\s*[^\W\d_])"), None),
     ("yumusak_tire", re.compile("\u00ad"), ""),
+    ("html_kalinti", re.compile(r"&(?:amp;)*(?:amp|lt|gt|quot|apos|nbsp|#\d+|#x[0-9a-fA-F]+);"), "COZ"),
 ]
+YIL_ALT, YIL_UST = 2010, 2026  # yillik tabloda gosterilen yillar
+
+
+def tamamen_coz(parca):
+    """HTML kacisini degismeyene kadar cozer (en fazla 5 kez): "&amp;lt;" -> "&lt;" -> "<"."""
+    for _ in range(5):
+        yeni = html.unescape(parca)
+        if yeni == parca:
+            break
+        parca = yeni
+    return parca
 
 
 def ornek_metni(metin, m, duzeltme):
     """Isaretin cevresi: once (isaret ⟦ ⟧ icinde), sonra onerilen duzeltmeyle."""
     bas, son = max(0, m.start() - BAGLAM), min(len(metin), m.end() + BAGLAM)
     once = metin[bas:m.start()] + "⟦" + m.group().replace("\u00ad", "[görünmez tire]") + "⟧" + metin[m.end():son]
+    if duzeltme == "COZ":
+        duzeltme = tamamen_coz(m.group())
     sonra = "" if duzeltme is None else metin[bas:m.start()] + duzeltme + metin[m.end():son]
     return once, sonra
 
@@ -61,23 +82,27 @@ def main():
     p.add_argument("--cikti", default=str(KLASOR / "karakter_kontrol.xlsx"))
     p.add_argument("--uzerine-yaz", action="store_true")
     arg = p.parse_args()
-    if Path(arg.cikti).exists() and not arg.uzerine_yaz:
-        raise SystemExit(f"{arg.cikti} zaten var (cevaplariniz olabilir). --uzerine-yaz ile yeniden olusur.")
+    excel_yaz = arg.uzerine_yaz or not Path(arg.cikti).exists()
 
     oz_sayisi = Counter()      # tur -> kac ozde var
     isaret_sayisi = Counter()  # tur -> toplam kac kez
     adaylar = defaultdict(list)
     toplam_oz = 0
+    yil_oz = Counter()                 # yil -> oz sayisi
+    yil_tur = defaultdict(Counter)     # yil -> tur -> oz sayisi
     with open(arg.girdi, encoding="utf-8") as g:
         for satir in g:
             m = json.loads(satir)
+            yil = m.get("yil_guvenilir")
             for oz in m["ozler"]:
                 metin = oz["metin"]
                 toplam_oz += 1
+                yil_oz[yil] += 1
                 for tur, desen, duzeltme in TURLER:
                     bulunan = list(desen.finditer(metin))
                     if bulunan:
                         oz_sayisi[tur] += 1
+                        yil_tur[yil][tur] += 1
                         isaret_sayisi[tur] += len(bulunan)
                         # her ozden bir isaret aday olur (ayni ozden ornek yigilmasin)
                         adaylar[tur].append((m.get("url"), oz["dil"], metin, bulunan[0], duzeltme))
@@ -85,10 +110,25 @@ def main():
     print(f"Toplam oz: {toplam_oz}\n")
     print(f"{'tur':>18} {'oz sayisi':>10} {'oz %':>7} {'isaret':>8}  onerilen")
     for tur, _, duzeltme in TURLER:
-        oneri = "dokunma (yalnizca sayim)" if duzeltme is None else f"-> {duzeltme!r}"
+        oneri = ("dokunma (yalnizca sayim)" if duzeltme is None else
+                 "-> degismeyene kadar coz" if duzeltme == "COZ" else f"-> {duzeltme!r}")
         print(f"{tur:>18} {oz_sayisi[tur]:>10} {100 * oz_sayisi[tur] / max(toplam_oz, 1):>6.2f}% "
               f"{isaret_sayisi[tur]:>8}  {oneri}")
 
+    # Yillara gore: 10.000 ozde kac oz (turler sutun, yillar satir)
+    kisa = {t: t.replace("ters_", "t_").replace("tire_", "¬_")[:10] for t, _, _ in TURLER}
+    print(f"\nYillara gore (10.000 ozde kac ozde var; yil_guvenilir; None = yili guvenilmez):")
+    print(f"{'yil':>6} {'oz':>8} " + " ".join(f"{kisa[t]:>10}" for t, _, _ in TURLER))
+    yillar = [y for y in sorted(y for y in yil_oz if y is not None) if YIL_ALT <= y <= YIL_UST] + [None]
+    for y in yillar:
+        if not yil_oz[y]:
+            continue
+        print(f"{str(y):>6} {yil_oz[y]:>8} " +
+              " ".join(f"{10000 * yil_tur[y][t] / yil_oz[y]:>10.1f}" for t, _, _ in TURLER))
+
+    if not excel_yaz:
+        print(f"\n{arg.cikti} zaten var: Excel'e dokunulmadi (yeniden olusturmak icin --uzerine-yaz).")
+        return
     openpyxl_gerekli()
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Font
