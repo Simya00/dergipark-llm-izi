@@ -581,3 +581,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   özde) ve `html_kalinti` türü (değişmeyene kadar çözülür). Excel varsa
   yalnızca sayım yapılır; yeni tür Excel'in sonuna eklenir (ilk 70 örnek
   aynı kalır, aynı tohum).
+
+### Bozuk karakterler — yıllara göre sonuç (kullanıcı çalıştırdı)
+- HTML kalıntısı da yaygın: 4.035 öz (%0,31). Görünmez tire ve HTML
+  kalıntısı eski yıllarda yoğun, 2020 sonrası neredeyse sıfır (tablo:
+  `yontem.md` §4.5). → Sahte eğilim riski gerçek; temizlik gerekli.
+- Excel 80 satırla yeniden oluşturuldu (70 + 10 HTML kalıntısı); kullanıcı
+  işaretleyecek, sonra kural yazılacak.

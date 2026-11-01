@@ -220,6 +220,16 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   D/Y işaretlenir. `¬` yalnızca iki harf arasındaysa (arada boşluk olabilir)
   tireleme sayılır; diğer `¬` (mantıkta "değil") ve diğer `\` kullanımlarına
   dokunulmaz, yalnızca sayılır.
+- **Ölçüm (2026-11-01, 1.314.493 öz):** görünmez tire 4.359 öz (%0,33),
+  çok katmanlı HTML kaçışı 4.035 (%0,31), diğer `\` 3.702 (%0,28; LaTeX,
+  dokunulmaz), harf¬harf 1.819 (%0,14), `\'` 1.770 (%0,13).
+  **Yıllara göre (10.000 özde):** görünmez tire 2010–2016 ~43–74, 2017–2019
+  ~18–24, 2020'den sonra ≤1; HTML kalıntısı 2010–2013 ~60–168, 2015'ten sonra
+  ~0; harf¬harf 2–12 (dalgalı); `\'` ~0,5–2. Yılı güvenilmez (arşiv) özlerde
+  hepsi yüksek (analiz dışı zaten). → Bozukluk zamanla AZALIYOR: temizlenmezse
+  eski yıllarda bazı kelimeler eksik sayılır, sonraki yıllarda "artış" gibi
+  görünür. Görünmez tirenin düşüşü 2017–2020'ye, yani taban (baseline)
+  yıllarına denk geliyor. Temizliğin gerekçesi bu.
 
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 
