@@ -588,3 +588,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `yontem.md` §4.5). → Sahte eğilim riski gerçek; temizlik gerekli.
 - Excel 80 satırla yeniden oluşturuldu (70 + 10 HTML kalıntısı); kullanıcı
   işaretleyecek, sonra kural yazılacak.
+
+### Bozuk karakter doğrulaması: örnek sayısı (kullanıcı)
+- Kullanıcı: "Tür başına 10 örnek az; her grup için %95 doğruluk olacak
+  şekilde ayrılsın." → n = 73 (hepsi doğruysa %95 alt sınır %95,0).
+  `karakter_kontrol.py`: varsayılan 73, `--hesapla` (tür başına D/Y,
+  doğruluk, Wilson aralığı). Dil sütunu ve Türkçe karakterli ekran çıktısı
+  önerileri kullanıcı tarafından istenmedi.
+- Kullanıcıya Excel'in nasıl okunacağı `teachers\'` örneğiyle anlatıldı;
+  İngilizce örneklerin neden olduğu soruldu (EN özler de analizde).

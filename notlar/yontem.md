@@ -230,6 +230,12 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   eski yıllarda bazı kelimeler eksik sayılır, sonraki yıllarda "artış" gibi
   görünür. Görünmez tirenin düşüşü 2017–2020'ye, yani taban (baseline)
   yıllarına denk geliyor. Temizliğin gerekçesi bu.
+- **Doğrulama örneklemi (kullanıcı kararı, 2026-11-01):** her tür için
+  "%95 doğruluk" gösterilebilecek kadar örnek: hepsi doğru çıkarsa %95
+  Wilson aralığının alt sınırı ≥%95 olacak en küçük n = **73** (alt sınır
+  = n/(n+1,96²)). Adayı 73'ten az olan türde (harf¬ harf: 35) hepsi
+  incelenir. Toplam ~546 satır. Bir tek hata alt sınırı %92,6'ya indirir;
+  o durumda oran ve aralık olduğu gibi raporlanır.
 
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 

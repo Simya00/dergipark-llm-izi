@@ -24,6 +24,7 @@ yillara gore degisiyorsa kelime sikliginda SAHTE egilim yaratabilir (2026-11-01)
 Kullanim:
   python3 karakter_kontrol.py              # sayim + karakter_kontrol.xlsx
   python3 karakter_kontrol.py --adet 20
+  python3 karakter_kontrol.py --hesapla    # isaretli Excel'den tur basina dogruluk + %95 aralik
   (Excel zaten varsa yalnizca sayim yapilir; yeniden olusturmak icin --uzerine-yaz)
 """
 
@@ -35,7 +36,7 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from dil_dogrulama import openpyxl_gerekli
+from dil_dogrulama import openpyxl_gerekli, wilson
 
 KLASOR = Path(__file__).resolve().parent
 TOHUM = 20261031
@@ -53,6 +54,20 @@ TURLER = [
     ("html_kalinti", re.compile(r"&(?:amp;)*(?:amp|lt|gt|quot|apos|nbsp|#\d+|#x[0-9a-fA-F]+);"), "COZ"),
 ]
 YIL_ALT, YIL_UST = 2010, 2026  # yillik tabloda gosterilen yillar
+
+
+def gerekli_orneklem(hedef=0.95, z=1.96):
+    """Ornegin HEPSI dogru cikarsa %95 Wilson araliginin alt siniri >= hedef olacak en kucuk n.
+    (hepsi dogruyken alt sinir = n / (n + z^2)) -> hedef 0.95 icin n = 73.
+    Kullanici karari (2026-11-01): her tur icin "%95 dogruluk" gosterilebilecek kadar ornek.
+    Bir tek hata bile alt siniri %95'in altina indirir (72/73 -> %92,6)."""
+    n = 1
+    while n / (n + z * z) < hedef:
+        n += 1
+    return n
+
+
+ADET = gerekli_orneklem()  # 73; adayi bundan az olan turde HEPSI incelenir
 
 
 def tamamen_coz(parca):
@@ -75,13 +90,38 @@ def ornek_metni(metin, m, duzeltme):
     return once, sonra
 
 
+def hesapla(yol):
+    """Excel'deki D/Y cevaplarindan tur basina dogruluk ve %95 Wilson araligi."""
+    openpyxl_gerekli()
+    from openpyxl import load_workbook
+    sayac = defaultdict(Counter)
+    for r in load_workbook(yol).active.iter_rows(min_row=2, values_only=True):
+        cevap = str(r[6] or "").strip().upper()[:1]
+        sayac[r[1]][cevap if cevap in ("D", "Y") else "bos"] += 1
+    print(f"{'tur':>18} {'D':>4} {'Y':>4} {'bos':>4}   dogruluk (%95 aralik)")
+    for tur, _, _ in TURLER:
+        c = sayac.get(tur)
+        if not c:
+            continue
+        n = c["D"] + c["Y"]
+        sonuc = ""
+        if n:
+            alt, ust = wilson(c["D"], n)
+            sonuc = f"%{100 * c['D'] / n:5.1f} ({100 * alt:.1f}–{100 * ust:.1f})"
+        print(f"{tur:>18} {c['D']:>4} {c['Y']:>4} {c['bos']:>4}   {sonuc}")
+    print("\nNot: diger_ters / tire_diger satirlarinda D = gercek isaret, dokunulmamali.")
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--girdi", default=str(KLASOR / "makaleler.jsonl"))
-    p.add_argument("--adet", type=int, default=10, help="Tur basina Excel'e yazilacak ornek")
+    p.add_argument("--adet", type=int, default=ADET, help=f"Tur basina ornek (varsayilan {ADET})")
+    p.add_argument("--hesapla", action="store_true", help="isaretli Excel'den dogruluk hesapla")
     p.add_argument("--cikti", default=str(KLASOR / "karakter_kontrol.xlsx"))
     p.add_argument("--uzerine-yaz", action="store_true")
     arg = p.parse_args()
+    if arg.hesapla:
+        return hesapla(arg.cikti)
     excel_yaz = arg.uzerine_yaz or not Path(arg.cikti).exists()
 
     oz_sayisi = Counter()      # tur -> kac ozde var
