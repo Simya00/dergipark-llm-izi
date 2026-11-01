@@ -499,3 +499,14 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 - Kod: v4 (parça listesi), `tek_dil` kontrolü, testte tekrar ayıklama,
   `excel --onceki v3` (bölmesi v3 ile aynı satırların cevabını aktarır,
   yalnızca değişenler işaretlenir). Sahte veriyle test edildi.
+
+## 2026-11-01 — v4 sonucu ve karar noktası
+
+### v4 (ayar seti, gemma4)
+- 27 kabul, **22 bulunamadı**, 3 tek_dil; ~8,5 sn/alan. İşaretlenenlerde
+  20/27 D (%74); tümünde 20/52 (%38). → v3'ten (51 kabul, 39/50 D) belirgin
+  kötü. Parça listesi istemek modeli zorladı: her parçanın başlangıcı
+  aynen bulunmalı, biri bile değişirse alanın tamamı reddediliyor.
+- Claude'un önerisi: LLM bölmesini burada bırakıp önceden kararlaştırılan
+  yedek plana geçmek (iki dilli alanlar analiz dışı); gerekçe yöntem notunda.
+  Karar kullanıcıda.
