@@ -597,3 +597,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   önerileri kullanıcı tarafından istenmedi.
 - Kullanıcıya Excel'in nasıl okunacağı `teachers\'` örneğiyle anlatıldı;
   İngilizce örneklerin neden olduğu soruldu (EN özler de analizde).
+
+### Yarın (kaldığımız yer)
+1. Kullanıcı: `git pull`; `karakter_kontrol.py --uzerine-yaz` (73'er örnek,
+   ~546 satır) → işaretleme → `--hesapla` çıktısı.
+2. Kullanıcı: `oai_ayristir.py` yeniden (iki dilli alanlar analiz dışı) →
+   rapordaki "iki dilli alan yüzünden özeti analiz dışı kalan makale" sayısı.
+3. Claude: doğrulama sonucuna göre `temiz()`'e karakter kuralı (görünmez
+   tire, harf¬harf, HTML kalıntısı, `\'`); kod önce sohbette.
+4. Sonra: LLM deneyi, aday listeler, dergi paneli.
