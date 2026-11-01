@@ -37,7 +37,9 @@ dilli) soyle temizlenir:
   "etiket"            etiket ile metin uyumlu
   "etiket_duzeltildi" cumlelerin >= %80'i diger dilde -> o dile tasindi
   "iki_dilli_bolundu" ayni alanda TR + EN -> Turkce cumleler TR oze,
-                      Ingilizce cumleler EN abstract'a (iki ayri oz)
+                      Ingilizce cumleler EN abstract'a (iki ayri oz). Bu parcalar
+                      ozet_tr / ozet_en olarak SECILMEZ (analiz disi, 2026-11-01);
+                      "ozler" icinde orijinal_metin ile birlikte saklanir.
   "bozuk_metin"       harflerin > %20'si Turkce/Latin alfabesi disinda (PDF'ten
                       bozuk kodlamayla kopyalanmis: "^ŝŶĂŶ 'ƺůŚĂŶ͛ŦŶ"); dil "bozuk",
                       analize girmez
@@ -212,6 +214,10 @@ HTML_ETIKET = re.compile(
     r"tr|td|th|small|big|center|blockquote|img|hr)\b[^<>]*>", re.IGNORECASE)
 ESKI_HTML_ETIKET = re.compile(r"<[^>]+>")  # sadece kac ozetin etkilendigini olcmek icin
 html_kayip_sayaci = Counter()
+# Iki dilli alanlardan bolunen parcalar ozet_tr / ozet_en olarak SECILMEZ (2026-11-01 karari):
+# bolme dogrulugu kural %32, yerel LLM en iyi %78; on kayitli %98 esiginin altinda.
+# Parcalar "ozler" icinde kalir (sonradan eklenebilsin diye); yalnizca analize girmez.
+iki_dilli_disarida = Counter()
 
 
 def temiz(metin):
@@ -272,7 +278,9 @@ def kayit_ayristir(kayit: ET.Element):
             ozler.append({"dil": dil_tahmin(metin), "dil_kaynagi": "tahmin", "metin": metin})
 
     def ilk_oz(dil):
-        adaylar = [o["metin"] for o in ozler if o["dil"] == dil]
+        adaylar = [o["metin"] for o in ozler if o["dil"] == dil and o["dil_kaynagi"] != "iki_dilli_bolundu"]
+        if not adaylar and any(o["dil"] == dil for o in ozler):
+            iki_dilli_disarida[dil] += 1  # bu dilde yalnizca iki dilli alandan parca vardi
         return max(adaylar, key=len) if adaylar else None  # birden coksa en uzunu
 
     tanimlayicilar = degerler("identifier")
@@ -436,6 +444,8 @@ def main():
     print(f"Dergi kodu bulunamayan: {kodsuz}")
     print(f"Eski HTML kuraliyla metin kaybi olacak oz (simdi duzeltildi): "
           f"{html_kayip_sayaci['eski kuralla metin kaybi olan oz']}")
+    print(f"Iki dilli alan yuzunden ozeti analiz disi kalan makale (bu dilde baska oz yok): "
+          f"TR {iki_dilli_disarida['tr']}, EN {iki_dilli_disarida['en']}")
 
 
 if __name__ == "__main__":

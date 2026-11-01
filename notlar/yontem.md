@@ -198,6 +198,19 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
 - **Bilinen sınır:** Harf kontrolü modelin metni değiştirdiğini yakalar ama
   sınırın doğru yerde olduğunu garanti etmez; bunu yalnızca elle kontrol ölçer.
 
+- **KARAR (kullanıcı, 2026-11-01): iki dilli alanlar analiz dışı.**
+  Ayar setinde en iyi sonuç v3 (39/50 doğru, %78); v4 geriledi (27/52
+  kontrolden geçti, 20/27 doğru). Ön kayıtlı eşik (%98) uzakta olduğundan
+  test setine geçilmedi ve önceden belirlenen yedek plan uygulandı.
+  Uygulama: `oai_ayristir.py` iki dilli alandan bölünen parçaları `ozet_tr` /
+  `ozet_en` olarak seçmez (analiz kodları yalnızca bu alanları okur).
+  Parçalar ve `orijinal_metin` `ozler` içinde kalır (kullanıcı: "gerekirse
+  sonradan ekleriz"). Ayrıştırma raporu, bu yüzden bir dilde özeti kalmayan
+  makale sayısını verir. Gerekçe: iki dilli alanlar TR etiketli özlerin
+  ~%1,4'ü ve çoğunlukla eski yıllarda (2016: 1.017 → 2025: 58), yani LLM
+  dönemi yıllarını neredeyse etkilemez; etki taban yıllarında küçük.
+  Makalede raporlanacak: kural %32, yerel LLM %78 (ayar seti), eşik %98.
+
 ### 4.5 Bozuk karakterler (ölçüm aşaması, `toplama/karakter_kontrol.py`)
 - LLM bölme denemesinde görüldü: `Üniversitesi\'nde` (kaçış hatası),
   `bu¬lunmaktadır` (PDF tirelemesi). Kelime sıklığını da bozar.

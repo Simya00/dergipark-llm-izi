@@ -510,3 +510,14 @@ eklenir; böylece kronolojik bir kayıt oluşur.
 - Claude'un önerisi: LLM bölmesini burada bırakıp önceden kararlaştırılan
   yedek plana geçmek (iki dilli alanlar analiz dışı); gerekçe yöntem notunda.
   Karar kullanıcıda.
+
+### Karar: iki dilli alanlar analiz dışı (kullanıcı: "çıkaralım, gerekirse sonradan ekleriz")
+- `oai_ayristir.py`: `ilk_oz` iki dilli parçaları seçmiyor; parçalar
+  `ozler`de kalıyor. Raporda yeni satır: iki dilli alan yüzünden özeti
+  analiz dışı kalan makale (TR / EN). Sahte kayıtlarla test edildi.
+- `llm_bol.py` ve sonuç dosyaları kayıt için repoda kalıyor (makalede
+  raporlanacak doğruluklar buradan).
+- Kullanıcı: `oai_ayristir.py`'yi yeniden çalıştırmalı; rapordaki yeni
+  sayılar yöntem notuna girecek.
+- Sırada: bozuk karakter temizliği (`karakter_kontrol.xlsx` işaretlenince)
+  + çok katmanlı HTML kaçışı; sonra deney / aday listeler / dergi paneli.
