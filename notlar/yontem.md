@@ -257,6 +257,13 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   `\'`, `\"`, LaTeX dokunulmaz. Her düzeltmenin kaç metinde yapıldığı
   ayrıştırma raporunda. Kontrol: yeniden ayrıştırmadan sonra
   `karakter_kontrol.py` bu türler için ~0 göstermeli.
+- **Türkçe görünmez tire seti (kullanıcı, 2026-11-03; ilk setteki
+  makaleler hariç, 73 örnek):** iki ayrı kelimenin birleşmesi 0/73; görünmez
+  tire + boşluk ("neden[gt] le") 8/73. → Kural genişletildi: iki harf
+  arasındaki görünmez tire arkasındaki boşlukla birlikte silinir (`¬`
+  kuralıyla aynı); 8 örneğin hepsi test edildi, doğru birleşiyor.
+  Zemberek ile karar (kullanıcı önerisi) görünmez tire için gereksiz
+  bulundu (birleşik terim hatası görülmedi; yavaş; yalnızca Türkçe).
 
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 
@@ -272,6 +279,12 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
 - Eşikler Claude'un seçimi; kullanıcının bulduğu 10 gerçek örneğin hepsi
   doğru bölündü. **Doğrulama: rapor çıktısındaki en sık onarımlar kullanıcı
   tarafından gözden geçirilecek.**
+- **Plan (kullanıcı onayı, 2026-11-03):** bozuk karakter temizliğinden
+  sonra `birlesik_kelime.py rapor` ile boşluk kaybının oranı ve yıllara göre
+  dağılımı ölçülecek; onarımlardan örneklem kullanıcı tarafından
+  doğrulanacak. Yanlış bölme görülürse **Zemberek kontrolü** eklenecek:
+  Zemberek bütün kelimeyi tanıyorsa bölünmez; tanımıyor ama iki parçayı
+  tanıyorsa bölünür (kullanıcının fikri).
 
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 

@@ -225,6 +225,9 @@ iki_dilli_disarida = Counter()
 # kelimeler eksik sayilir -> sahte artis). Kacis hatalari (\' \") bilerek DUZELTILMEZ.
 TIRE_HARF_ARASI = re.compile(r"(?<=[^\W\d_])¬\s*(?=[^\W\d_])")  # bu¬lunmaktadir, ya¬ pilmistir (PDF tirelemesi)
 YUMUSAK_TIRE = "\u00ad"                                           # gorunmez tire: koy\u00admaktadir
+# Iki harf arasindaki gorunmez tire ARKASINDAKI BOSLUKLA birlikte silinir ("neden\u00ad le" -> "nedenle");
+# Turkce sette 8/73 ornekte bosluk vardi, yalnizca tireyi silmek kelimeyi bolük birakiyordu (2026-11-03).
+YUMUSAK_TIRE_HARF = re.compile(r"(?<=[^\W\d_])\u00ad\s*(?=[^\W\d_])")
 HTML_COZ_EN_FAZLA = 5                                             # kacis katmani siniri (Claude'un secimi)
 karakter_sayaci = Counter()  # duzeltme turu -> kac metinde yapildi (raporda yazilir)
 
@@ -249,7 +252,8 @@ def temiz(metin):
     metin = HTML_ETIKET.sub(" ", metin)
     if YUMUSAK_TIRE in metin:
         karakter_sayaci["gorunmez tire silindi"] += 1
-        metin = metin.replace(YUMUSAK_TIRE, "")
+        metin = YUMUSAK_TIRE_HARF.sub("", metin)   # harf[gt] harf / harf[gt] harf -> harfharf
+        metin = metin.replace(YUMUSAK_TIRE, "")     # harf arasinda olmayan kalanlar
     metin, n = TIRE_HARF_ARASI.subn("", metin)
     if n:
         karakter_sayaci["harf¬harf birlestirildi"] += 1

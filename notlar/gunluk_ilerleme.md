@@ -668,3 +668,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Kullanıcı önerisi: **Zemberek** ile karar (görünmez tirede birleşik hal
   bir kelimeyse birleştir, iki kelimeyse ayır) ve boşluk kaybını ayırmak
   için de kullanmak. Tartışıldı (aşağıdaki karar bekliyor).
+- **Karar (kullanıcı: "dediklerini yapalım"):** görünmez tire + boşluk
+  kuralı eklendi (`YUMUSAK_TIRE_HARF`), kullanıcının 8 örneği + çoklu
+  görünmez tire + `¬` örnekleriyle test edildi. Zemberek görünmez tire için
+  kullanılmayacak; boşluk kaybı onarımında doğrulamadan sonra
+  değerlendirilecek (`yontem.md` §5).
+- Sırada (kullanıcı): `git pull` → `oai_ayristir.py` → `karakter_kontrol.py`
+  (kalan ~0 olmalı) → `analiz/birlesik_kelime.py sozluk/rapor --dil tr`.
