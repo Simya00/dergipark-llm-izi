@@ -620,3 +620,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   türleri 4'e indi (görünmez tire, harf¬harf, harf¬ harf, HTML kalıntısı);
   mevcut Excel'den çıkarılan türlerin satırları siliniyor, diğer işaretler
   korunuyor (sahte Excel ile test edildi). İşaretlenecek: 254 satır.
+
+### Bozuk karakter doğrulaması sonucu ve kural
+- `--hesapla`: 244 işaretli satırın hepsi D (görünmez tire 73/73, harf¬ harf
+  35/35, HTML 71/71 + 2 boş, harf¬harf 65/65 + 8 boş). Boşların sebebi
+  kullanıcıya soruldu.
+- Kural `temiz()`'e yazıldı (HTML değişmeyene kadar, görünmez tire,
+  harf¬harf); örneklerle test edildi (`¬p`, `\'`, LaTeX, `p&lt;0,05`
+  korunuyor). Kullanıcı `oai_ayristir.py`'yi yeniden çalıştıracak; sonra
+  `karakter_kontrol.py` ile kalan sayılar kontrol edilecek.

@@ -247,6 +247,16 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   (LaTeX) ve harf arasında olmayan `¬` de dokunulmaz → doğrulanmaz.
   **Temizlenecek türler:** görünmez tire, harf¬harf, harf¬ harf, HTML
   kalıntısı (73 + 73 + 35 + 73 = 254 örnek).
+- **Doğrulama sonucu (kullanıcı, 2026-11-03), hiç Y yok:** görünmez tire
+  73/73 (%95 alt sınır %95,0); harf¬ harf 35/35 (türün tamamı);
+  HTML kalıntısı 71/71 (%94,9; 2 boş); harf¬harf 65/65 (%94,4; 8 boş).
+- **Kural (`oai_ayristir.py` `temiz()`, tüm dc alanlarına):** (1) HTML
+  kaçışı değişmeyene kadar çözülür (en fazla 5 kat; eskiden sabit 2);
+  (2) görünmez tire (U+00AD) silinir; (3) iki harf arasındaki `¬` (arada
+  boşluk olabilir) silinir; harf arasında olmayan `¬` (mantık) korunur.
+  `\'`, `\"`, LaTeX dokunulmaz. Her düzeltmenin kaç metinde yapıldığı
+  ayrıştırma raporunda. Kontrol: yeniden ayrıştırmadan sonra
+  `karakter_kontrol.py` bu türler için ~0 göstermeli.
 
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 

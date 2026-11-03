@@ -220,11 +220,39 @@ html_kayip_sayaci = Counter()
 iki_dilli_disarida = Counter()
 
 
+# Bozuk karakter temizligi (2026-11-03; karakter_kontrol.py ile olculdu ve elle dogrulandi,
+# yontem.md 4.5). Yalnizca KELIME SAYIMINI bozanlar; yillara gore azaliyorlar (eski yillarda
+# kelimeler eksik sayilir -> sahte artis). Kacis hatalari (\' \") bilerek DUZELTILMEZ.
+TIRE_HARF_ARASI = re.compile(r"(?<=[^\W\d_])¬\s*(?=[^\W\d_])")  # bu¬lunmaktadir, ya¬ pilmistir (PDF tirelemesi)
+YUMUSAK_TIRE = "\u00ad"                                           # gorunmez tire: koy\u00admaktadir
+HTML_COZ_EN_FAZLA = 5                                             # kacis katmani siniri (Claude'un secimi)
+karakter_sayaci = Counter()  # duzeltme turu -> kac metinde yapildi (raporda yazilir)
+
+
+def html_coz(metin):
+    """HTML kacisini degismeyene kadar cozer. Eskiden sabit 2 kez cozuluyordu; 4.035 ozde
+    "&amp;lt;" gibi kalintilar kaliyordu ("amp", "lt" sahte kelime)."""
+    for kat in range(HTML_COZ_EN_FAZLA):
+        yeni = html.unescape(metin)
+        if yeni == metin:
+            break
+        if kat >= 2:
+            karakter_sayaci["html: 2 kezden fazla cozuldu"] += 1
+        metin = yeni
+    return metin
+
+
 def temiz(metin):
-    # DergiPark metinleri HTML kacisli geliyor ("TBMM&#039;nin"), bazen
-    # cift kacisli ("&amp;#039;") ve <p>/<br> etiketli. Iki kez coz, etiketleri at.
-    metin = html.unescape(html.unescape(metin or ""))
+    # DergiPark metinleri HTML kacisli geliyor ("TBMM&#039;nin"), bazen birden cok kez
+    # ("&amp;#039;", "&amp;amp;lt;") ve <p>/<br> etiketli. Degismeyene kadar coz, etiketleri at.
+    metin = html_coz(metin or "")
     metin = HTML_ETIKET.sub(" ", metin)
+    if YUMUSAK_TIRE in metin:
+        karakter_sayaci["gorunmez tire silindi"] += 1
+        metin = metin.replace(YUMUSAK_TIRE, "")
+    metin, n = TIRE_HARF_ARASI.subn("", metin)
+    if n:
+        karakter_sayaci["harf¬harf birlestirildi"] += 1
     return " ".join(metin.split())
 
 
@@ -444,6 +472,8 @@ def main():
     print(f"Dergi kodu bulunamayan: {kodsuz}")
     print(f"Eski HTML kuraliyla metin kaybi olacak oz (simdi duzeltildi): "
           f"{html_kayip_sayaci['eski kuralla metin kaybi olan oz']}")
+    print(f"Bozuk karakter temizligi (metin sayisi; ozler + basliklar vb. tum dc alanlari): "
+          f"{dict(karakter_sayaci)}")
     print(f"Iki dilli alan yuzunden ozeti analiz disi kalan makale (bu dilde baska oz yok): "
           f"TR {iki_dilli_disarida['tr']}, EN {iki_dilli_disarida['en']}")
 
