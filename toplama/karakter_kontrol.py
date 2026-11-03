@@ -28,6 +28,11 @@ Kullanim:
   python3 karakter_kontrol.py --adet 20
   python3 karakter_kontrol.py --hesapla    # isaretli Excel'den tur basina dogruluk + %95 aralik
   (Excel zaten varsa yalnizca sayim yapilir; yeniden olusturmak icin --uzerine-yaz)
+
+  Yalnizca Turkce ozlerden, yalnizca gorunmez tire, ilk Excel'deki makaleler haric (2026-11-03):
+  python3 karakter_kontrol.py --dil tr --tur yumusak_tire --haric karakter_kontrol.xlsx \\
+                              --cikti karakter_kontrol_tr.xlsx
+  python3 karakter_kontrol.py --hesapla --cikti karakter_kontrol_tr.xlsx
 """
 
 import argparse
@@ -78,6 +83,20 @@ def tamamen_coz(parca):
     return parca
 
 
+HARFLER = re.compile(r"[^\W\d_]+")
+
+
+def parcalar(metin, m):
+    """Isaretin solundaki ve sagindaki kelime parcasi: 'öğretme | öğrenme -> öğretmeöğrenme'.
+    Iki parca da kendi basina bir kelimeyse isaret buyuk olasilikla gercek bir kisa cizginin
+    yerine gecmis (birlesik terim); biri kelime degilse satir sonu bolmesidir ("koy | maktadır")."""
+    sol = re.search(r"[^\W\d_]+$", metin[:m.start()])
+    sag = re.match(r"\s*([^\W\d_]+)", metin[m.end():])
+    if not sol or not sag:
+        return ""
+    return f"{sol.group()} | {sag.group(1)}  →  {sol.group()}{sag.group(1)}"
+
+
 def ornek_metni(metin, m, duzeltme):
     """Isaretin cevresi: once (isaret ⟦ ⟧ icinde), sonra onerilen duzeltmeyle."""
     bas, son = max(0, m.start() - BAGLAM), min(len(metin), m.end() + BAGLAM)
@@ -86,6 +105,18 @@ def ornek_metni(metin, m, duzeltme):
         duzeltme = tamamen_coz(m.group())
     sonra = "" if duzeltme is None else metin[bas:m.start()] + duzeltme + metin[m.end():son]
     return once, sonra
+
+
+def haric_adresler(yol):
+    """Onceki Excel'deki (tur, makale adresi) ciftleri; yeni ornek bunlari tekrar almaz.
+    Excel'deki adres /tr/ ya da /en/ olabilir; jsonl'deki adres bicimine (/en/) cevrilir."""
+    openpyxl_gerekli()
+    from openpyxl import load_workbook
+    cift = set()
+    for r in load_workbook(yol).active.iter_rows(min_row=2, values_only=True):
+        if r[3]:
+            cift.add((r[1], str(r[3]).replace("/tr/", "/en/")))
+    return cift
 
 
 def eski_turleri_sil(yol):
@@ -131,10 +162,16 @@ def main():
     p.add_argument("--hesapla", action="store_true", help="isaretli Excel'den dogruluk hesapla")
     p.add_argument("--cikti", default=str(KLASOR / "karakter_kontrol.xlsx"))
     p.add_argument("--uzerine-yaz", action="store_true")
+    p.add_argument("--dil", choices=["tr", "en"], help="yalnizca bu dildeki ozler (sayim da)")
+    p.add_argument("--tur", action="append", choices=[t for t, _, _ in TURLER],
+                   help="yalnizca bu tur(ler); birden cok kez verilebilir")
+    p.add_argument("--haric", help="bu Excel'deki makaleler (ayni turde) ornege alinmaz")
     arg = p.parse_args()
     if arg.hesapla:
         return hesapla(arg.cikti)
     excel_yaz = arg.uzerine_yaz or not Path(arg.cikti).exists()
+    secili = [t for t in TURLER if not arg.tur or t[0] in arg.tur]
+    haric = haric_adresler(arg.haric) if arg.haric else set()
 
     oz_sayisi = Counter()      # tur -> kac ozde var
     isaret_sayisi = Counter()  # tur -> toplam kac kez
@@ -147,36 +184,39 @@ def main():
             m = json.loads(satir)
             yil = m.get("yil_guvenilir")
             for oz in m["ozler"]:
+                if arg.dil and oz["dil"] != arg.dil:
+                    continue
                 metin = oz["metin"]
                 toplam_oz += 1
                 yil_oz[yil] += 1
-                for tur, desen, duzeltme in TURLER:
+                for tur, desen, duzeltme in secili:
                     bulunan = list(desen.finditer(metin))
                     if bulunan:
                         oz_sayisi[tur] += 1
                         yil_tur[yil][tur] += 1
                         isaret_sayisi[tur] += len(bulunan)
                         # her ozden bir isaret aday olur (ayni ozden ornek yigilmasin)
-                        adaylar[tur].append((m.get("url"), oz["dil"], metin, bulunan[0], duzeltme))
+                        if (tur, m.get("url")) not in haric:
+                            adaylar[tur].append((m.get("url"), oz["dil"], metin, bulunan[0], duzeltme))
 
-    print(f"Toplam oz: {toplam_oz}\n")
+    print(f"Toplam oz: {toplam_oz}" + (f" (yalnizca dil={arg.dil})" if arg.dil else "") + "\n")
     print(f"{'tur':>18} {'oz sayisi':>10} {'oz %':>7} {'isaret':>8}  onerilen")
-    for tur, _, duzeltme in TURLER:
+    for tur, _, duzeltme in secili:
         oneri = ("dokunma (yalnizca sayim)" if duzeltme is None else
                  "-> degismeyene kadar coz" if duzeltme == "COZ" else f"-> {duzeltme!r}")
         print(f"{tur:>18} {oz_sayisi[tur]:>10} {100 * oz_sayisi[tur] / max(toplam_oz, 1):>6.2f}% "
               f"{isaret_sayisi[tur]:>8}  {oneri}")
 
     # Yillara gore: 10.000 ozde kac oz (turler sutun, yillar satir)
-    kisa = {t: t.replace("ters_", "t_").replace("tire_", "¬_")[:10] for t, _, _ in TURLER}
+    kisa = {t: t.replace("ters_", "t_").replace("tire_", "¬_")[:10] for t, _, _ in secili}
     print(f"\nYillara gore (10.000 ozde kac ozde var; yil_guvenilir; None = yili guvenilmez):")
-    print(f"{'yil':>6} {'oz':>8} " + " ".join(f"{kisa[t]:>10}" for t, _, _ in TURLER))
+    print(f"{'yil':>6} {'oz':>8} " + " ".join(f"{kisa[t]:>10}" for t, _, _ in secili))
     yillar = [y for y in sorted(y for y in yil_oz if y is not None) if YIL_ALT <= y <= YIL_UST] + [None]
     for y in yillar:
         if not yil_oz[y]:
             continue
         print(f"{str(y):>6} {yil_oz[y]:>8} " +
-              " ".join(f"{10000 * yil_tur[y][t] / yil_oz[y]:>10.1f}" for t, _, _ in TURLER))
+              " ".join(f"{10000 * yil_tur[y][t] / yil_oz[y]:>10.1f}" for t, _, _ in secili))
 
     if not excel_yaz:
         silinen = eski_turleri_sil(arg.cikti)
@@ -193,13 +233,14 @@ def main():
     ws = wb.active
     ws.title = "kontrol"
     sutunlar = [("no", 5), ("tür", 16), ("soru", 34), ("adres", 30), ("önce (işaret ⟦ ⟧ içinde)", 60),
-                ("önerilen düzeltmeden sonra", 60), ("cevap (D/Y)", 10), ("açıklama", 30)]
+                ("önerilen düzeltmeden sonra", 60), ("cevap (D/Y)", 10), ("açıklama", 30),
+                ("birleşen parçalar (sol | sağ → sonuç)", 40)]
     ws.append([a for a, _ in sutunlar])
     for i, (_, gen) in enumerate(sutunlar, 1):
         ws.column_dimensions[ws.cell(1, i).column_letter].width = gen
         ws.cell(1, i).font = Font(bold=True)
     no = 0
-    for tur, _, duzeltme in TURLER:
+    for tur, _, duzeltme in secili:
         for url, dil, metin, m, duz in rng.sample(adaylar[tur], min(arg.adet, len(adaylar[tur]))):
             no += 1
             once, sonra = ornek_metni(metin, m, duz)
@@ -207,7 +248,8 @@ def main():
                     "Y = hayır, veri hatası" if duz is None else
                     "Önerilen düzeltme doğru mu? (işaret bir veri hatası ve düzeltilmiş hali doğru) D / Y")
             url_dil = url.replace("/en/", f"/{dil}/") if url and dil in ("tr", "en") else url
-            ws.append([no, tur, soru, url_dil, once, sonra, "", ""])
+            ws.append([no, tur, soru, url_dil, once, sonra, "", "",
+                       parcalar(metin, m) if tur != "html_kalinti" else ""])
             ws.cell(ws.max_row, 4).hyperlink = url_dil
     for satir in ws.iter_rows():
         for h in satir:

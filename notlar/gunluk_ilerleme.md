@@ -646,3 +646,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   (`2008â"2009`, uzun tire yerine), OCR bozuk metin ("Kitap Oç :ana
   bölümden nle'ydana ııe! mi}tir"); eski bozuk metin kuralına takılmıyor
   (Latin harfli). Sıklık ileride ölçülebilir.
+- Kullanıcı: "Ya daha çok varsa?" → (Claude) 1/73 için %95 üst sınır %7,4;
+  en kötü durumda ~320 öz (%0,02). Kullanıcı ek kontrol istedi: **yalnızca
+  Türkçe özlerden** görünmez tire seti. `karakter_kontrol.py`'ye `--dil`,
+  `--tur`, `--haric` (ilk Excel'deki makaleler tekrar alınmaz) ve
+  "birleşen parçalar" sütunu (`öğretme | öğrenme → öğretmeöğrenme`)
+  eklendi; çıktı ayrı dosya `karakter_kontrol_tr.xlsx` (73 örnek).
