@@ -236,6 +236,17 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   = n/(n+1,96²)). Adayı 73'ten az olan türde (harf¬ harf: 35) hepsi
   incelenir. Toplam ~546 satır. Bir tek hata alt sınırı %92,6'ya indirir;
   o durumda oran ve aralık olduğu gibi raporlanır.
+- **KARAR (kullanıcı, 2026-11-03): `\'` ve `\"` kaçış hataları
+  DÜZELTİLMEZ.** Analiz yalnızca harf dizilerini kelime sayar; ters eğik
+  çizgi ve tırnak zaten kelime sınırı olduğundan bozuk ve düzeltilmiş hal
+  aynı kelimeleri verir ("29\'u" ve "29'u" → `u`). Yıllara göre de sabit
+  (~0,5–2 / 10.000). Düzeltme ise LaTeX harf kodlarını bozuyordu
+  (`Schr\"{o}dinger` = Schrödinger, `Szeg\"{o}`; DergiPark bunları ham
+  gösteriyor). Doğrulamada görülen örnekler: `bag\'in`, `29\'u` (gerçek
+  hata, sitede de aynı; kaynak DergiPark kaydı), `\"{o}` (LaTeX). Diğer `\`
+  (LaTeX) ve harf arasında olmayan `¬` de dokunulmaz → doğrulanmaz.
+  **Temizlenecek türler:** görünmez tire, harf¬harf, harf¬ harf, HTML
+  kalıntısı (73 + 73 + 35 + 73 = 254 örnek).
 
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 

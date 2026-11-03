@@ -7,19 +7,21 @@ ve her turden rastgele ornekleri Excel'e yazar. Kullanici her ornekte "onerilen
 duzeltme dogru mu?" sorusunu D / Y diye cevaplar; kural ancak bundan sonra
 oai_ayristir.py'ye eklenir (2026-10-31 karari).
 
-Turler:
-  ters_tirnak      \\'  -> '      (kacis hatasi: Universitesi\\'nde)
-  ters_cift_tirnak \\"  -> "
-  diger_ters       baska bir \\ kullanimi (yalnizca sayilir, duzeltme onerilmez)
+Turler (yalnizca KELIME SAYIMINI bozanlar; 2026-11-03 karari):
   tire_harf_arasi  harf¬harf -> harfharf   (PDF tirelemesi: bu¬lunmaktadir)
   tire_bosluklu    harf¬ harf -> harfharf  (tireleme + satir sonu boslugu)
-  tire_diger       baska bir ¬ kullanimi (ornegin mantikta "degil": ¬p) -> dokunulmaz
   yumusak_tire     gorunmez tire (U+00AD) -> silinir
   html_kalinti     iki kez cozulmesine ragmen kalan HTML kacisi (&amp;lt; -> <): metin
                    en az 3 kez kacislanmis; degismeyene kadar cozulur ("amp", "lt" sahte kelime)
 
 Yillara gore: her turun 10.000 ozde kac ozde gectigi (yil_guvenilir). Amac: bozukluk
 yillara gore degisiyorsa kelime sikliginda SAHTE egilim yaratabilir (2026-11-01).
+
+CIKARILAN turler (2026-11-03, kullanici: "sadece harfleri alacagiz, zaman kaybetmeyelim"):
+\\' ve \\" kacis hatalari kelime sayimini DEGISTIRMIYOR (ters egik cizgi ve tirnak zaten
+kelime siniri: "29\\'u" ve "29'u" ikisi de ['u']); duzeltme LaTeX harf kodlarini bozuyordu
+(Schr\\"{o}dinger). Bunlara ve dokunulmayacak diger \\ / ¬ kullanimlarina dokunulmaz,
+dogrulanmaz. Excel'de bu turlerin satirlari varsa silinir (diger isaretler korunur).
 
 Kullanim:
   python3 karakter_kontrol.py              # sayim + karakter_kontrol.xlsx
@@ -44,12 +46,8 @@ BAGLAM = 50  # isaretin iki yanindan gosterilecek karakter sayisi
 
 # (tur, desen, onerilen duzeltme ya da None = dokunma)
 TURLER = [
-    ("ters_tirnak", re.compile(r"\\'"), "'"),
-    ("ters_cift_tirnak", re.compile(r'\\"'), '"'),
-    ("diger_ters", re.compile(r"\\(?!['\"])"), None),
     ("tire_harf_arasi", re.compile(r"(?<=[^\W\d_])¬(?=[^\W\d_])"), ""),
     ("tire_bosluklu", re.compile(r"(?<=[^\W\d_])¬\s+(?=[^\W\d_])"), ""),
-    ("tire_diger", re.compile(r"(?<![^\W\d_])¬|¬(?!\s*[^\W\d_])"), None),
     ("yumusak_tire", re.compile("\u00ad"), ""),
     ("html_kalinti", re.compile(r"&(?:amp;)*(?:amp|lt|gt|quot|apos|nbsp|#\d+|#x[0-9a-fA-F]+);"), "COZ"),
 ]
@@ -90,6 +88,21 @@ def ornek_metni(metin, m, duzeltme):
     return once, sonra
 
 
+def eski_turleri_sil(yol):
+    """Excel'de artik TURLER'de olmayan turlerin satirlarini siler; kalan satirlarin cevaplari korunur."""
+    openpyxl_gerekli()
+    from openpyxl import load_workbook
+    wb = load_workbook(yol)
+    ws = wb.active
+    gecerli = {t for t, _, _ in TURLER}
+    silinecek = [r for r in range(2, ws.max_row + 1) if ws.cell(r, 2).value not in gecerli]
+    for r in reversed(silinecek):  # alttan silinir ki satir numaralari kaymasin
+        ws.delete_rows(r)
+    if silinecek:
+        wb.save(yol)
+    return len(silinecek)
+
+
 def hesapla(yol):
     """Excel'deki D/Y cevaplarindan tur basina dogruluk ve %95 Wilson araligi."""
     openpyxl_gerekli()
@@ -109,7 +122,6 @@ def hesapla(yol):
             alt, ust = wilson(c["D"], n)
             sonuc = f"%{100 * c['D'] / n:5.1f} ({100 * alt:.1f}–{100 * ust:.1f})"
         print(f"{tur:>18} {c['D']:>4} {c['Y']:>4} {c['bos']:>4}   {sonuc}")
-    print("\nNot: diger_ters / tire_diger satirlarinda D = gercek isaret, dokunulmamali.")
 
 
 def main():
@@ -167,7 +179,10 @@ def main():
               " ".join(f"{10000 * yil_tur[y][t] / yil_oz[y]:>10.1f}" for t, _, _ in TURLER))
 
     if not excel_yaz:
-        print(f"\n{arg.cikti} zaten var: Excel'e dokunulmadi (yeniden olusturmak icin --uzerine-yaz).")
+        silinen = eski_turleri_sil(arg.cikti)
+        print(f"\n{arg.cikti} zaten var: yeniden olusturulmadi (isaretler korundu)"
+              + (f"; cikarilan turlerin {silinen} satiri silindi." if silinen else ".")
+              + " Yeniden olusturmak icin --uzerine-yaz.")
         return
     openpyxl_gerekli()
     from openpyxl import Workbook

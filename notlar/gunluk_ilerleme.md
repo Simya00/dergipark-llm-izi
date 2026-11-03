@@ -606,3 +606,17 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 3. Claude: doğrulama sonucuna göre `temiz()`'e karakter kuralı (görünmez
    tire, harf¬harf, HTML kalıntısı, `\'`); kod önce sohbette.
 4. Sonra: LLM deneyi, aday listeler, dergi paneli.
+
+## 2026-11-03 — Bozuk karakter doğrulaması: sadeleştirme
+
+- Kullanıcı 73'er örnekli Excel'i (546 satır) oluşturdu, işaretlemeye
+  başladı. Gözlemler: `bag\'in` sitede de aynı (hata DergiPark kaydında);
+  Excel her özetten yalnızca ilk işareti gösteriyor (gerçek kural hepsini
+  düzeltir — açıklandı); `Schr\"{o}dinger`, `Szeg\"{o}` LaTeX harf kodu,
+  düzeltme bozuyor → Y.
+- Claude: `\'` / `\"` kelime sayımını değiştirmiyor (tablo ile gösterildi).
+- **Karar (kullanıcı):** "Sadece harfleri alacağız, bu düzeltmeyle zaman
+  kaybetmeyelim, tamamen silin, plana sadık kalalım." → `karakter_kontrol.py`
+  türleri 4'e indi (görünmez tire, harf¬harf, harf¬ harf, HTML kalıntısı);
+  mevcut Excel'den çıkarılan türlerin satırları siliniyor, diğer işaretler
+  korunuyor (sahte Excel ile test edildi). İşaretlenecek: 254 satır.
