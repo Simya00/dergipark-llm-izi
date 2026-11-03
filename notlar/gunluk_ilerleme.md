@@ -629,3 +629,11 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   harf¬harf); örneklerle test edildi (`¬p`, `\'`, LaTeX, `p&lt;0,05`
   korunuyor). Kullanıcı `oai_ayristir.py`'yi yeniden çalıştıracak; sonra
   `karakter_kontrol.py` ile kalan sayılar kontrol edilecek.
+- **Kullanıcı bir sorun buldu (aynı gün):** `öğretme[görünmez tire]öğrenme
+  süreci` → kural `öğretmeöğrenme` yapıyor. Burada görünmez tire gerçek bir
+  kısa çizginin yerine geçmiş (birleşik terim "öğretme-öğrenme"); silmek iki
+  kelimeyi birleştiriyor. Düzeltmeden önce kelime kuralı zaten doğru
+  sayıyordu (`öğretme`, `öğrenme`). Kullanıcı satırı "d" işaretlemişti →
+  Y olmalı. Görünmez tire satırları bu gözle yeniden gözden geçirilecek;
+  sayıya göre karar (kabul / sözlüğe dayalı kural). Kullanıcı karar
+  verilene kadar `oai_ayristir.py`'yi çalıştırmayacak.
