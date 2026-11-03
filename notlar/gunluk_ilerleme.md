@@ -652,3 +652,19 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `--tur`, `--haric` (ilk Excel'deki makaleler tekrar alınmaz) ve
   "birleşen parçalar" sütunu (`öğretme | öğrenme → öğretmeöğrenme`)
   eklendi; çıktı ayrı dosya `karakter_kontrol_tr.xlsx` (73 örnek).
+
+### Türkçe görünmez tire seti (kullanıcı işaretledi, `karakter_kontrol_tr.xlsx`)
+- 73 Türkçe örnek: 68 D, 3 Y, 2 boş. Claude'un satır satır incelemesi:
+  - **İki ayrı kelimenin birleşmesi (öğretme-öğrenme türü): 0/73.**
+  - **Görünmez tire + boşluk: 8/73 (~%11)** — `BELİRTİ[gt] LEN`, `tem[gt]
+    poya`, `çağ[gt] daş`, `neden[gt] le`, `ara[gt] sında`, `uy[gt] gun`,
+    `öldü[gt] rülmesi`, `kolaylaş[gt] tırmak`. Mevcut kural boşluğu
+    bırakıyor, kelime bölük kalıyor (kullanıcı kısmen Y, kısmen D + not
+    işaretledi). Öneri: `¬` kuralı gibi görünmez tire + arkasındaki boşluk
+    birlikte silinsin (harf arasındaysa).
+  - Diğer notlar önceden var olan boşluk kaybı (`analizininyapılması`,
+    `konularınıhaber`, `önlemekamacıyla`, `katkılaryaptı`, `yarısından
+    itibarenönemli`) ve OCR bozukluğu — görünmez tireden bağımsız.
+- Kullanıcı önerisi: **Zemberek** ile karar (görünmez tirede birleşik hal
+  bir kelimeyse birleştir, iki kelimeyse ayır) ve boşluk kaybını ayırmak
+  için de kullanmak. Tartışıldı (aşağıdaki karar bekliyor).
