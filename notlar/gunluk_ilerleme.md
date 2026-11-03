@@ -637,3 +637,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Y olmalı. Görünmez tire satırları bu gözle yeniden gözden geçirilecek;
   sayıya göre karar (kabul / sözlüğe dayalı kural). Kullanıcı karar
   verilene kadar `oai_ayristir.py`'yi çalıştırmayacak.
+- **Gözden geçirme sonrası `--hesapla` (kullanıcı):** harf¬harf 73/73
+  (%95,0–100), harf¬ harf 35/35 (tamamı), görünmez tire **72/73** (%98,6;
+  %95: 92,6–99,8; tek Y: `öğretme[görünmez tire]öğrenme` birleşik terim),
+  HTML kalıntısı 71/71 (2 boş). Claude'un önerisi: görünmez tire kuralı
+  olduğu gibi kalsın, sınır makalede raporlansın (karar kullanıcıda).
+- Yan bulgular (plan dışı, yalnızca not): kodlama bozukluğu
+  (`2008â"2009`, uzun tire yerine), OCR bozuk metin ("Kitap Oç :ana
+  bölümden nle'ydana ııe! mi}tir"); eski bozuk metin kuralına takılmıyor
+  (Latin harfli). Sıklık ileride ölçülebilir.
