@@ -780,3 +780,6 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   yeni kelime, kurallar dondurulmuş. `ek_tur` ve çoklu `hesapla` eklendi,
   sahte veriyle test edildi (önceki kelimeler hariç tutuldu, iki dosya
   doğru birleştirildi).
+- **2. tur sonucu:** 72/73; iki tur birleşik bölünen 142/146 = %97,3
+  (93,2–98,9). Kullanıcıya onay (`onayla`) ve beyaz liste eklemeleri
+  soruldu.

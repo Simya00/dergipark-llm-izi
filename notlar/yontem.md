@@ -339,6 +339,10 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   (`hesapla --excel-listesi`) raporlanır. Beklenti (Claude): hata ~%4
   sürerse 146'da ~%95,9 (GA ~91–98); alt sınırın %95'i geçmesi için ≤2 hata
   gerekir.
+- **SONUÇ (kullanıcı, iki tur birleşik, 2026-11-05):** bölünen grup
+  **142/146 doğru = %97,3 (%95 Wilson 93,2–98,9)**; 2. tur tek başına 72/73.
+  Bölünmeyen grup 70/72 = %97,2 (90,4–99,2). Makalede raporlanacak sayı bu
+  (beyaz listeye sonradan eklenen kelimelerden ÖNCEKİ ölçüm).
 
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 
