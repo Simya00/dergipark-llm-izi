@@ -298,6 +298,20 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   kontrolü tasarlanacak. Gerçek boşluk kaybının 2017–2019'da yoğunlaştığı
   görülüyor (100 kelimede 7–8 vs. sonraki yıllarda ~2), ama sayılar yanlış
   bölmelerle şişkin; temiz ölçüm Zemberek'ten sonra.
+- **Yeni yöntem (kullanıcı onayı, 2026-11-04):** sıklık kuralı yalnızca
+  ADAY üretir. Her aday için: (1) TDK madde başıysa bölme; (2) Zemberek
+  tamamını tanıyorsa bölme; (3) parçalar TDK'de iki kelimelik maddeyse böl;
+  (4) Zemberek (ya da TDK) her parçayı tanıyorsa böl; (5) aksi halde bölme.
+  Zemberek ölçütü tez reposundaki `zemberek_gecerli_mi` ile aynı (en az bir
+  çözümleme). TDK: Güncel Türkçe Sözlük madde başları (MIT,
+  ogun/guncel-turkce-sozluk), tez reposundan kopyalandı
+  (`analiz/kaynaklar/`). Yalnızca Türkçe; İngilizce onarım kapalı.
+- **Kullanıcı kontrolü (zorunlu, son karar kullanıcıda):** `bol` ve `bolme`
+  gruplarından 73'er kelime, geçtikleri özet sayısıyla ağırlıklı rastgele
+  (tohum 20261104; sık onarım daha olası → metne etkiyi temsil eder).
+  Analiz betikleri YALNIZCA kullanıcı onayından sonra `onayla` ile yazılan
+  `birlesik_onayli_tr.tsv`'deki bölmeleri uygular; liste yoksa hiçbir kelime
+  bölünmez (canlı sıklık kuralı analizden kaldırıldı).
 
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 

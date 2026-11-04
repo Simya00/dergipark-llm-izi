@@ -13,14 +13,31 @@ Bircok ozette satir sonu bosluklari kaybolmus ("rakımlaragöre",
           onarimlari gosterir. Oran yillar arasinda cok farkliysa onarim
           yapilmadan yapilan analiz sahte "artis/azalis" uretebilir.
 
+  zemberek: (2026-11-04) Siklik kuralinin bolmek istedigi her kelime (ADAY) icin karar:
+            1. kelime TDK madde basi            -> BOLME  (küçükbaş, sözde, alanya)
+            2. Zemberek kelimenin tamamini taniyor -> BOLME  (verilerde, göreve)
+            3. parcalar TDK'de iki kelimelik madde -> BOL  (okulöncesi -> okul öncesi)
+            4. Zemberek her parcayi taniyor       -> BOL    (buaraştırmanın -> bu + araştırmanın)
+            5. hicbiri                           -> BOLME
+          Kararlar birlesik_karar_<dil>.tsv'ye; kullanici kontrolu icin
+          birlesik_kontrol_<dil>.xlsx (73 bolunen + 73 bolunmeyen ornek).
+  hesapla:  Excel'deki D/Y cevaplarindan iki grubun dogrulugu.
+  onayla:   KULLANICI kontrolunden sonra: BOL kararlarini birlesik_onayli_<dil>.tsv'ye
+            yazar. Analiz betikleri YALNIZCA bu dosyadaki bolmeleri uygular.
+
 Kullanim:
   python3 birlesik_kelime.py sozluk --dil tr
   python3 birlesik_kelime.py rapor --dil tr
+  zemberek_env/bin/python3 birlesik_kelime.py zemberek --dil tr   # Zemberek ortami gerekir
+  python3 birlesik_kelime.py hesapla --dil tr
+  python3 birlesik_kelime.py onayla --dil tr
 """
 
 import argparse
 import gzip
 import json
+import random
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -60,6 +77,7 @@ def komut_sozluk(arg, alan):
 
 
 def komut_rapor(arg, alan):
+    sozluk_hazirla(arg.dil)
     if not sozluk(arg.dil):
         raise SystemExit(f"Once sozluk olusturun: python3 birlesik_kelime.py sozluk --dil {arg.dil}")
     yillar = set(yil_araligi(arg.yillar))
@@ -90,9 +108,252 @@ def komut_rapor(arg, alan):
         print(f"  {adet:>6}  {w}  ->  {p}")
 
 
+# ------------------------------------------------------------------
+# Zemberek + TDK kontrolu (2026-11-04, kullanici karari)
+# ------------------------------------------------------------------
+KLASOR = Path(__file__).resolve().parent
+TDK_DOSYASI = KLASOR / "kaynaklar" / "tdk_sozluk_maddeleri.txt"
+ONBELLEK = KLASOR / "zemberek_birlesik_onbellek.json"
+TOHUM = 20261104
+ORNEK = 73  # hepsi dogruysa %95 Wilson alt siniri %95 (karakter_kontrol.py ile ayni ilke)
+BAGLAM = 60
+
+
+def karar_dosyasi(dil):
+    return KLASOR / f"birlesik_karar_{dil}.tsv"
+
+
+def kontrol_dosyasi(dil):
+    return KLASOR / f"birlesik_kontrol_{dil}.xlsx"
+
+
+def sozluk_hazirla(dil):
+    """Sozluk 'sozluk_tr.tsv.gz.kapali' diye kapatildiysa onu da kabul et (artik analiz
+    sozlugu kullanmiyor; yalnizca aday uretmek icin gerekli)."""
+    from kelime_siklik import sozluk_dosyasi
+    asil = sozluk_dosyasi(dil)
+    kapali = Path(str(asil) + ".kapali")
+    if not asil.exists() and kapali.exists():
+        kapali.rename(asil)
+        print(f"[{kapali.name} -> {asil.name} (analiz artik yalnizca onayli listeyi kullaniyor)]")
+
+
+def tdk_yukle():
+    if not TDK_DOSYASI.exists():
+        raise SystemExit(f"{TDK_DOSYASI} yok (bkz. kaynaklar/README.md)")
+    from kelime_siklik import turkce_kucult
+    return {turkce_kucult(s.strip()) for s in TDK_DOSYASI.read_text(encoding="utf-8").splitlines() if s.strip()}
+
+
+class Zemberek:
+    """kelime -> Zemberek en az bir cozumleme buluyor mu (tez reposundaki zemberek_gecerli_mi ile
+    ayni olcut: len(analysis_results) > 0). Diske onbelleklenir."""
+
+    def __init__(self):
+        try:
+            from zemberek import TurkishMorphology
+        except ImportError:
+            raise SystemExit("Zemberek yok: bash zemberek_kur.sh, sonra zemberek_env/bin/python3 ile calistirin.")
+        self.morf = TurkishMorphology.create_with_defaults()
+        self.onbellek = json.loads(ONBELLEK.read_text(encoding="utf-8")) if ONBELLEK.exists() else {}
+        self.yeni = 0
+
+    def taniyor(self, kelime):
+        if kelime not in self.onbellek:
+            self.onbellek[kelime] = len(self.morf.analyze(kelime).analysis_results) > 0
+            self.yeni += 1
+            if self.yeni % 20000 == 0:
+                self.kaydet()
+        return self.onbellek[kelime]
+
+    def kaydet(self):
+        ONBELLEK.write_text(json.dumps(self.onbellek, ensure_ascii=False), encoding="utf-8")
+
+
+def karar_ver(kelime, parcalar, tdk, zemberek):
+    """(karar, gerekce): karar 'bol' ya da 'bolme'."""
+    if kelime in tdk:
+        return "bolme", "TDK madde başı"
+    if zemberek.taniyor(kelime):
+        return "bolme", "Zemberek tamamını tanıyor"
+    if " ".join(parcalar) in tdk:
+        return "bol", "TDK iki kelimelik madde"
+    if all(p in tdk or zemberek.taniyor(p) for p in parcalar):
+        return "bol", "Zemberek parçaları tanıyor"
+    return "bolme", "onay yok"
+
+
+def agirlikli_ornek(liste, agirlik, n, rng):
+    """Agirlikli, tekrarsiz ornek (Efraimidis-Spirakis): sik gecen adayin secilme sansi
+    daha yuksek -> ornek, onarimin METNE etkisini temsil eder (tek tek kelimeyi degil)."""
+    anahtarli = [(rng.random() ** (1.0 / agirlik(x)), x) for x in liste]
+    return [x for _, x in sorted(anahtarli, reverse=True)[:n]]
+
+
+def komut_zemberek(arg, alan):
+    sozluk_hazirla(arg.dil)
+    sz = sozluk(arg.dil)
+    if not sz:
+        raise SystemExit(f"Once sozluk: python3 birlesik_kelime.py sozluk --dil {arg.dil}")
+    if arg.dil != "tr":
+        raise SystemExit("Zemberek yalnizca Turkce; Ingilizce onarim simdilik kapali (2026-11-04).")
+    try:
+        import openpyxl  # noqa: F401  (Excel sonda yazilir; uzun calismadan ONCE kontrol)
+    except ImportError:
+        raise SystemExit("Bu ortamda openpyxl yok: zemberek_env/bin/pip install openpyxl")
+    tdk, zemberek = tdk_yukle(), Zemberek()
+    yillar = set(yil_araligi(arg.yillar))
+
+    # 1) Adaylar: siklik kuralinin bolmek istedigi kelimeler, kac ozette gectikleri
+    aday_parca, aday_ozet = {}, Counter()
+    for i, m in enumerate(ozetler(arg.girdi, alan), 1):
+        if m.get("yil_guvenilir") not in yillar:
+            continue
+        for w in set(kelime_listesi(m[alan], arg.dil, onarim=False)):
+            if w not in aday_parca:
+                p = birlesik_mi(w, sz)  # eski siklik kurali: bolmek istiyor mu?
+                if not p:
+                    continue
+                aday_parca[w] = p
+            aday_ozet[w] += 1
+        if i % 100000 == 0:
+            print(f"  {i} ozet tarandi, {len(aday_parca)} aday")
+    print(f"{len(aday_parca)} farkli aday kelime")
+
+    # 2) Karar
+    kararlar = {}
+    for j, (w, p) in enumerate(aday_parca.items(), 1):
+        kararlar[w] = karar_ver(w, p, tdk, zemberek)
+        if j % 50000 == 0:
+            print(f"  {j}/{len(aday_parca)} karar")
+    zemberek.kaydet()
+    with open(karar_dosyasi(arg.dil), "w", encoding="utf-8") as f:
+        f.write("kelime\tparcalar\tkarar\tgerekce\tozet_sayisi\n")
+        for w, (k, g) in sorted(kararlar.items(), key=lambda x: -aday_ozet[x[0]]):
+            f.write(f"{w}\t{' '.join(aday_parca[w])}\t{k}\t{g}\t{aday_ozet[w]}\n")
+
+    print(f"\n{'gerekce':>28} {'farkli kelime':>14} {'ozet (gecis)':>13}")
+    for g, adet in Counter(g for _, g in kararlar.values()).most_common():
+        ozet = sum(aday_ozet[w] for w, (_, gg) in kararlar.items() if gg == g)
+        print(f"{g:>28} {adet:>14} {ozet:>13}")
+    print(f"-> {karar_dosyasi(arg.dil)}")
+
+    # 3) Kullanici kontrolu icin ornek: her gruptan ORNEK kelime (sik gecene agirlikli)
+    rng = random.Random(TOHUM)
+    gruplar = {k: [w for w, (kk, _) in kararlar.items() if kk == k] for k in ("bol", "bolme")}
+    secilen = {k: agirlikli_ornek(sorted(v), lambda w: aday_ozet[w], ORNEK, rng) for k, v in gruplar.items()}
+    baglam = ornek_baglamlar(arg, alan, {w for v in secilen.values() for w in v})
+    excel_yaz(arg.dil, secilen, kararlar, aday_parca, aday_ozet, baglam)
+
+
+def ornek_baglamlar(arg, alan, kelimeler):
+    """Secilen kelimelerin her biri icin ilk gectigi ozetten bir kesit ve makale adresi."""
+    from kelime_siklik import turkce_kucult
+    bulunan, kalan = {}, set(kelimeler)
+    for m in ozetler(arg.girdi, alan):
+        if not kalan:
+            break
+        metin = m[alan]
+        kucuk = turkce_kucult(metin)
+        for w in [w for w in kalan if w in kucuk]:
+            if (x := re.search(r"(?<!\w)" + re.escape(w) + r"(?!\w)", kucuk)):
+                bas, son = max(0, x.start() - BAGLAM), min(len(metin), x.end() + BAGLAM)
+                bulunan[w] = (metin[bas:x.start()] + "⟦" + metin[x.start():x.end()] + "⟧" + metin[x.end():son],
+                              (m.get("url") or "").replace("/en/", "/tr/"))
+                kalan.discard(w)
+    return bulunan
+
+
+SORULAR = {
+    "bol": "Kelime gerçekten iki (ya da üç) kelimenin boşluksuz yapışmış hali mi, önerilen bölme doğru mu? "
+           "D = doğru, bölünmeli; Y = yanlış, tek kelime",
+    "bolme": "Kelime gerçekten TEK kelime mi (bölmemek doğru mu)? D = doğru, tek kelime; "
+             "Y = yanlış, aslında yapışmış kelimeler",
+}
+
+
+def excel_yaz(dil, secilen, kararlar, parcalar, ozet, baglam):
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font
+    from openpyxl.worksheet.datavalidation import DataValidation
+    yol = kontrol_dosyasi(dil)
+    if yol.exists():
+        print(f"{yol.name} zaten var (cevaplariniz olabilir): yeniden yazilmadi.")
+        return
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "kontrol"
+    sutunlar = [("no", 5), ("grup", 8), ("soru", 34), ("kelime", 22), ("önerilen bölme", 26), ("gerekçe", 22),
+                ("kaç özette", 9), ("örnek kesit (kelime ⟦ ⟧ içinde)", 60), ("adres", 30),
+                ("cevap (D/Y)", 10), ("açıklama", 30)]
+    ws.append([a for a, _ in sutunlar])
+    for i, (_, gen) in enumerate(sutunlar, 1):
+        ws.column_dimensions[ws.cell(1, i).column_letter].width = gen
+        ws.cell(1, i).font = Font(bold=True)
+    no = 0
+    for grup in ("bol", "bolme"):
+        for w in secilen[grup]:
+            no += 1
+            kesit, adres = baglam.get(w, ("", ""))
+            ws.append([no, grup, SORULAR[grup], w, " + ".join(parcalar[w]), kararlar[w][1], ozet[w], kesit,
+                       adres, "", ""])
+            if adres:
+                ws.cell(ws.max_row, 9).hyperlink = adres
+    for satir in ws.iter_rows():
+        for h in satir:
+            h.alignment = Alignment(wrap_text=True, vertical="top")
+    dv = DataValidation(type="list", formula1='"D,Y"', allow_blank=True)
+    ws.add_data_validation(dv)
+    dv.add(f"J2:J{ws.max_row}")
+    ws.freeze_panes = "A2"
+    wb.save(yol)
+    print(f"{no} ornek -> {yol} (tohum {TOHUM})")
+
+
+def wilson(dogru, n, z=1.96):
+    """%95 Wilson araligi (toplama/dil_dogrulama.py ile ayni formul)."""
+    p = dogru / n
+    merkez = (p + z * z / (2 * n)) / (1 + z * z / n)
+    yari = z * (p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5 / (1 + z * z / n)
+    return max(0.0, merkez - yari), min(1.0, merkez + yari)
+
+
+def komut_hesapla(arg, alan):
+    from openpyxl import load_workbook
+    sayac = {"bol": Counter(), "bolme": Counter()}
+    for r in load_workbook(kontrol_dosyasi(arg.dil)).active.iter_rows(min_row=2, values_only=True):
+        c = str(r[9] or "").strip().upper()[:1]
+        sayac[r[1]][c if c in ("D", "Y") else "bos"] += 1
+    for grup, c in sayac.items():
+        n = c["D"] + c["Y"]
+        oran = ""
+        if n:
+            alt, ust = wilson(c["D"], n)
+            oran = f"%{100 * c['D'] / n:.1f} (%95: {100 * alt:.1f}–{100 * ust:.1f})"
+        print(f"{grup:>6}: D {c['D']}, Y {c['Y']}, bos {c['bos']}  {oran}")
+
+
+def komut_onayla(arg, alan):
+    """KULLANICI kontrolunden sonra calistirilir: 'bol' kararlari analizde kullanilacak listeye."""
+    kaynak = karar_dosyasi(arg.dil)
+    if not kaynak.exists():
+        raise SystemExit("Once: zemberek komutu")
+    from kelime_siklik import onayli_dosyasi
+    n = 0
+    with open(kaynak, encoding="utf-8") as g, open(onayli_dosyasi(arg.dil), "w", encoding="utf-8") as f:
+        next(g)
+        f.write("kelime\tparcalar\n")
+        for s in g:
+            w, p, k, *_ = s.rstrip("\n").split("\t")
+            if k == "bol":
+                f.write(f"{w}\t{p}\n")
+                n += 1
+    print(f"{n} onayli bolme -> {onayli_dosyasi(arg.dil)} (analiz betikleri artik bunlari boler)")
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("komut", choices=["sozluk", "rapor"])
+    p.add_argument("komut", choices=["sozluk", "rapor", "zemberek", "hesapla", "onayla"])
     p.add_argument("--girdi", default=str(VARSAYILAN_GIRDI))
     p.add_argument("--dil", choices=["tr", "en"], required=True)
     p.add_argument("--parca", type=int, default=4, help="sozluk: dosya kac kez okunsun (bellek / parca)")
@@ -100,7 +361,8 @@ def main():
     p.add_argument("--ornek", type=int, default=40, help="rapor: gosterilecek ornek onarim sayisi")
     arg = p.parse_args()
     alan = f"ozet_{arg.dil}"
-    {"sozluk": komut_sozluk, "rapor": komut_rapor}[arg.komut](arg, alan)
+    {"sozluk": komut_sozluk, "rapor": komut_rapor, "zemberek": komut_zemberek, "hesapla": komut_hesapla,
+     "onayla": komut_onayla}[arg.komut](arg, alan)
 
 
 if __name__ == "__main__":

@@ -699,3 +699,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Kullanıcı kararı: nadir kelimeler ek Zemberek kontrolünden geçsin,
   Zemberek onay verirse bölünsün; TR-LLM-Analiz'deki sözlük ek kontrol
   olsun; **son kontrolü kullanıcı yapacak.** Tasarım onaya sunuldu.
+- Kod (kullanıcı: "dediklerini deneyelim"): `kelime_siklik.py` artık
+  yalnızca onaylı listeyle bölüyor; `birlesik_kelime.py` → `zemberek`,
+  `hesapla`, `onayla`. TDK dosyası `analiz/kaynaklar/`'a kopyalandı (tez
+  reposu değişmedi: `git status` boş). Sahte Zemberek ile test: verilerde,
+  göreve, ölçeğine, bağlamındaki (Zemberek), alanya, küçükbaş, sözde (TDK)
+  bölünmedi; buaraştırmanın, ileilgili, birşekilde (Zemberek), okulöncesi
+  (TDK iki kelime) bölündü.

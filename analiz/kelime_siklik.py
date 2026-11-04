@@ -68,9 +68,13 @@ def tr_kelime_kucult(kelime: str) -> str:
 # SIK_ESIK ozette gecen 2 (gerekirse 3) kelimeye bolunebiliyorsa VE kendisi ya
 # cok nadirse (< NADIR_ESIK ozet) ya da en seyrek parcasindan en az KAT_ESIK
 # kat daha seyrekse bolunur ("biryandan" gibi tekrarlayan hatalar icin).
-# Sik kelimeler ("neden", "bilgisayar") bu yuzden bolunmez. Turkcenin eklemeli
-# yapisi yuzunden yanlis bolme riski dusuk: "kitaplarımızdan" bolunmez, cunku
-# "ımızdan" bir kelime degil.
+# Sik kelimeler ("neden", "bilgisayar") bu yuzden bolunmez.
+#
+# 2026-11-04: Bu siklik kurali TEK BASINA YANLIS bolüyordu ("verilerde" -> "veriler
+# + de", "göreve" -> "göre + ve": de/da/ki/ne/ve/ya hem ek hem kelime). Artik
+# yalnizca ADAY uretir. Analizde bolme, yalnizca Zemberek/TDK onayindan gecip
+# KULLANICININ elle dogruladigi listeden yapilir (birlesik_onayli_<dil>.tsv;
+# birlesik_kelime.py zemberek / onayla). Liste yoksa hicbir kelime bolunmez.
 NADIR_ESIK = 3
 SIK_ESIK = 30
 KAT_ESIK = 20
@@ -122,14 +126,35 @@ def bol(kelime: str, sz: dict, derinlik: int = 2):
     return en_iyi
 
 
+_ONAYLI = {}
+
+
+def onayli_dosyasi(dil: str) -> Path:
+    return KLASOR / f"birlesik_onayli_{dil}.tsv"
+
+
+def onayli_birlesikler(dil: str):
+    """{kelime: [parcalar]} — kullanicinin onayladigi bolmeler; dosya yoksa None."""
+    if dil not in _ONAYLI:
+        dosya = onayli_dosyasi(dil)
+        if dosya.exists():
+            with open(dosya, encoding="utf-8") as f:
+                next(f)
+                _ONAYLI[dil] = {k: p.split() for k, p in (s.rstrip("\n").split("\t")[:2] for s in f)}
+            print(f"[birlesik kelime onarimi acik: {dosya.name}, {len(_ONAYLI[dil])} onayli kelime]",
+                  file=sys.stderr)
+        else:
+            _ONAYLI[dil] = None
+    return _ONAYLI[dil]
+
+
 def onar(kelimeler: list, dil: str) -> list:
-    sz = sozluk(dil)
-    if not sz:
+    onayli = onayli_birlesikler(dil)
+    if not onayli:
         return kelimeler
     sonuc = []
     for k in kelimeler:
-        parcalar = birlesik_mi(k, sz)
-        sonuc.extend(parcalar or [k])
+        sonuc.extend(onayli.get(k, [k]))
     return sonuc
 
 
@@ -145,7 +170,7 @@ def birlesik_mi(kelime: str, sz: dict):
 
 
 def kelime_listesi(metin: str, dil: str, onarim: bool = True) -> list:
-    """Metindeki kelimeler, sirasiyla (sozluk varsa birlesik kelimeler bolunmus)."""
+    """Metindeki kelimeler, sirasiyla (onayli liste varsa birlesik kelimeler bolunmus)."""
     if dil == "tr":
         bulunan = (tr_kelime_kucult(k) for k in KELIME.findall(KESME_EKI.sub("", metin)))
     else:

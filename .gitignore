@@ -38,3 +38,9 @@ sonuc_*.txt
 **/sonuc_*.txt
 # NOT: toplama/dil_dogrulama.xlsx ve deney/deney_ornekleri.json elle
 # girilmis arastirma verisidir; BILEREK repoda tutulur.
+
+# Birlesik kelime: Zemberek kararlari ve onbellegi (buyuk, yeniden uretilebilir).
+# NOT: analiz/birlesik_kontrol_tr.xlsx elle isaretlenen arastirma verisidir; repoda tutulur.
+analiz/birlesik_karar_*.tsv
+analiz/birlesik_onayli_*.tsv
+analiz/zemberek_birlesik_onbellek.json
