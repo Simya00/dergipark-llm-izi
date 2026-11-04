@@ -753,3 +753,13 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   varsayımıyla tekrar oynatıldı (sonuç `yontem.md` §5). Beyaz listeye Claude
   2 kök ekledi (takson, orbita; testte görülen `tak + sonunda`, `orbit +
   adaki` riskleri) — kullanıcı onayı bekliyor.
+- **v2 `karsilastir` (kullanıcı, gerçek sözlük + Zemberek), işaretli 72
+  "bol" satırı:** D verilen 42'nin 41'i aynı (kayıp: 3 parçalı
+  `akreditasyon…`); yanlış yerden bölünmüş 19'un 17'si artık doğru yerden
+  (`modeline + göre`, `şirketine + ait`…), 2'si bölünmüyor
+  (`mevsimsellikten…`, `mektebinden…`: güvenli kaçırma); tek kelime 11'in
+  10'u bölünmüyor, 1 hata `habishanelere → habis + hanelere` (hapishanenin
+  eski yazımı) → beyaz listeye `habishane` eklendi. Claude'un sayımı:
+  ~68/72 doğru karar, yanlış bölme 1/72. "bolme" grubunda da gerçek
+  yapışmalar yakalanıyor (`vergi + denetimlerinin`, `şiirinin + dili`,
+  `yapılarındaki + iznik`, `yer + alan`).

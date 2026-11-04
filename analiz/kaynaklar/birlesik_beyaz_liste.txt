@@ -11,3 +11,4 @@ nushiye	2026-11-05	kullanici, birlesik_kontrol_tr #43
 lanns	2026-11-05	kullanici, birlesik_kontrol_tr #71 (S-LANSS kisaltmasi)
 takson	2026-11-05	Claude, karsilastirma testi #143 (tak + sonunda onlemi; kullanici onayi bekliyor)
 orbita	2026-11-05	Claude, karsilastirma testi #127 (orbit + adaki onlemi; kullanici onayi bekliyor)
+habishane	2026-11-05	kullanici, birlesik_kontrol_tr #17 (hapishanenin eski yazimi; habis + hanelere yanlis)
