@@ -791,3 +791,5 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `Türkçeye → Türkçeye` düzeliyor, `gö̈revleri` (zaten
   noktalı harfe fazladan işaret) NFC ile DÜZELMİYOR → ayrı alt tür, ölçüme
   göre karar.
+- `onayla` çalıştırıldı: **546.522 onaylı bölme** — birleşik kelime onarımı
+  analizde AÇIK. (Sayılar `yontem.md` §5.)

@@ -343,6 +343,13 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   **142/146 doğru = %97,3 (%95 Wilson 93,2–98,9)**; 2. tur tek başına 72/73.
   Bölünmeyen grup 70/72 = %97,2 (90,4–99,2). Makalede raporlanacak sayı bu
   (beyaz listeye sonradan eklenen kelimelerden ÖNCEKİ ölçüm).
+- **Analize açıldı (kullanıcı, 2026-11-05):** son kararlar (beyaz liste
+  güncel): iki parça da gerçek kelime 544.592 farklı kelime (902.734 geçiş),
+  TDK iki kelimelik madde 1.929 (12.351), zorla böl 1 (`yeralan`, 586) →
+  **546.522 onaylı bölme** (`birlesik_onayli_tr.tsv`). Bölünmeyen adaylar:
+  Zemberek tamamını tanıyor 206.187 (817.181), onay yok 177.327 (256.542),
+  TDK madde başı 9.795 (67.479), beyaz liste 225 (508). Yalnızca Türkçe;
+  İngilizce onarım kapalı.
 
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 
