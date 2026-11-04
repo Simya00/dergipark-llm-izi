@@ -285,6 +285,19 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   doğrulanacak. Yanlış bölme görülürse **Zemberek kontrolü** eklenecek:
   Zemberek bütün kelimeyi tanıyorsa bölünmez; tanımıyor ama iki parçayı
   tanıyorsa bölünür (kullanıcının fikri).
+- **İlk ölçüm (2026-11-04, temizlenmiş veri, sözlük 447.503 kelime):**
+  rapor TR özlerin %79–94'ünde "birleşik" kelime ve 100 kelimede 1,8–8,1
+  onarım gösterdi. En sık 40 onarımın ~26'sı **yanlış**: `verilerde →
+  veriler + de`, `bağlamındaki → bağlamında + ki`, `göreve → göre + ve`,
+  `ölçeğine → ölçeği + ne`, `alanya → alan + ya`, `işgören`, `anadili`…
+  Sebep: "≥20 kat seyrek" ölçütü + `de/da/ki/ne/ve/ya` hem ek hem bağımsız
+  kelime; önceki gerekçe ("ekler tek başına kelime olmadığı için risk
+  düşük") bu ekler için YANLIŞ. Doğru olanlar: `birşekilde`, `ileilgili`,
+  `olmaküzere`, `buaraştırmanın`, `eldeedilmiştir`, `bunedenle`…
+  → Otomatik onarım KAPATILDI (sözlük dosyası devre dışı); Zemberek
+  kontrolü tasarlanacak. Gerçek boşluk kaybının 2017–2019'da yoğunlaştığı
+  görülüyor (100 kelimede 7–8 vs. sonraki yıllarda ~2), ama sayılar yanlış
+  bölmelerle şişkin; temiz ölçüm Zemberek'ten sonra.
 
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 

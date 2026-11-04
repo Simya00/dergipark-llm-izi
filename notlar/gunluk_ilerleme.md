@@ -675,3 +675,17 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   değerlendirilecek (`yontem.md` §5).
 - Sırada (kullanıcı): `git pull` → `oai_ayristir.py` → `karakter_kontrol.py`
   (kalan ~0 olmalı) → `analiz/birlesik_kelime.py sozluk/rapor --dil tr`.
+
+## 2026-11-04 — Yeniden ayrıştırma ve birleşik kelime raporu
+
+- `oai_ayristir.py` (kullanıcı): bozuk karakter temizliği — harf¬harf 3.662,
+  görünmez tire 10.754, HTML >2 kat 11.810 metin (tüm dc alanları).
+  `karakter_kontrol.py` dört tür için **0** → temizlik tam.
+- İki dilli alan yüzünden özeti analiz dışı kalan makale: **TR 11.134,
+  EN 11.634**.
+- `birlesik_kelime.py sozluk/rapor --dil tr`: onarım kuralı aşırı bölüyor
+  (en sık 40 onarımın ~26'sı yanlış, ör. `verilerde → veriler + de`).
+  Sözlük oluşturulunca TÜM analiz betikleri bu onarımı otomatik uyguluyor
+  → kullanıcıya sözlük dosyasını devre dışı bırakması söylendi (önceki
+  analizlerde sözlük yoktu, etkilenmedi). Kullanıcının Zemberek fikri
+  artık gerekli: tasarım onaya sunulacak.
