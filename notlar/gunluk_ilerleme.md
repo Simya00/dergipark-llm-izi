@@ -783,3 +783,11 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - **2. tur sonucu:** 72/73; iki tur birleşik bölünen 142/146 = %97,3
   (93,2–98,9). Kullanıcıya onay (`onayla`) ve beyaz liste eklemeleri
   soruldu.
+- Kullanıcı: "tamam başlayalım". Beyaz listeye 1. turun 3 hatası eklendi
+  (cihanzâde, bankya, habitat; "doğrulama SONRASI" notuyla). 2. turdaki
+  hatalı kelime kullanıcıdan bekleniyor.
+- `karakter_kontrol.py`'ye ölçüm türü `birlestirici_isaret` eklendi: harf +
+  ayrı birleştirici işaret (U+0300–036F). Önerilen düzeltme NFC; test:
+  `Türkçeye → Türkçeye` düzeliyor, `gö̈revleri` (zaten
+  noktalı harfe fazladan işaret) NFC ile DÜZELMİYOR → ayrı alt tür, ölçüme
+  göre karar.

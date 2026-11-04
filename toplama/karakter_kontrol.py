@@ -11,6 +11,7 @@ Turler (yalnizca KELIME SAYIMINI bozanlar; 2026-11-03 karari):
   tire_harf_arasi  harf¬harf -> harfharf   (PDF tirelemesi: bu¬lunmaktadir)
   tire_bosluklu    harf¬ harf -> harfharf  (tireleme + satir sonu boslugu)
   yumusak_tire     gorunmez tire (U+00AD) -> silinir
+  birlestirici_isaret  harf + ayri birlestirici isaret (Tu\u0308rkçe) -> NFC (2026-11-05)
   html_kalinti     iki kez cozulmesine ragmen kalan HTML kacisi (&amp;lt; -> <): metin
                    en az 3 kez kacislanmis; degismeyene kadar cozulur ("amp", "lt" sahte kelime)
 
@@ -40,6 +41,7 @@ import html
 import json
 import random
 import re
+import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -55,6 +57,9 @@ TURLER = [
     ("tire_bosluklu", re.compile(r"(?<=[^\W\d_])¬\s+(?=[^\W\d_])"), ""),
     ("yumusak_tire", re.compile("\u00ad"), ""),
     ("html_kalinti", re.compile(r"&(?:amp;)*(?:amp|lt|gt|quot|apos|nbsp|#\d+|#x[0-9a-fA-F]+);"), "COZ"),
+    # 2026-11-05: harf + AYRI birlestirici isaret (u + \u0308 = ü; Unicode NFD). Kelime kurali isareti
+    # harf saymadigi icin kelimeyi boler: "Tu\u0308rkçeye" -> "tu" + "rkçeye". Onerilen: NFC (birlestir).
+    ("birlestirici_isaret", re.compile(r"(?<=[^\W\d_])[\u0300-\u036f]+"), "NFC"),
 ]
 YIL_ALT, YIL_UST = 2010, 2026  # yillik tabloda gosterilen yillar
 
@@ -103,6 +108,10 @@ def ornek_metni(metin, m, duzeltme):
     once = metin[bas:m.start()] + "⟦" + m.group().replace("\u00ad", "[görünmez tire]") + "⟧" + metin[m.end():son]
     if duzeltme == "COZ":
         duzeltme = tamamen_coz(m.group())
+    elif duzeltme == "NFC":  # harfi isaretiyle birlikte tek karaktere cevir; birlesmeyen isaret kalir
+        bas, son = max(0, m.start() - BAGLAM), min(len(metin), m.end() + BAGLAM)
+        once = metin[bas:m.start() - 1] + "⟦" + metin[m.start() - 1:m.end()] + "⟧" + metin[m.end():son]
+        return once, unicodedata.normalize("NFC", metin[bas:son])
     sonra = "" if duzeltme is None else metin[bas:m.start()] + duzeltme + metin[m.end():son]
     return once, sonra
 
@@ -203,7 +212,8 @@ def main():
     print(f"{'tur':>18} {'oz sayisi':>10} {'oz %':>7} {'isaret':>8}  onerilen")
     for tur, _, duzeltme in secili:
         oneri = ("dokunma (yalnizca sayim)" if duzeltme is None else
-                 "-> degismeyene kadar coz" if duzeltme == "COZ" else f"-> {duzeltme!r}")
+                 "-> degismeyene kadar coz" if duzeltme == "COZ" else
+                 "-> NFC (harf + isaret tek karakter)" if duzeltme == "NFC" else f"-> {duzeltme!r}")
         print(f"{tur:>18} {oz_sayisi[tur]:>10} {100 * oz_sayisi[tur] / max(toplam_oz, 1):>6.2f}% "
               f"{isaret_sayisi[tur]:>8}  {oneri}")
 
