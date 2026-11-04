@@ -710,3 +710,19 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `zemberek` komutu Excel yazmıyor; örnekleri `birlesik_ornek_tr.json`'a
   yazıyor, Excel'i normal python ile `excel` komutu oluşturuyor. Önerilen:
   bu projenin kendi `analiz/zemberek_kur.sh` ile ayrı ortam (tezden bağımsız).
+
+## 2026-11-05 — Zemberek kontrolü ilk çalıştırma (kullanıcı)
+- Projeye ayrı Zemberek ortamı kuruldu (`analiz/zemberek_env`, tezden
+  bağımsız). `birlesik_kelime.py zemberek --dil tr` (2015–2026 TR özler):
+  **940.056 farklı aday** (sıklık kuralının bölmek istediği kelime).
+  | gerekçe | farklı kelime | geçiş (özet) |
+  |---|---|---|
+  | Zemberek parçaları tanıyor → BÖL | 545.480 | 933.096 |
+  | Zemberek tamamını tanıyor → bölme | 206.225 | 817.916 |
+  | onay yok → bölme | 177.013 | 227.580 |
+  | TDK madde başı → bölme | 9.795 | 67.479 |
+  | TDK iki kelimelik madde → BÖL | 1.543 | 11.310 |
+- Not (Claude): bölünecek grup çok büyük ve çoğu tek geçişli kelime;
+  gerçek yapışmalar çoğunlukla tekildir (her kombinasyon farklı), ama
+  Zemberek'in tanımadığı terim/yabancı kelimelerin de bu gruba düşme riski
+  var. Doğruluk yalnızca kullanıcının Excel kontrolüyle bilinecek.
