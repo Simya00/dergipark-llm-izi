@@ -28,6 +28,8 @@ Bircok ozette satir sonu bosluklari kaybolmus ("rakımlaragöre",
   excel:    Ornek JSON'dan kontrol Excel'i (normal python). Eski Excel _vN olarak saklanir,
             ayni kelime + ayni bolme icin cevap aktarilir. Soru: T (tek kelime) / B (bolme dogru).
   karsilastir: Isaretli Excel'deki kelimeleri SIMDIKI kurallardan gecirir (eski/yeni yan yana).
+  ek_tur:   Ayni kararlardan yeni 73 'bol' ornegi (incelenenler haric) -> birlesik_kontrol_<dil>_tur2.xlsx.
+            hesapla --excel-listesi A.xlsx B.xlsx ile turlar birlestirilir.
   hesapla:  Excel'deki T/B cevaplarindan iki grubun dogrulugu.
   onayla:   KULLANICI kontrolunden sonra: BOL kararlarini birlesik_onayli_<dil>.tsv'ye
             yazar. Analiz betikleri YALNIZCA bu dosyadaki bolmeleri uygular.
@@ -343,11 +345,11 @@ SORU = ("Doğru yazım hangisi?  T = olduğu gibi TEK kelime   B = önerilen BÖ
 CEVAP_SUTUNU = "doğru yazım (T/B)"
 
 
-def excel_yaz(dil, secilen, kararlar, parcalar, ozet, baglam):
+def excel_yaz(dil, secilen, kararlar, parcalar, ozet, baglam, yol=None):
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Font
     from openpyxl.worksheet.datavalidation import DataValidation
-    yol = kontrol_dosyasi(dil)
+    yol = yol or kontrol_dosyasi(dil)
     eski = eski_cevaplar(yol) if yol.exists() else {}
     if yol.exists():  # isaretli eski dosya silinmez, surum adiyla saklanir
         n = 1
@@ -366,7 +368,7 @@ def excel_yaz(dil, secilen, kararlar, parcalar, ozet, baglam):
         ws.column_dimensions[ws.cell(1, i).column_letter].width = gen
         ws.cell(1, i).font = Font(bold=True)
     no = aktarilan = 0
-    for grup in ("bol", "bolme"):
+    for grup in [g for g in ("bol", "bolme") if g in secilen]:
         for w in secilen[grup]:
             no += 1
             kesit, adres = baglam.get(w, ("", ""))
@@ -385,7 +387,7 @@ def excel_yaz(dil, secilen, kararlar, parcalar, ozet, baglam):
     dv.add(f"J2:J{ws.max_row}")
     ws.freeze_panes = "A2"
     wb.save(yol)
-    print(f"{no} ornek -> {yol} (tohum {TOHUM}); onceki Excel'den {aktarilan} cevap aktarildi")
+    print(f"{no} ornek -> {yol}; onceki Excel'den {aktarilan} cevap aktarildi")
 
 
 def eski_cevaplar(yol):
@@ -417,13 +419,53 @@ def wilson(dogru, n, z=1.96):
     return max(0.0, merkez - yari), min(1.0, merkez + yari)
 
 
+def incelenmis_kelimeler(dil):
+    """Bu dil icin daha once kontrol Excel'lerine girmis butun kelimeler (her tur, her surum)."""
+    from openpyxl import load_workbook
+    kelimeler = set()
+    for yol in KLASOR.glob(f"birlesik_kontrol_{dil}*.xlsx"):
+        kelimeler.update(r[3] for r in load_workbook(yol).active.iter_rows(min_row=2, values_only=True) if r[3])
+    return kelimeler
+
+
+def komut_ek_tur(arg, alan):
+    """Ayni (dondurulmus) kararlardan YENI bir 'bol' ornegi: daha once incelenen kelimeler haric,
+    farkli tohum. Kurallar degismez: birlesik_karar_<dil>.tsv oldugu gibi kullanilir (2026-11-05)."""
+    yol = KLASOR / f"birlesik_kontrol_{arg.dil}_tur{arg.tur}.xlsx"
+    if yol.exists():
+        raise SystemExit(f"{yol.name} zaten var (cevaplariniz olabilir).")
+    gorulen = incelenmis_kelimeler(arg.dil)
+    kararlar, parcalar, ozet = {}, {}, {}
+    with open(karar_dosyasi(arg.dil), encoding="utf-8") as f:
+        next(f)
+        for satir in f:
+            w, p, k, g, n = satir.rstrip("\n").split("\t")
+            if k == "bol" and w not in gorulen:
+                kararlar[w], parcalar[w], ozet[w] = (k, g), p.split(), int(n)
+    rng = random.Random(TOHUM + arg.tur)  # her tur kendi sabit tohumuyla
+    secilen = {"bol": agirlikli_ornek(sorted(kararlar), lambda w: ozet[w], ORNEK, rng)}
+    print(f"{len(gorulen)} kelime daha once incelendi (haric); {len(kararlar)} bol adayi; "
+          f"{len(secilen['bol'])} secildi (tohum {TOHUM + arg.tur})")
+    baglam = ornek_baglamlar(arg, alan, set(secilen["bol"]))
+    excel_yaz(arg.dil, secilen, kararlar, parcalar, ozet, baglam, yol=yol)
+
+
 def komut_hesapla(arg, alan):
+    """Bir ya da birden cok T/B Excel'ini birlestirerek hesaplar (ayni kelime bir kez sayilir)."""
     from openpyxl import load_workbook
     sayac = {"bol": Counter(), "bolme": Counter()}
     dogru_cevap = {"bol": "B", "bolme": "T"}
-    for r in load_workbook(kontrol_dosyasi(arg.dil)).active.iter_rows(min_row=2, values_only=True):
-        c = str(r[9] or "").strip().upper()[:1]
-        sayac[r[1]]["bos" if c not in ("T", "B") else ("D" if c == dogru_cevap[r[1]] else "Y")] += 1
+    gorulen = set()
+    for yol in (arg.excel_listesi or [kontrol_dosyasi(arg.dil)]):
+        ws = load_workbook(yol).active
+        if CEVAP_SUTUNU not in [c.value for c in ws[1]]:
+            raise SystemExit(f"{yol}: eski D/Y bicimi (v1 kurallari) — v2 sonucuyla birlestirilemez.")
+        for r in ws.iter_rows(min_row=2, values_only=True):
+            if r[3] in gorulen:
+                continue
+            gorulen.add(r[3])
+            c = str(r[9] or "").strip().upper()[:1]
+            sayac[r[1]]["bos" if c not in ("T", "B") else ("D" if c == dogru_cevap[r[1]] else "Y")] += 1
     for grup, c in sayac.items():
         n = c["D"] + c["Y"]
         oran = ""
@@ -490,7 +532,10 @@ def komut_onayla(arg, alan):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("komut", choices=["sozluk", "rapor", "zemberek", "excel", "karsilastir", "hesapla", "onayla"])
+    p.add_argument("komut", choices=["sozluk", "rapor", "zemberek", "excel", "ek_tur", "karsilastir", "hesapla",
+                                     "onayla"])
+    p.add_argument("--tur", type=int, default=2, help="ek_tur: tur numarasi (dosya adi ve tohum)")
+    p.add_argument("--excel-listesi", nargs="+", help="hesapla: birlestirilecek T/B Excel'leri")
     p.add_argument("--excel", help="karsilastir: isaretli Excel (varsayilan birlesik_kontrol_<dil>.xlsx)")
     p.add_argument("--girdi", default=str(VARSAYILAN_GIRDI))
     p.add_argument("--dil", choices=["tr", "en"], required=True)
@@ -499,7 +544,7 @@ def main():
     p.add_argument("--ornek", type=int, default=40, help="rapor: gosterilecek ornek onarim sayisi")
     arg = p.parse_args()
     alan = f"ozet_{arg.dil}"
-    {"sozluk": komut_sozluk, "rapor": komut_rapor, "zemberek": komut_zemberek, "excel": komut_excel, "karsilastir": komut_karsilastir, "hesapla": komut_hesapla,
+    {"sozluk": komut_sozluk, "rapor": komut_rapor, "zemberek": komut_zemberek, "excel": komut_excel, "ek_tur": komut_ek_tur, "karsilastir": komut_karsilastir, "hesapla": komut_hesapla,
      "onayla": komut_onayla}[arg.komut](arg, alan)
 
 

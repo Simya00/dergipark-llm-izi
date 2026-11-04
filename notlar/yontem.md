@@ -328,6 +328,17 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   bölme, 9 bölünmeme). Kalan riskler sıklık eşitliğinden (`model +
   inegöre`, `bar + sakla`); gerçek sözlükle ortadan kalkması bekleniyor —
   kullanıcının makinesinde `karsilastir` ile doğrulanacak.
+- **v2 doğrulaması, 1. tur (kullanıcı, 2026-11-05):** bölünen 70/73
+  (%95,9; GA 88,6–98,6) — hatalar özel ad/yazım hatası (cihanzâde, bankya,
+  habitatda); bölünmeyen 70/72 (%97,2; GA 90,4–99,2).
+- **2. tur (kullanıcı kararı):** daha dar güven aralığı için yalnızca
+  bölünen grupta 73 yeni kelime (`ek_tur`; önceki Excel'lerdeki kelimeler
+  hariç, tohum 20261106, aynı ağırlıklı seçim). **Kurallar donduruldu:** aynı
+  `birlesik_karar_tr.tsv` kullanılır; 1. turda bulunan 3 kelime beyaz
+  listeye 2. tur bitmeden eklenmez. Sonuç iki tur birleştirilerek
+  (`hesapla --excel-listesi`) raporlanır. Beklenti (Claude): hata ~%4
+  sürerse 146'da ~%95,9 (GA ~91–98); alt sınırın %95'i geçmesi için ≤2 hata
+  gerekir.
 
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 

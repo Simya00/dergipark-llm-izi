@@ -776,3 +776,7 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   olasılıkla ayrıştırılmış biçimde (u + birleştirici iki nokta, Unicode NFD);
   kelime kuralı birleştirici işareti harf saymadığı için kelimeyi bölüyor.
   Öneri: `temiz()`'de Unicode NFC normalleştirmesi (önce ölçüm).
+- Kullanıcı: "bir tarama daha yapsak?" → evet, yalnızca bölünen grup, 73
+  yeni kelime, kurallar dondurulmuş. `ek_tur` ve çoklu `hesapla` eklendi,
+  sahte veriyle test edildi (önceki kelimeler hariç tutuldu, iki dosya
+  doğru birleştirildi).
