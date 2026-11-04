@@ -265,6 +265,20 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   Zemberek ile karar (kullanıcı önerisi) görünmez tire için gereksiz
   bulundu (birleşik terim hatası görülmedi; yavaş; yalnızca Türkçe).
 
+### 4.6 Ayrık birleştirici işaretler (Unicode NFD) — ölçüm (2026-11-05)
+- Bazı özetlerde Türkçe harfler ayrık biçimde saklanmış: "ü" = u + U+0308,
+  "ş" = s + U+0327, "ğ" = g + U+0306 (ekranda aynı görünür). Analizin
+  kelime kuralı işareti harf saymadığı için kelimeyi böler ("Türkçeye" →
+  `tu` + `rkçeye`).
+- **Ölçüm:** 7.725 öz (%0,59), 151.538 işaret (öz başına ~20: metnin
+  tamamı ayrık biçimde). Yıllara göre (10.000 özde): 2010–2012 ~23–29,
+  2013–2017 ~49–67, 2018–2026 ~64–86 (2023: 86, 2025: 64). → Zamanla değişen
+  bir bozukluk; etkilenen özlerde Türkçe harfli kelimelerin çoğu bölünüyor.
+- Önerilen düzeltme: `temiz()`'de Unicode NFC (standart, görünür metni
+  değiştirmeyen birleştirme). Zaten noktalı harfe eklenmiş fazladan işaret
+  (`gö̈revleri`) NFC ile düzelmez; sıklığı ayrıca ölçülecek. Kullanıcı 73
+  örnek (`karakter_kontrol_nfc.xlsx`) işaretleyecek.
+
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 
 - **Sorun:** PDF'ten kopyalamada satır sonu boşlukları kaybolmuş

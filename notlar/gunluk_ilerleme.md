@@ -793,3 +793,6 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   göre karar.
 - `onayla` çalıştırıldı: **546.522 onaylı bölme** — birleşik kelime onarımı
   analizde AÇIK. (Sayılar `yontem.md` §5.)
+- Birleştirici işaret ölçümü (kullanıcı): 7.725 öz (%0,59), 151.538 işaret;
+  yıllara göre artıyor (2010: 22,9 → 2018–2026: 64–86 / 10.000). Ayrıntı
+  `yontem.md` §4.6. NFC önerildi; 73 örnek kullanıcıda.
