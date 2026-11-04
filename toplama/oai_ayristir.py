@@ -58,6 +58,7 @@ import gzip
 import html
 import json
 import re
+import unicodedata
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -250,6 +251,13 @@ def temiz(metin):
     # ("&amp;#039;", "&amp;amp;lt;") ve <p>/<br> etiketli. Degismeyene kadar coz, etiketleri at.
     metin = html_coz(metin or "")
     metin = HTML_ETIKET.sub(" ", metin)
+    # Unicode NFC (2026-11-05, kullanici karari): ayrik harf + isaret ("u" + U+0308) tek karaktere
+    # ("ü"). 7.725 ozde metnin tamami ayrik biciminde; kelime kurali isareti harf saymadigi icin
+    # "Türkçeye" -> "tu" + "rkçeye" oluyordu. Gorunur metni degistirmez (yontem.md 4.6).
+    nfc = unicodedata.normalize("NFC", metin)
+    if nfc != metin:
+        karakter_sayaci["NFC birlestirdi"] += 1
+        metin = nfc
     if YUMUSAK_TIRE in metin:
         karakter_sayaci["gorunmez tire silindi"] += 1
         metin = YUMUSAK_TIRE_HARF.sub("", metin)   # harf[gt] harf / harf[gt] harf -> harfharf

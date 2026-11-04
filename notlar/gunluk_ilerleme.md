@@ -796,3 +796,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Birleştirici işaret ölçümü (kullanıcı): 7.725 öz (%0,59), 151.538 işaret;
   yıllara göre artıyor (2010: 22,9 → 2018–2026: 64–86 / 10.000). Ayrıntı
   `yontem.md` §4.6. NFC önerildi; 73 örnek kullanıcıda.
+- Kullanıcı: NFC gerekli mi? → (Claude) ana sonuçlara etkisi küçük
+  (yıllar arası fark ~binde 1), maliyeti tek satır, standart uygulama.
+  Kullanıcı: "ne kadar gerekliyse o kadar kontrol edelim, tam olsun." →
+  NFC `temiz()`'e eklendi; `nfc_sonrasi_isaret` ölçümü eklendi (test:
+  `Tu+¨rkçeye → Türkçeye`, `çalışma` düzeliyor; `gö+¨+¨revleri` NFC sonrası
+  kalan işaret olarak yakalanıyor).

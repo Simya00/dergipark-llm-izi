@@ -278,6 +278,13 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   değiştirmeyen birleştirme). Zaten noktalı harfe eklenmiş fazladan işaret
   (`gö̈revleri`) NFC ile düzelmez; sıklığı ayrıca ölçülecek. Kullanıcı 73
   örnek (`karakter_kontrol_nfc.xlsx`) işaretleyecek.
+- **Karar (kullanıcı, 2026-11-05: "ne kadar gerekliyse o kadar kontrol,
+  yaptık bari tam olsun"):** NFC `temiz()`'e eklendi (raporda "NFC
+  birleştirdi" sayılır). NFC standart ve kayıpsız olduğundan doğrulama:
+  (1) NFC'den sonra harfe bitişik kalan işaretlerin TÜM veride tam sayımı
+  (`nfc_sonrasi_isaret`), (2) mevcut 73 örnekli Excel'den 20 satıra göz
+  atma. Kalan işaret varsa silme kuralı ayrıca önerilip örneklemle
+  (≤73 ise hepsi) doğrulanacak.
 
 ## 5. Birleşik kelime onarımı (`analiz/kelime_siklik.py`, `analiz/birlesik_kelime.py`)
 

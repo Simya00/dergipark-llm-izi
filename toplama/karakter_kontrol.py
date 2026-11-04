@@ -11,6 +11,7 @@ Turler (yalnizca KELIME SAYIMINI bozanlar; 2026-11-03 karari):
   tire_harf_arasi  harf¬harf -> harfharf   (PDF tirelemesi: bu¬lunmaktadir)
   tire_bosluklu    harf¬ harf -> harfharf  (tireleme + satir sonu boslugu)
   yumusak_tire     gorunmez tire (U+00AD) -> silinir
+  nfc_sonrasi_isaret   NFC'den sonra kalan isaret (fazladan, ö + ¨) -> silinir (once olcum)
   birlestirici_isaret  harf + ayri birlestirici isaret (Tu\u0308rkçe) -> NFC (2026-11-05)
   html_kalinti     iki kez cozulmesine ragmen kalan HTML kacisi (&amp;lt; -> <): metin
                    en az 3 kez kacislanmis; degismeyene kadar cozulur ("amp", "lt" sahte kelime)
@@ -60,7 +61,11 @@ TURLER = [
     # 2026-11-05: harf + AYRI birlestirici isaret (u + \u0308 = ü; Unicode NFD). Kelime kurali isareti
     # harf saymadigi icin kelimeyi boler: "Tu\u0308rkçeye" -> "tu" + "rkçeye". Onerilen: NFC (birlestir).
     ("birlestirici_isaret", re.compile(r"(?<=[^\W\d_])[\u0300-\u036f]+"), "NFC"),
+    # NFC'den SONRA hala harfe bitisik kalan isaret (zaten noktali harfe fazladan: go\u0308\u0308revleri).
+    # Metin once NFC'ye cevrilip aranir (bkz. NFC_SONRA). Onerilen: isareti sil.
+    ("nfc_sonrasi_isaret", re.compile(r"(?<=[^\W\d_])[\u0300-\u036f]+"), ""),
 ]
+NFC_SONRA = {"nfc_sonrasi_isaret"}  # bu turler NFC uygulanmis metinde aranir
 YIL_ALT, YIL_UST = 2010, 2026  # yillik tabloda gosterilen yillar
 
 
@@ -198,15 +203,21 @@ def main():
                 metin = oz["metin"]
                 toplam_oz += 1
                 yil_oz[yil] += 1
+                metin_nfc = None
                 for tur, desen, duzeltme in secili:
-                    bulunan = list(desen.finditer(metin))
+                    if tur in NFC_SONRA:
+                        metin_nfc = metin_nfc or unicodedata.normalize("NFC", metin)
+                        bulunan = list(desen.finditer(metin_nfc))
+                    else:
+                        bulunan = list(desen.finditer(metin))
                     if bulunan:
                         oz_sayisi[tur] += 1
                         yil_tur[yil][tur] += 1
                         isaret_sayisi[tur] += len(bulunan)
                         # her ozden bir isaret aday olur (ayni ozden ornek yigilmasin)
                         if (tur, m.get("url")) not in haric:
-                            adaylar[tur].append((m.get("url"), oz["dil"], metin, bulunan[0], duzeltme))
+                            adaylar[tur].append((m.get("url"), oz["dil"],
+                                                 metin_nfc if tur in NFC_SONRA else metin, bulunan[0], duzeltme))
 
     print(f"Toplam oz: {toplam_oz}" + (f" (yalnizca dil={arg.dil})" if arg.dil else "") + "\n")
     print(f"{'tur':>18} {'oz sayisi':>10} {'oz %':>7} {'isaret':>8}  onerilen")
