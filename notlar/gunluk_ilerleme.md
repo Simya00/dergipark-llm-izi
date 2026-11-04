@@ -763,3 +763,16 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   ~68/72 doğru karar, yanlış bölme 1/72. "bolme" grubunda da gerçek
   yapışmalar yakalanıyor (`vergi + denetimlerinin`, `şiirinin + dili`,
   `yapılarındaki + iznik`, `yer + alan`).
+
+### Birleşik kelime v2 doğrulaması (kullanıcı, `birlesik_kontrol_tr.xlsx`, T/B)
+- **bol (bölünen) grubu: 70/73 doğru = %95,9 (%95 Wilson 88,6–98,6).**
+  Yanlış bölmeler: `cihanzâde → cihan + zâde` (soyadı), `bankya → bank + ya`
+  (yer adı), `habitatda → habitat + da` (yazım hatalı tek kelime).
+  (v1: %58.)
+- **bolme grubu: 70/72 doğru = %97,2 (90,4–99,2)**, 1 boş. Kaçırılan 2
+  yapışma (`muradıntebliği`, `çıkarsamalardabulunulmuştur`): parçalar <30
+  özet; bölünmeden kalıyor (zararsız).
+- **Yeni bulgu:** `Tü⟦rkçeye⟧` (13 özette "rkçeye" ayrı kelime): "ü" büyük
+  olasılıkla ayrıştırılmış biçimde (u + birleştirici iki nokta, Unicode NFD);
+  kelime kuralı birleştirici işareti harf saymadığı için kelimeyi bölüyor.
+  Öneri: `temiz()`'de Unicode NFC normalleştirmesi (önce ölçüm).
