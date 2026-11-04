@@ -706,3 +706,7 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   göreve, ölçeğine, bağlamındaki (Zemberek), alanya, küçükbaş, sözde (TDK)
   bölünmedi; buaraştırmanın, ileilgili, birşekilde (Zemberek), okulöncesi
   (TDK iki kelime) bölündü.
+- Kullanıcı: Zemberek tez ortamında, oraya bir şey kurmak istemiyor →
+  `zemberek` komutu Excel yazmıyor; örnekleri `birlesik_ornek_tr.json`'a
+  yazıyor, Excel'i normal python ile `excel` komutu oluşturuyor. Önerilen:
+  bu projenin kendi `analiz/zemberek_kur.sh` ile ayrı ortam (tezden bağımsız).

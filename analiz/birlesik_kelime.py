@@ -29,6 +29,7 @@ Kullanim:
   python3 birlesik_kelime.py sozluk --dil tr
   python3 birlesik_kelime.py rapor --dil tr
   zemberek_env/bin/python3 birlesik_kelime.py zemberek --dil tr   # Zemberek ortami gerekir
+  python3 birlesik_kelime.py excel --dil tr                       # Excel (normal python, openpyxl)
   python3 birlesik_kelime.py hesapla --dil tr
   python3 birlesik_kelime.py onayla --dil tr
 """
@@ -197,10 +198,6 @@ def komut_zemberek(arg, alan):
         raise SystemExit(f"Once sozluk: python3 birlesik_kelime.py sozluk --dil {arg.dil}")
     if arg.dil != "tr":
         raise SystemExit("Zemberek yalnizca Turkce; Ingilizce onarim simdilik kapali (2026-11-04).")
-    try:
-        import openpyxl  # noqa: F401  (Excel sonda yazilir; uzun calismadan ONCE kontrol)
-    except ImportError:
-        raise SystemExit("Bu ortamda openpyxl yok: zemberek_env/bin/pip install openpyxl")
     tdk, zemberek = tdk_yukle(), Zemberek()
     yillar = set(yil_araligi(arg.yillar))
 
@@ -243,7 +240,23 @@ def komut_zemberek(arg, alan):
     gruplar = {k: [w for w, (kk, _) in kararlar.items() if kk == k] for k in ("bol", "bolme")}
     secilen = {k: agirlikli_ornek(sorted(v), lambda w: aday_ozet[w], ORNEK, rng) for k, v in gruplar.items()}
     baglam = ornek_baglamlar(arg, alan, {w for v in secilen.values() for w in v})
-    excel_yaz(arg.dil, secilen, kararlar, aday_parca, aday_ozet, baglam)
+    # Ornekler once JSON'a yazilir: Excel'i Zemberek ortami degil, normal python3 olusturur
+    # (Zemberek ortamina openpyxl kurmak gerekmesin; kullanici karari 2026-11-04).
+    ornek = {"secilen": secilen, "kararlar": {w: kararlar[w] for v in secilen.values() for w in v},
+             "parcalar": {w: aday_parca[w] for v in secilen.values() for w in v},
+             "ozet": {w: aday_ozet[w] for v in secilen.values() for w in v}, "baglam": baglam}
+    ornek_dosyasi(arg.dil).write_text(json.dumps(ornek, ensure_ascii=False), encoding="utf-8")
+    print(f"ornekler -> {ornek_dosyasi(arg.dil)}\nSimdi Excel icin (normal python ile):\n"
+          f"  python3 birlesik_kelime.py excel --dil {arg.dil}")
+
+
+def ornek_dosyasi(dil):
+    return KLASOR / f"birlesik_ornek_{dil}.json"
+
+
+def komut_excel(arg, alan):
+    o = json.loads(ornek_dosyasi(arg.dil).read_text(encoding="utf-8"))
+    excel_yaz(arg.dil, o["secilen"], o["kararlar"], o["parcalar"], o["ozet"], o["baglam"])
 
 
 def ornek_baglamlar(arg, alan, kelimeler):
@@ -353,7 +366,7 @@ def komut_onayla(arg, alan):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("komut", choices=["sozluk", "rapor", "zemberek", "hesapla", "onayla"])
+    p.add_argument("komut", choices=["sozluk", "rapor", "zemberek", "excel", "hesapla", "onayla"])
     p.add_argument("--girdi", default=str(VARSAYILAN_GIRDI))
     p.add_argument("--dil", choices=["tr", "en"], required=True)
     p.add_argument("--parca", type=int, default=4, help="sozluk: dosya kac kez okunsun (bellek / parca)")
@@ -361,7 +374,7 @@ def main():
     p.add_argument("--ornek", type=int, default=40, help="rapor: gosterilecek ornek onarim sayisi")
     arg = p.parse_args()
     alan = f"ozet_{arg.dil}"
-    {"sozluk": komut_sozluk, "rapor": komut_rapor, "zemberek": komut_zemberek, "hesapla": komut_hesapla,
+    {"sozluk": komut_sozluk, "rapor": komut_rapor, "zemberek": komut_zemberek, "excel": komut_excel, "hesapla": komut_hesapla,
      "onayla": komut_onayla}[arg.komut](arg, alan)
 
 

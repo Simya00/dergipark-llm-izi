@@ -44,3 +44,4 @@ sonuc_*.txt
 analiz/birlesik_karar_*.tsv
 analiz/birlesik_onayli_*.tsv
 analiz/zemberek_birlesik_onbellek.json
+analiz/birlesik_ornek_*.json
