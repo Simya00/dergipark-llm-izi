@@ -726,3 +726,24 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   gerçek yapışmalar çoğunlukla tekildir (her kombinasyon farklı), ama
   Zemberek'in tanımadığı terim/yabancı kelimelerin de bu gruba düşme riski
   var. Doğruluk yalnızca kullanıcının Excel kontrolüyle bilinecek.
+
+### Birleşik kelime Excel'i — ilk işaretleme (kullanıcı, kısmi)
+- **bol grubu: 72 işaretli, 42 D / 30 Y (%58)** → mevcut kural kabul
+  edilemez. Claude'un sınıflandırması (30 Y):
+  - **A. Yapışma gerçek ama bölme noktası yanlış (19):** kural parçaları en
+    sık kelimelerden seçip 3'e bölüyor: `modelinegöre → modeli+ne+göre`
+    (doğrusu modeline+göre), `şirketineait`, `literatürdenfarklı`,
+    `makaledetanrı`, `içindeortalaması`, `amacıgütmeden`,
+    `mektebindenmezun`, `balıkçılığınüzerinde`, `bitkiailesine`,
+    `inciçiftine`…
+  - **B. Aslında tek kelime, Zemberek bilmiyor (11):** terim/yabancı/eski
+    yazım/OCR: `hautbois → ha+ut+bois`, `eritemin`, `mikrokarsinom`,
+    `positum`, `cerge`, `lanns`, `nushiye`, `payini` (payını), `barsakla`,
+    `habishanelere`, `amfitiyatronuntarih` (amfitiyatro TDK'de yok,
+    "amfiteatr" var).
+- **bolme grubu:** 6 Y, ama açıklamalar (gelmişler, müzelik, değiştirmese…)
+  kelimenin tek kelime olduğunu söylüyor → soru kafa karıştırıcı; büyük
+  olasılıkla D kastedildi. Ayrıca "onay yok" grubunda gerçek yapışmalar
+  kaçmış (`vergidenetimlerinin`, `şiirinindili`, `deklinisyen`) ve
+  Zemberek'in tanıdığı sık bir yapışma var: `yeralan` (586 özet).
+- Yan bulgu: `gö̈revleri` — birleştirici iki nokta (U+0308) kelimeyi bölüyor.
