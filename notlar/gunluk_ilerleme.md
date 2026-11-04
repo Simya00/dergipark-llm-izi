@@ -689,3 +689,13 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   → kullanıcıya sözlük dosyasını devre dışı bırakması söylendi (önceki
   analizlerde sözlük yoktu, etkilenmedi). Kullanıcının Zemberek fikri
   artık gerekli: tasarım onaya sunulacak.
+- Kullanıcı tez reposu `Simya00/TR-LLM-Analiz`'i oturuma ekletti (salt
+  okuma). Orada: `tdk_sozluk_maddeleri.txt` (TDK Güncel Türkçe Sözlük 12.
+  baskı madde başları, 97.823 madde; MIT lisanslı, github.com/ogun/
+  guncel-turkce-sozluk), `tr_50k.txt` (hermitdave FrequencyWords sıklık
+  listesi), Zemberek geçerlilik fonksiyonu ve önbelleği. TDK'de madde başı
+  olarak: `küçükbaş`, `sözde`, `alanya`, `veri`, `göre`, iki kelimelik
+  `okul öncesi` (çekimli biçimler yok: `verilerde` yok).
+- Kullanıcı kararı: nadir kelimeler ek Zemberek kontrolünden geçsin,
+  Zemberek onay verirse bölünsün; TR-LLM-Analiz'deki sözlük ek kontrol
+  olsun; **son kontrolü kullanıcı yapacak.** Tasarım onaya sunuldu.
