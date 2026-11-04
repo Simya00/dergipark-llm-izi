@@ -747,3 +747,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   kaçmış (`vergidenetimlerinin`, `şiirinindili`, `deklinisyen`) ve
   Zemberek'in tanıdığı sık bir yapışma var: `yeralan` (586 özet).
 - Yan bulgu: `gö̈revleri` — birleştirici iki nokta (U+0308) kelimeyi bölüyor.
+- v2 kuralları yazıldı (kullanıcı onayı). Bu ortama projenin Zemberek'i
+  kuruldu (`analiz/zemberek_env`, gitignore'da). `karsilastir` komutu
+  eklendi; kullanıcının 146 satırı gerçek Zemberek ve "her parça sık"
+  varsayımıyla tekrar oynatıldı (sonuç `yontem.md` §5). Beyaz listeye Claude
+  2 kök ekledi (takson, orbita; testte görülen `tak + sonunda`, `orbit +
+  adaki` riskleri) — kullanıcı onayı bekliyor.

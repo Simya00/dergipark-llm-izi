@@ -1,0 +1,3 @@
+# Zemberek'in gecerli sandigi ama aslinda yapismis kelimeler: her zaman bolunur.
+# VERIYE BAKILDIKTAN SONRA eklenir: her satir  kelime <TAB> parcalar (bosluklu) <TAB> tarih <TAB> kaynak
+yeralan	yer alan	2026-11-05	birlesik_kontrol_tr #92 (586 ozette)

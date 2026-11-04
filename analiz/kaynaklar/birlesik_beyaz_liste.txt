@@ -1,0 +1,13 @@
+# Asla bolunmeyen kokler (kelime bu kokle BASLIYORSA bolunmez ve parca olarak gecerlidir).
+# Zemberek'in ve TDK'nin tanimadigi dogru kelimeler: terim, yabanci kelime, yaygin yazim.
+# VERIYE BAKILDIKTAN SONRA eklenir: her satir  kok <TAB> tarih <TAB> kaynak
+amfitiyatro	2026-11-05	kullanici, birlesik_kontrol_tr #4 (TDK'de "amfiteatr")
+mikrokarsinom	2026-11-05	kullanici, birlesik_kontrol_tr #41
+eritem	2026-11-05	kullanici, birlesik_kontrol_tr #13 (tip terimi)
+hautbois	2026-11-05	kullanici, birlesik_kontrol_tr #12 (Fransizca)
+positum	2026-11-05	kullanici, birlesik_kontrol_tr #52 (Latince)
+cerge	2026-11-05	kullanici, birlesik_kontrol_tr #53
+nushiye	2026-11-05	kullanici, birlesik_kontrol_tr #43
+lanns	2026-11-05	kullanici, birlesik_kontrol_tr #71 (S-LANSS kisaltmasi)
+takson	2026-11-05	Claude, karsilastirma testi #143 (tak + sonunda onlemi; kullanici onayi bekliyor)
+orbita	2026-11-05	Claude, karsilastirma testi #127 (orbit + adaki onlemi; kullanici onayi bekliyor)

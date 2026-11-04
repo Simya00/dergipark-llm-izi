@@ -312,6 +312,22 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   Analiz betikleri YALNIZCA kullanıcı onayından sonra `onayla` ile yazılan
   `birlesik_onayli_tr.tsv`'deki bölmeleri uygular; liste yoksa hiçbir kelime
   bölünmez (canlı sıklık kuralı analizden kaldırıldı).
+- **v1 doğrulaması (kullanıcı, kısmi):** bölünen grupta 42/72 doğru (%58).
+  Hatalar: yanlış yerden 3'e bölme (19), Zemberek'in bilmediği tek kelime
+  (11). → **v2 kuralları (kullanıcı onayı 2026-11-05):** yalnızca iki
+  parça; bölme noktasını Zemberek/TDK seçer (iki parça da TDK'de, beyaz
+  listede ya da ≥30 özet + Zemberek); iki harfli parça yalnızca kısa kelime
+  listesinden (bu, şu, su, de, da, ve, ne, ya, en, iş, ön, az, el, ay, on,
+  öz — Claude'un seçimi); yalnızca ek olan parça (ini, den, lar…) geçersiz;
+  beyaz liste ve zorla-böl listesi (`analiz/kaynaklar/`, veriden sonra,
+  tarih ve kaynakla). Excel sorusu T/B olarak değiştirildi.
+- **v2 ön testi (Claude, gerçek Zemberek; sözlük bu ortamda yok, bütün
+  parçalar "sık" sayıldı = en gevşek durum):** kullanıcının D verdiği 42
+  bölmeden 40'ı aynı (kayıp: 3 parçalı `akreditasyon…`, `değişikliğinen`
+  eşitlik bozulması); Y verilen 30'un ~28'i düzeldi (19 doğru yerden
+  bölme, 9 bölünmeme). Kalan riskler sıklık eşitliğinden (`model +
+  inegöre`, `bar + sakla`); gerçek sözlükle ortadan kalkması bekleniyor —
+  kullanıcının makinesinde `karsilastir` ile doğrulanacak.
 
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 
