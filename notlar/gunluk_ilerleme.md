@@ -802,3 +802,28 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   NFC `temiz()`'e eklendi; `nfc_sonrasi_isaret` ölçümü eklendi (test:
   `Tu+¨rkçeye → Türkçeye`, `çalışma` düzeliyor; `gö+¨+¨revleri` NFC sonrası
   kalan işaret olarak yakalanıyor).
+- NFC sonrası kalan işaret örnekleri (kullanıcı inceledi): çoğu meşru
+  (X̄ ortalama, transliterasyon alt çizgileri `dj̲ihād`, `Os̠māniyye`) →
+  dokunulmayacak. Gerçek bozukluk: fazladan noktalı i (`Ni̇ghti̇ngale`,
+  muhtemel kaynak: İ'nin yanlış küçültülmesi → `i̇`). Türkçede de kelime
+  bölebilir (`İSTANBUL → i̇stanbul`) → yalnızca TR'de sayılacak.
+- Kullanıcı: "çoğu İngilizce, İngilizceyi hiç dahil etmeyebiliriz." →
+  (Claude, danışman görüşü) EN özler pozitif kontrol (bilinen işaretçiler,
+  ör. "delve") ve iki dilli karşılaştırma için tutulsun; ek temizlik
+  yapılmasın, kalan sorunlar sınırlılık listesine. Kullanıcı: "haklısın".
+  **Karar: EN kalıyor, ikincil rolde, ek temizlik yok.**
+
+**Yarın (2026-11-06) yapılacaklar:**
+1. `karakter_kontrol.py`'ye dar sayım türü: `i` + U+0307 (yalnızca `--dil tr`);
+   önce kod sohbette gösterilecek. Az → sınırlılık; çok → tek dar kural
+   (kullanıcı karar verir).
+2. `nfc_sonrasi_isaret` sayım çıktısı kullanıcıdan alınacak.
+3. Bekleyen onaylar: 2. turdaki hatalı bölünen kelime (beyaz liste);
+   `takson`, `orbita` beyaz liste eklemeleri.
+4. `yontem.md`'ye "Bilinen sınırlılıklar" listesi (OCR bozukluğu, mojibake,
+   kalan birleştirici işaretler, EN birleşik onarımı kapalı, iki dilli
+   alanlar dışarıda, 3 parçalı yapışmalar bölünmüyor).
+5. **Veri dondurma:** `oai_ayristir.py` (NFC uygulanır) → `birlesik_kelime.py
+   sozluk/zemberek/onayla --dil tr` → yeni sayılar kaydedilir.
+6. Dondurmadan sonra ana analize geçiş (aday listeler, LLM yeniden yazım
+   deneyi, dergi paneli).
