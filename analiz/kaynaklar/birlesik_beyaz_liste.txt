@@ -9,8 +9,8 @@ positum	2026-11-05	kullanici, birlesik_kontrol_tr #52 (Latince)
 cerge	2026-11-05	kullanici, birlesik_kontrol_tr #53
 nushiye	2026-11-05	kullanici, birlesik_kontrol_tr #43
 lanns	2026-11-05	kullanici, birlesik_kontrol_tr #71 (S-LANSS kisaltmasi)
-takson	2026-11-05	Claude, karsilastirma testi #143 (tak + sonunda onlemi; kullanici onayi bekliyor)
-orbita	2026-11-05	Claude, karsilastirma testi #127 (orbit + adaki onlemi; kullanici onayi bekliyor)
+takson	2026-11-05	Claude, karsilastirma testi #143 (tak + sonunda onlemi; kullanici onayladi 2026-11-05)
+orbita	2026-11-05	Claude, karsilastirma testi #127 (orbit + adaki onlemi; kullanici onayladi 2026-11-05)
 habishane	2026-11-05	kullanici, birlesik_kontrol_tr #17 (hapishanenin eski yazimi; habis + hanelere yanlis)
 cihanzâde	2026-11-05	kullanici, birlesik_kontrol_tr v2 #57 (soyadi; dogrulama SONRASI eklendi)
 bankya	2026-11-05	kullanici, birlesik_kontrol_tr v2 #70 (yer adi; dogrulama SONRASI eklendi)

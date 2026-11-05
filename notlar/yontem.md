@@ -406,3 +406,29 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   pakette yeni sohbet; hafıza kapalı.
 - Amaç: modellerin eklediği kelime, kalıp, ek ve imla tercihlerini çıkarmak;
   ortak olanlar asıl işaretçiler.
+
+## 10. Bilinen sınırlılıklar (kullanıcı onayı, 2026-11-05)
+
+Veri temizliğinde bilerek düzeltilmeyen ya da düzeltilemeyen sorunlar.
+Ortak gerekçe: her biri verinin küçük bir kısmını etkiliyor; daha fazla
+temizliğin getirisi azalırken yeni hata ekleme riski artıyor.
+
+1. **OCR kaynaklı bozuk metinler.** Taranmış PDF'ten çıkarılmış bazı
+   özlerde harf hataları ve anlamsız diziler var. Bunları otomatik düzeltmenin
+   güvenilir bir yolu yok; dokunulmadı.
+2. **Bozuk karakter kodlaması (mojibake).** Örn. `2008â"2009` (tire yanlış
+   kodlamayla okunmuş). Geri çevirme hatalı olabileceğinden yapılmadı;
+   kelime kuralı yalnızca harf dizilerini aldığı için etkisi sınırlı.
+3. **Kalan birleştirici işaretler.** NFC sonrasında harfe bitişik kalan
+   işaretler çoğunlukla meşru (istatistikte X̄, transliterasyon alt
+   çizgileri: `dj̲ihād`, `Os̠māniyye`); fazladan işaretli birkaç kelime
+   (`gö̈revleri`) bölünmüş sayılabilir. Fazladan noktalı i (`i̇`) ayrıca
+   ölçülecek (bkz. 2026-11-06 günlüğü).
+4. **İngilizcede birleşik (yapışık) kelime onarımı kapalı.** Onarım
+   yalnızca Türkçe için doğrulandı (§5). İngilizce özler ikincil rolde
+   (yöntemin çalıştığını gösteren kontrol); ek temizlik yapılmadı.
+5. **İki dilli alanlar analiz dışı.** Aynı alanda Türkçe ve İngilizce
+   birlikte olan özler bölünmeye çalışılmadı, dışarıda bırakıldı (§4.4).
+6. **Üç ve daha çok parçalı yapışmalar bölünmüyor.** Birleşik kelime
+   onarımı yalnızca iki parçaya bölüyor; daha uzun yapışmalar tek "kelime"
+   olarak kalıyor (nadir oldukları için aşırı kelime hesabına girmezler).
