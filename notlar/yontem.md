@@ -364,6 +364,12 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   **142/146 doğru = %97,3 (%95 Wilson 93,2–98,9)**; 2. tur tek başına 72/73.
   Bölünmeyen grup 70/72 = %97,2 (90,4–99,2). Makalede raporlanacak sayı bu
   (beyaz listeye sonradan eklenen kelimelerden ÖNCEKİ ölçüm).
+- **Düzeltme (kullanıcı, 2026-11-05):** 2. turda "yanlış" işaretlenen
+  `hekimliğininde → hekimliğinin + de` yeniden incelendi ("tıpta olduğu gibi
+  diş hekimliğinin de birçok alanında"; "de" bağlaç, ayrı yazılmalı; ilgi
+  ekinden sonra bulunma eki gelmez) → doğru sayıldı. **Güncel sonuç:
+  143/146 = %97,9 (%95 Wilson 94,1–99,3)**; 2. tur 73/73. Beyaz listeye
+  eklenmedi. Makalede yeniden değerlendirme belirtilecek.
 - **Analize açıldı (kullanıcı, 2026-11-05):** son kararlar (beyaz liste
   güncel): iki parça da gerçek kelime 544.592 farklı kelime (902.734 geçiş),
   TDK iki kelimelik madde 1.929 (12.351), zorla böl 1 (`yeralan`, 586) →
@@ -432,3 +438,15 @@ temizliğin getirisi azalırken yeni hata ekleme riski artıyor.
 6. **Üç ve daha çok parçalı yapışmalar bölünmüyor.** Birleşik kelime
    onarımı yalnızca iki parçaya bölüyor; daha uzun yapışmalar tek "kelime"
    olarak kalıyor (nadir oldukları için aşırı kelime hesabına girmezler).
+
+### 10.1 İlgili düzeltme: İngilizce küçük harfe çevirme (2026-11-05)
+- `kelime_siklik.py` İngilizce özlerde `.lower()` kullanıyordu; Python bu
+  komutla "İ"yi "i" + ayrı nokta (U+0307) yapar ve kelime bölünür
+  ("İstanbul" → `i` + `stanbul`; Türk yer/kişi adları İngilizce özlerde sık).
+  Düzeltme (kullanıcı onayı): küçültmeden önce "İ" → "i". "I" İngilizcede
+  "i" kalır. Türkçe taraf zaten tezdeki `turkce_kucuk_harf` yöntemiyle
+  doğruydu.
+- Kaynaktan bozuk gelen `i` + U+0307 (`Ni̇ghti̇ngale`) için ayrı sayım
+  türü eklendi: `karakter_kontrol.py --tur fazla_noktali_i` (yalnızca
+  sayar). NFC bunu düzeltemez (tek parçalı karşılığı yok). Sayıma göre
+  `temiz()`'e "i + U+0307 → i" kuralı önerilecek; eşik yok, karar kullanıcıda.

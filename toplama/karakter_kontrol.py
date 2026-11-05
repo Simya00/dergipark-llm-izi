@@ -12,6 +12,7 @@ Turler (yalnizca KELIME SAYIMINI bozanlar; 2026-11-03 karari):
   tire_bosluklu    harf¬ harf -> harfharf  (tireleme + satir sonu boslugu)
   yumusak_tire     gorunmez tire (U+00AD) -> silinir
   nfc_sonrasi_isaret   NFC'den sonra kalan isaret (fazladan, ö + ¨) -> silinir (once olcum)
+  fazla_noktali_i  i + fazladan nokta (U+0307; yanlis kucultulmus İ) -> i  (2026-11-05, once olcum)
   birlestirici_isaret  harf + ayri birlestirici isaret (Tu\u0308rkçe) -> NFC (2026-11-05)
   html_kalinti     iki kez cozulmesine ragmen kalan HTML kacisi (&amp;lt; -> <): metin
                    en az 3 kez kacislanmis; degismeyene kadar cozulur ("amp", "lt" sahte kelime)
@@ -64,8 +65,12 @@ TURLER = [
     # NFC'den SONRA hala harfe bitisik kalan isaret (zaten noktali harfe fazladan: go\u0308\u0308revleri).
     # Metin once NFC'ye cevrilip aranir (bkz. NFC_SONRA). Onerilen: isareti sil.
     ("nfc_sonrasi_isaret", re.compile(r"(?<=[^\W\d_])[\u0300-\u036f]+"), ""),
+    # 2026-11-05: noktali i'nin ustune FAZLADAN nokta (i + \u0307). Genelde "İ" yanlis yontemle
+    # kucultulunce olusur (İSTANBUL -> i\u0307stanbul). NFC bunu birlestiremez (tek parcali karsiligi
+    # yok), kelimeyi boler: "i" + "stanbul". nfc_sonrasi_isaret'in bir alt kumesi. Onerilen: noktayi sil.
+    ("fazla_noktali_i", re.compile(r"i\u0307"), "i"),
 ]
-NFC_SONRA = {"nfc_sonrasi_isaret"}  # bu turler NFC uygulanmis metinde aranir
+NFC_SONRA = {"nfc_sonrasi_isaret", "fazla_noktali_i"}  # bu turler NFC uygulanmis metinde aranir
 YIL_ALT, YIL_UST = 2010, 2026  # yillik tabloda gosterilen yillar
 
 

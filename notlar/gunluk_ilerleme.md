@@ -827,3 +827,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
    sozluk/zemberek/onayla --dil tr` → yeni sayılar kaydedilir.
 6. Dondurmadan sonra ana analize geçiş (aday listeler, LLM yeniden yazım
    deneyi, dergi paneli).
+- (Akşam, ek) Kullanıcı onayları: `takson`, `orbita` beyaz listede onaylandı;
+  "Bilinen sınırlılıklar" `yontem.md` §10'a yazıldı. `hekimliğininde`
+  ("diş hekimliğinin de birçok alanında") yeniden incelendi, bölme doğru
+  sayıldı → birleşik kelime bölünen grup **143/146 = %97,9 (94,1–99,3)**.
+- Noktalı i: tezdeki `turkce_kucuk_harf` çözümü Türkçe tarafta zaten
+  kullanılıyor; İngilizce tarafta `.lower()` hatası bulundu ("İstanbul" →
+  `i` + `stanbul`) ve düzeltildi (onaylı). Kaynaktan bozuk gelen `i̇` için
+  `fazla_noktali_i` sayım türü eklendi (test: `Ni̇ghti̇ngale` → 2 eşleşme,
+  `İstanbul`/`çalışma` → 0). Sayım yarın kullanıcıda.

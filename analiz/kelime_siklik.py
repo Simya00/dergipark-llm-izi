@@ -174,7 +174,9 @@ def kelime_listesi(metin: str, dil: str, onarim: bool = True) -> list:
     if dil == "tr":
         bulunan = (tr_kelime_kucult(k) for k in KELIME.findall(KESME_EKI.sub("", metin)))
     else:
-        bulunan = KELIME.findall(metin.lower())
+        # 2026-11-05: .lower() "İ"yi "i" + ayri nokta (U+0307) yapar ve kelimeyi boler
+        # ("İstanbul" -> "i" + "stanbul"). Once "İ" -> "i"; "I" ingilizcede "i" kalir.
+        bulunan = KELIME.findall(metin.replace("İ", "i").lower())
     kelimeler = [k for k in bulunan if len(k) >= 2]
     return onar(kelimeler, dil) if onarim else kelimeler
 
