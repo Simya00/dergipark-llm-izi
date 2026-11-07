@@ -836,3 +836,25 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `i` + `stanbul`) ve düzeltildi (onaylı). Kaynaktan bozuk gelen `i̇` için
   `fazla_noktali_i` sayım türü eklendi (test: `Ni̇ghti̇ngale` → 2 eşleşme,
   `İstanbul`/`çalışma` → 0). Sayım yarın kullanıcıda.
+
+## 2026-11-07
+
+- `fazla_noktali_i` sayımı: kullanıcı `--hesapla` ile çalıştırdı (eski
+  Excel'in doğruluk tablosu çıktı, sayım değil; Claude'un komut hatası).
+  Doğru komut verildi (`--hesapla` olmadan, yeni `--cikti`); sonuç bekleniyor.
+  Kullanıcının yerel depo yolu: `~/Desktop/dergipark-llm-izi/dergipark-llm-izi`.
+- **Makale planı** (Claude'un tahmini, haftada 3 × 2 saat): 9 aşama, ~23–27
+  oturum → ilk taslak Aralık sonu/Ocak başı, gönderim Ocak 2027 ikinci yarısı.
+  Riskler: LLM deneyi süresi, beklenmedik bulgular, danışman dönüşü, kapsam
+  genişlemesi (ESOGÜ verisi ikinci makaleye önerildi). Kullanıcıdan bekleyen:
+  haftalık süre, hedef dergi.
+- **Karar (kullanıcı): LLM yeniden yazım deneyi API ile.** OpenAI (5 $ kredi
+  yeterli; Claude'un kaba hesabı model başına ~200–300 bin token), Gemini
+  ücretsiz katman, Claude için kullanıcının tez için alacağı API anahtarı.
+  Varsayılanlar (Claude'un önerisi, uygulandı): istek başına 1 özet, sıcaklık
+  varsayılan, komut değişmez, 1 tekrar.
+- `deney/api_yeniden_yaz.py` yazıldı: anahtar ortam değişkeninden, model adı
+  `--model` ile (kodda yok), `--kuru` / `--sinir`, 429/5xx'te bekleyip tekrar,
+  kesilmiş cevap kaydedilmez, ham cevaplar `api_ham_<alan>.jsonl`. Sahte
+  cevaplarla test edildi (dolu örnek atlandı, kesilmiş cevap kaydedilmedi,
+  Gemini düşünce parçası ayıklandı).

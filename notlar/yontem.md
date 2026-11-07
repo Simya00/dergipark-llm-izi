@@ -412,6 +412,14 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   pakette yeni sohbet; hafıza kapalı.
 - Amaç: modellerin eklediği kelime, kalıp, ek ve imla tercihlerini çıkarmak;
   ortak olanlar asıl işaretçiler.
+- **Değişiklik (kullanıcı, 2026-11-07): elle yapıştırma yerine API**
+  (`deney/api_yeniden_yaz.py`). Gerekçe: hız ve tekrarlanabilirlik (tam model
+  sürümü, zaman ve ham cevap kayıtlı). Her istekte tek özet (10'arlı paket
+  yok; her özet bağımsız), komut aynı, sıcaklık vb. gönderilmez (servis
+  varsayılanı; Claude'un önerisi), her özet 1 kez. Modeller: OpenAI (ücretli
+  API), Gemini (ücretsiz katman: Flash), Anthropic (kullanıcının tez için
+  aldığı API). Model sürüm adları çalıştırma anında belirlenip
+  `deney/README.md`'ye yazılacak. Sınırlılık: API ≠ web arayüzü.
 
 ## 10. Bilinen sınırlılıklar (kullanıcı onayı, 2026-11-05)
 

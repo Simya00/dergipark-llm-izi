@@ -40,6 +40,34 @@ açıklama ya da ```json işareti eklese de okunur; eksik gelen özetler sonra
 yeniden sorulur. `atla` paketi geçer, `cik` kaydedip çıkar. (`--paket`
 olmadan tek tek sorar.)
 
+## API ile (2026-11-07 kararı; elle yapıştırmanın yerine geçer)
+
+`api_yeniden_yaz.py` aynı komutu API üzerinden gönderir, cevabı aynı alana
+yazar. Her istekte **tek özet** (her özet sıfırdan bir sohbet), sıcaklık vb.
+ayar **gönderilmez** (servisin varsayılanı), her özet **1 kez**.
+
+```bash
+cd deney
+export OPENAI_API_KEY=...      # anahtarı sohbete ya da dosyaya YAZMAYIN
+python3 api_yeniden_yaz.py openai --model <tam-sürüm-adı> --kuru      # göndermeden ilk isteği göster
+python3 api_yeniden_yaz.py openai --model <tam-sürüm-adı> --sinir 3   # 3 örnekle deneme
+python3 api_yeniden_yaz.py openai --model <tam-sürüm-adı>             # kalanların hepsi
+# aynısı: gemini (GEMINI_API_KEY), anthropic (ANTHROPIC_API_KEY)
+python3 deney_yapistir.py --durum
+```
+
+- Kesilmiş (uzunluk sınırı) ya da boş cevaplar kaydedilmez; tekrar
+  çalıştırınca yeniden sorulur. Yarıda kalırsa yeniden çalıştırın.
+- Her cevabın yanında `api` alanı: istenen/dönen model adı, zaman, bitiş
+  nedeni, token sayıları. Ham cevaplar `api_ham_<alan>.jsonl`.
+- API'deki Claude boş bir sohbetle başlar, hipotezi bilmez; aşağıdaki
+  "claude.ai'dan alınmalı" kuralının amacı (kod asistanını dışarıda tutmak)
+  korunur.
+- Sınırlılık: API, web arayüzüyle aynı değil (arayüzün gizli talimatları ve
+  varsayılanları farklı olabilir). Gemini ücretsiz katmanı yalnızca Flash
+  modelleri kapsar; gönderilen veriyi Google kullanabilir (özetler zaten açık
+  erişimli).
+
 ## Kurallar (karşılaştırmanın adil olması için)
 
 - **Komut ve paket boyutu her modelde aynı** (JSON'daki `komut` alanı;
