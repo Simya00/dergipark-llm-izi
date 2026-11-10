@@ -884,3 +884,13 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   ortamıyla (`analiz/zemberek_env`) çalıştı; tez ortamına dokunulmadı.
 - **1. aşama bitti.** Sıradaki: `deney_hazirla.py` → API anahtarları ve model
   adları → API deneyi.
+- Kullanıcı: "Bana hiçbir şeyi açıklamıyorsun." → Büyük resim (6 aşama)
+  ve aşırı kelime yöntemi örnekle anlatıldı. Bundan sonra her adımda: ne,
+  neden, ne göreceğiz.
+- Bütçe: Claude API'de 5 $ kredi var; ChatGPT için bu ay bütçe yok.
+  Kullanıcı: ChatGPT en gereklisi (Claude: katılıyorum, kaynakla
+  desteklenmeli). **Karar (kullanıcı): LLM deneyi gelecek aya ertelendi**;
+  OpenAI API anahtarı o zaman alınacak, üç model aynı koşulda (API).
+  Ücretsiz ChatGPT web yalnızca yedek (sessizce küçük modele geçebiliyor →
+  sürüm raporlanamaz).
+- Sıradaki: ana analiz (kelime sayımı → aşırı kullanım), LLM gerektirmiyor.
