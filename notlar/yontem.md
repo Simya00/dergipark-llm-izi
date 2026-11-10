@@ -378,6 +378,32 @@ Kural tabanlı bölme %32 doğru çıktığı için (§4.3) denenen alternatif
   TDK madde başı 9.795 (67.479), beyaz liste 225 (508). Yalnızca Türkçe;
   İngilizce onarım kapalı.
 
+## 5.1 DONDURULMUŞ VERİ (2026-11-10)
+
+Bu tarihten sonra temizlik kuralları ve veri değişmez; bütün analizler bu
+sürümle yapılır. Kurallar: §2, §4.3–4.6, §5, §10.1 (fazla noktalı i).
+Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --dil tr`
+(kullanıcının bilgisayarında, 2026-11-10/11).
+
+- 8.468 OAI sayfası, **844.745 makale**, 3.124 dergi.
+- Öz dilleri: **TR 667.474**, EN 635.920, bozuk 7.870, diğer 3.231.
+  Özü olmayan makale 46.540. İki dilli alan yüzünden özü analiz dışı kalan
+  makale: TR 11.134, EN 11.635.
+- Yıl kaynağı: tarih 624.728, arşiv 173.496, aralık dışı 40.665, cilt-yıl 5.856.
+- Temizlik sayaçları (metin sayısı; özler + başlık vb. tüm alanlar): NFC
+  31.212; fazla noktalı i 1.176 (özlerde: TR 50, EN 14; geri kalanı başlık,
+  yazar adı vb.); harf¬harf 3.662; görünmez tire 10.754; HTML >2 kat 11.810.
+- Sözlük (TR, ≥3 özette geçen): 445.133 kelime (646.496 Türkçe öz).
+- Birleşik kelime kararları: iki parça da gerçek 544.489 kelime (902.276
+  geçiş); Zemberek tamamını tanıyor 198.287; onay yok 170.172; TDK madde başı
+  9.513; TDK iki kelimelik 1.931; beyaz liste 219; zorla böl 1.
+  → **546.421 onaylı bölme** (5 Kasım: 546.522; NFC/noktalı i sonrası
+  −101, beklenen yönde).
+- Doğrulama oranları (kullanıcı, elle): birleşik kelime bölünen 143/146
+  (%97,9), bölünmeyen 70/72 (%97,2); fazla noktalı i 64 vakanın tamamı
+  doğru (kullanıcı; Excel'de 62 D + 2 sonradan doldurulan); tire / görünmez
+  tire / HTML §4.5.
+
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 
 - `p_y`: öğenin (kelime, kelime grubu, ek zinciri) y yılında geçtiği özet oranı.

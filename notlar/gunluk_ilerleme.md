@@ -876,3 +876,11 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   vaka düzeltilmiş görünüyor → Claude: Excel her özetten tek vaka gösterir;
   `temiz()` `replace` ile hepsini düzeltir (test: `verimli̇`, `di̇hi̇droklorürün`
   → kalan fazla nokta 0).
+- Fazla noktalı i: kullanıcı "boş yok, hepsi D" → 64/64 (Excel'deki 2 boş
+  büyük olasılıkla kaydedilmeden hesaplandı).
+- **VERİ DONDURULDU** (kullanıcının bilgisayarında): `oai_ayristir.py` →
+  `sozluk` → (önce atlanan, sonra çalıştırılan) `zemberek` → `onayla`.
+  **546.421 onaylı bölme.** Bütün sayılar `yontem.md` §5.1. Zemberek proje
+  ortamıyla (`analiz/zemberek_env`) çalıştı; tez ortamına dokunulmadı.
+- **1. aşama bitti.** Sıradaki: `deney_hazirla.py` → API anahtarları ve model
+  adları → API deneyi.
