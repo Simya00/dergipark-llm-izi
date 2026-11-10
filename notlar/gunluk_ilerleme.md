@@ -870,3 +870,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Kullanıcı: "çok etkisi yok ama yine de 50 tanesine bakalım" → tüm vakalar
   Excel'de kontrol edilecek.
 - Sıradaki: kontrol → veriyi dondurma → `deney_hazirla.py` → API deneyi.
+- **Fazla noktalı i doğrulaması (kullanıcı, `karakter_kontrol_fazla_i.xlsx`,
+  TR + EN, tüm vakalar: 64 öz):** 62 D, 0 Y, 2 boş → **62/62 = %100
+  (%95 Wilson 94,2–100)**. Kullanıcı sorusu: Excel'de yalnızca ⟦ ⟧ içindeki
+  vaka düzeltilmiş görünüyor → Claude: Excel her özetten tek vaka gösterir;
+  `temiz()` `replace` ile hepsini düzeltir (test: `verimli̇`, `di̇hi̇droklorürün`
+  → kalan fazla nokta 0).

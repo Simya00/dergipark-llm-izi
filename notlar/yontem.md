@@ -468,3 +468,6 @@ temizliğin getirisi azalırken yeni hata ekleme riski artıyor.
   gibi durumlarda kalan işaret NFC ile tek harfe birleşsin). Raporda "fazla
   noktali i duzeltildi" sayılır. Doğrulama: tüm vakalar elle kontrol
   (≤73 ise hepsi; kullanıcı, `karakter_kontrol_fazla_i.xlsx`).
+- **Sonuç (kullanıcı, 2026-11-10):** TR + EN tüm vakalar (64 öz; ≤73
+  olduğu için örneklem değil tam sayım): 62 doğru, 0 yanlış, 2 boş →
+  **62/62 = %100 (%95 Wilson 94,2–100)**.
