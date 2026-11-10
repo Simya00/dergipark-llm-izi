@@ -858,3 +858,15 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   kesilmiş cevap kaydedilmez, ham cevaplar `api_ham_<alan>.jsonl`. Sahte
   cevaplarla test edildi (dolu örnek atlandı, kesilmiş cevap kaydedilmedi,
   Gemini düşünce parçası ayıklandı).
+
+## 2026-11-10
+
+- Noktalı i sayımı (kullanıcı, TR): `fazla_noktali_i` 50 öz / 162 kez;
+  `nfc_sonrasi_isaret` 779 öz / 1.704 (2022 sonrası artmıyor). Ayrıntı
+  `yontem.md` §10.1.
+- Karar (kullanıcı): "i + U+0307 → i" kuralı TR ve EN için `temiz()`'e
+  eklendi (NFC'den önce; test: `Ni̇ghti̇ngale → Nightingale`, `İSTANBUL`,
+  `Türkçe`, `çalışma` değişmiyor, `i + nokta + ´ → í` tek karakter).
+  Kullanıcı: "çok etkisi yok ama yine de 50 tanesine bakalım" → tüm vakalar
+  Excel'de kontrol edilecek.
+- Sıradaki: kontrol → veriyi dondurma → `deney_hazirla.py` → API deneyi.

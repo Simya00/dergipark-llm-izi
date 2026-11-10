@@ -458,3 +458,13 @@ temizliğin getirisi azalırken yeni hata ekleme riski artıyor.
   türü eklendi: `karakter_kontrol.py --tur fazla_noktali_i` (yalnızca
   sayar). NFC bunu düzeltemez (tek parçalı karşılığı yok). Sayıma göre
   `temiz()`'e "i + U+0307 → i" kuralı önerilecek; eşik yok, karar kullanıcıda.
+- **Sayım (kullanıcı, 2026-11-10, yalnızca TR, 667.474 öz):**
+  `fazla_noktali_i` 50 öz (%0,0075), 162 kez; yıllara göre 0–2,2/10.000,
+  belirgin eğilim yok. `nfc_sonrasi_isaret` 779 öz (%0,12), 1.704 işaret;
+  2013–2022 artıyor (1,3 → 25/10.000), 2022 sonrası düz (17–21) → LLM
+  dönemiyle çakışan sahte artış üretmez; dokunulmadı (sınırlılık, §10 madde 3).
+- **Karar (kullanıcı, 2026-11-10):** `temiz()`'e "i + U+0307 → i" kuralı
+  eklendi, TR ve EN (bütün alanlar). NFC'den ÖNCE uygulanır (i + nokta + ´
+  gibi durumlarda kalan işaret NFC ile tek harfe birleşsin). Raporda "fazla
+  noktali i duzeltildi" sayılır. Doğrulama: tüm vakalar elle kontrol
+  (≤73 ise hepsi; kullanıcı, `karakter_kontrol_fazla_i.xlsx`).

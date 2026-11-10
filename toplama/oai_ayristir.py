@@ -251,6 +251,13 @@ def temiz(metin):
     # ("&amp;#039;", "&amp;amp;lt;") ve <p>/<br> etiketli. Degismeyene kadar coz, etiketleri at.
     metin = html_coz(metin or "")
     metin = HTML_ETIKET.sub(" ", metin)
+    # i + fazladan ust nokta (U+0307; 2026-11-10, kullanici karari, TR ve EN): yanlis kucultulmus
+    # "İ" (İSTANBUL -> i\u0307stanbul). NFC bunu duzeltemez (tek parcali karsiligi yok); kelime
+    # kurali "i" + "stanbul" diye boler. NFC'DEN ONCE: kalan isaret varsa
+    # (i + nokta + ´) NFC "i + ´"yi tek harfe (í) birlestirsin. TR'de 50 oz, 162 kez (yontem.md 10.1).
+    if "i\u0307" in metin:
+        karakter_sayaci["fazla noktali i duzeltildi"] += 1
+        metin = metin.replace("i\u0307", "i")
     # Unicode NFC (2026-11-05, kullanici karari): ayrik harf + isaret ("u" + U+0308) tek karaktere
     # ("ü"). 7.725 ozde metnin tamami ayrik biciminde; kelime kurali isareti harf saymadigi icin
     # "Türkçeye" -> "tu" + "rkçeye" oluyordu. Gorunur metni degistirmez (yontem.md 4.6).
