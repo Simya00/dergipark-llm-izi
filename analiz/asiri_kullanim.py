@@ -80,6 +80,9 @@ def main():
     p.add_argument("--hedef", type=int, default=2024)
     p.add_argument("--en-az-belge", type=int, default=0,
                    help="Istege bagli ek filtre: hedef yilda en az bu kadar ozet (Kobak'ta yok; 0 = kapali)")
+    p.add_argument("--saglamlik", type=int, default=30,
+                   help="Saglamlik kontrolu (2026-11-11 kullanici karari: her zaman raporlanir): "
+                        "asiri kelimelerden hedef yilda en az bu kadar ozette gecenler ayrica sayilir")
     p.add_argument("--goster", type=int, default=40)
     arg = p.parse_args()
 
@@ -120,15 +123,19 @@ def main():
         print(f"{'kelime':>32} {'p' + str(b - 1):>8} {'p' + str(b):>8} {'q':>8} {'p' + str(T):>8} {'delta':>8} {'oran':>6} {'ozet':>6}")
         for r in liste[:arg.goster]:
             print(f"{r['kelime']:>32} {r[f'p{b - 1}']:>8.4f} {r[f'p{b}']:>8.4f} {r['q']:>8.4f} "
-                  f"{r['p']:>8.4f} {r['delta']:>+8.4f} {r['oran']:>6.2f} {r['sayi']:>6}")
+                  f"{r['p']:>8.4f} {r['delta']:>+8.4f} {r['oran']:>6.2f} {r['sayi']:>6}"
+                  + (" *" if r["sayi"] < arg.saglamlik else ""))
 
     print(f"{arg.dil.upper()} | taban {b - 1}-{b} -> hedef {T} | ozet sayisi: "
           + ", ".join(f"{y}:{belge[y]}" for y in yillar))
     asirilar = [r for r in satirlar if r["asiri"]]
     print(f"{len(satirlar)} kelime hesaba girdi (p >= 1e-4, {T - 1} ve {T})"
           + (f"; ek filtre: hedef yilda >= {arg.en_az_belge} ozet" if arg.en_az_belge else ""))
+    saglam = [r for r in asirilar if r["sayi"] >= arg.saglamlik]
     print(f"Kobak vd. kuralina gore ASIRI KELIME: {len(asirilar)} "
           f"(delta > 0.01: {sum(r['delta'] > 0.01 for r in asirilar)})")
+    print(f"  saglamlik: bunlardan hedef yilda >= {arg.saglamlik} ozette gecen: {len(saglam)} "
+          f"(tablolarda 'ozet' < {arg.saglamlik} olanlar * ile isaretli)")
     tablo("Farka (delta) gore en cok artan ASIRI kelimeler:", asirilar)
     tablo("Kata (oran) gore en cok artan ASIRI kelimeler:",
           sorted(asirilar, key=lambda r: (-r["oran"], -r["delta"])))

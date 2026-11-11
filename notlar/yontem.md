@@ -432,6 +432,10 @@ Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --di
     çalıştırılabilir. Not (Claude): veri PubMed'den ~300 kat küçük; 10⁻⁴
     bizde yılda ~5 özet → nadir kelimelerde rastlantısal dalgalanma daha
     büyük; sonuçlar ≥30 filtresiyle de raporlanmalı.
+  - **Karar (kullanıcı, 2026-11-11): bundan sonra her sonuç iki biçimde
+    raporlanır:** Kobak vd. kuralı (ana) + hedef yılda ≥ 30 özette geçenler
+    (sağlamlık). `asiri_kullanim.py --saglamlik 30` (varsayılan) ikisini de
+    yazar; tablolarda < 30 olanlar `*` ile işaretli; TSV'de `sayi` sütunu.
 
 ## 7. Dergi paneli
 

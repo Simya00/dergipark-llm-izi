@@ -943,3 +943,5 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   kelime aşırı sayılmadı, artan sayıldı; eşik değerleri ×2/×1,68/×1,41).
 - Kullanıcı yeniden çalıştıracak: `ozet_uzunluk.py` → `kelime_siklik.py`
   → `asiri_kullanim.py` (önceki sonuç filtresizdi, geçersiz).
+- Karar (kullanıcı): her sonuç hem Kobak kuralıyla hem ≥30 özet sağlamlık
+  filtresiyle raporlanacak → `asiri_kullanim.py --saglamlik 30` (varsayılan).
