@@ -1021,3 +1021,11 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     (ÇĞİÖŞÜ) içermeyen kelime İngilizce kısaltma sayılıp `.lower()` ile
     küçültülüyor → "VURGULAMAKTADIR" → `vurgulamaktadir` (ı yerine i).
     Özetlerde büyük harfli Türkçe kelime nadir; sınırlılık adayı, ölçülebilir.
+- Kullanıcı: "etkilerini ve etkiler iki ayrı kelime sayılmış." → Claude:
+  biçim düzeyinde sayım bilerek (Kobak vd. de böyle; biçim ayrıca bilgi
+  taşıyor), ama bir kökün artışı biçimlere dağılıp eşik altında kalabilir.
+  Öneri: kök düzeyinde (Zemberek) ek analiz, Kobak'ın lemmatize sürümü gibi.
+  **Kullanıcı kararsız: "şimdilik bu şekilde bakalım."** → AÇIK SORU; elle
+  işaretlemeden sonra yeniden değerlendirilecek. İşaretlemede her biçim ayrı
+  etiketlenir; `hesapla` sonrası aynı kökün farklı etiket alan biçimleri
+  tutarlılık için listelenebilir.
