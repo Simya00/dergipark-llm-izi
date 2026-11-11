@@ -1003,3 +1003,21 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
    özetlerde aynı zincir (pozitif kontrol), ek analizi (Zemberek).
 6. Bekleyen: LLM deneyi gelecek ay (OpenAI API), Lee (2026) tam metni,
    Türkçe için önceki çalışma taraması.
+
+## 2026-11-12
+
+- Kullanıcı: "başlayalım" (elle işaretleme). `analiz/isaretleme.py`:
+  - `excel`: 2018–2025'ten birinde Kobak kuralıyla aşırı VE δ > 0,01 olan
+    kelimeler (Claude'un önerisi; dünkü tabloya göre birleşimi ~400 bekleniyor).
+    Her kelimeye, aşırı çıktığı yılların özetlerinden rastgele 2 örnek cümle
+    (rezervuar örnekleme, tohum 20261112). **Kör işaretleme** (Claude'un
+    önerisi): "isaretleme" sayfasında yalnızca kelime + örnekler, rastgele
+    sırada; yıllar/δ ayrı "bilgi" sayfasında. Etiket Ü / İ / B (açılır liste).
+  - `hesapla`: her yıl δ > 0,01 kelimelerin Ü/İ/B sayısı ve üslup yüzdesi
+    (Ü / (Ü + İ), B hariç); Ü kelimeleri `uslup_kelimeleri_<dil>.txt`
+    (alt sınır için).
+  - Sahte veriyle test edildi.
+  - Fark edilen eski zayıflık: tamamı büyük harf ve Türkçeye özgü harf
+    (ÇĞİÖŞÜ) içermeyen kelime İngilizce kısaltma sayılıp `.lower()` ile
+    küçültülüyor → "VURGULAMAKTADIR" → `vurgulamaktadir` (ı yerine i).
+    Özetlerde büyük harfli Türkçe kelime nadir; sınırlılık adayı, ölçülebilir.
