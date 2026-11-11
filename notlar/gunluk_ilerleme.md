@@ -1034,3 +1034,20 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   eki. Kök analizi yapılırsa iki düzey seçeneği: sözlük maddesi (lemma:
   etki ← etkiler, etkilerini; ilişki ≠ ilişkili) ya da kök (hepsi "ilişki").
   İşaretlemede ayrı ayrı etiketlenir. (Açık soruya örnek olarak eklendi.)
+- **Karar (kullanıcı): Türkçe ana analiz kelime (sözcük) düzeyinde,
+  Zemberek ile; biçimler (etkiler, etkilerini…) "kullanılan varyasyonlar"
+  olarak tutulur.** Gerekçe (kullanıcı): İngilizce sondan eklemeli değil
+  (will be, did ayrı kelime); Türkçede ekler kelimeye bitişik, biçim düzeyi
+  sayım İngilizceyle eşdeğer değil.
+- Zemberek denemesi (Claude, bu ortamda):
+  - İLK ÇÖZÜMLEME (tezdeki yöntem) bağlamsız ve sık kelimelerde yanlış:
+    `sonuçlar → sonuçlamak` (fiil, geniş zaman), `etkiler → etkilemek`,
+    `değerlendirme → olumsuz emir`.
+  - `item.lemma` KÖK veriyor: `kapsamlı → kapsam`, `önemli → önem`,
+    `etkili → etki`, `gerçekleştirilmiştir → gerçek` → üslup bilgisi kaybolur.
+  - Bağlamlı çözümleme (`analyze_and_disambiguate`) çoğunu düzeltiyor
+    (`sonuçlar → sonuç+A3pl`, `etkilerini → etki`) ama hepsini değil
+    (`değerlendirme süreçlerinin` hâlâ olumsuz emir); hız ~11 ms/kelime →
+    TR derlemi (~110M kelime) tek çekirdekte ~14 gün.
+  - Açık kararlar: düzey (kök mü, gövde = kök + yapım ekleri mi), yöntem
+    (ilk çözümleme mi, bağlamlı mı; paralel çalıştırma), doğrulama örneklemi.
