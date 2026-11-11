@@ -157,6 +157,8 @@ def asiri(arg):
     if not yol.exists():
         raise SystemExit(f"{yol} yok. Once: python3 asiri_kullanim.py --dil {arg.dil} --hedef {arg.hedef}")
     df = pd.read_csv(yol, sep="\t", dtype={"kelime": str}, keep_default_na=False)
+    if "asiri" in df.columns:  # Kobak vd. kuralina gore asiri kelimeler (2026-11-11)
+        df = df[df["asiri"] == 1]
     df = df.sort_values("delta", ascending=False).head(arg.ilk).iloc[::-1]  # en buyuk en ustte
     p, q = df["p"] * 100, df["q"] * 100
 

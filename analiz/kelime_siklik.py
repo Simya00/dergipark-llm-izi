@@ -8,6 +8,8 @@ OZETTE gectigini sayar (Kobak vd. 2025 gibi: ayni ozette kac kez gectigi
 degil, gecip gecmedigi). Analizde makalenin yil_guvenilir alani kullanilir;
 arsiv/yilsiz makaleler disarida kalir.
 
+Yalnizca 250-4000 karakter arasi ozetler sayilir (Kobak vd. ile ayni; 2026-11-11).
+
 Kelime gruplari cumle/yan cumle sinirini (. ! ? ; : , parantez) asmaz:
 "...sonuclandi. Bu calisma..." icinden "sonuclandi bu" grubu cikmaz.
 
@@ -215,6 +217,21 @@ def secili(m, dergiler):
     return dergiler is None or m.get("dergi_kodu") in dergiler
 
 
+# Ozet uzunlugu filtresi (2026-11-11, kullanici karari: Kobak vd. ile AYNI).
+# Kobak vd. 01-process-baseline.ipynb: 250 < karakter sayisi < 4000. Cok kisa
+# (eksik/kesik) ve cok uzun (ozet yerine tam metin vb.) kayitlar disarida kalir.
+OZET_EN_KISA, OZET_EN_UZUN = 250, 4000
+
+
+def uzunluk_uygun(metin: str) -> bool:
+    return OZET_EN_KISA < len(metin) < OZET_EN_UZUN
+
+
+def analize_girer(m, alan, dergiler) -> bool:
+    """Makalenin bu dildeki ozeti analize girer mi: ozet var, uzunluk uygun, dergi secili."""
+    return bool(m.get(alan)) and uzunluk_uygun(m[alan]) and secili(m, dergiler)
+
+
 def yil_araligi(metin: str):
     bas, son = metin.split("-")
     return list(range(int(bas), int(son) + 1))
@@ -226,7 +243,9 @@ def main():
     p.add_argument("--dil", choices=["tr", "en"], required=True)
     p.add_argument("--yillar", default="2015-2026", help="orn. 2015-2026")
     p.add_argument("--n", type=int, default=1, help="1: tek kelime, 2-4: kelime gruplari")
-    p.add_argument("--min-belge", type=int, default=5, help="Bir yilda bundan az ozette gecen oge atilir")
+    p.add_argument("--min-belge", type=int,
+                   help="Bir yilda bundan az ozette gecen oge atilir (varsayilan n=1: 1, yani hepsi "
+                        "tutulur, Kobak vd. gibi; n>1: 5)")
     p.add_argument("--parca", type=int, help="Her yilin sayimini kac parcaya bol (varsayilan n=1: 1, n>1: 8)")
     p.add_argument("--dergiler", help="Sadece bu dergiler (orn. dergi_paneli_tr.txt)")
     p.add_argument("--cikti")
@@ -235,6 +254,8 @@ def main():
     dergiler = dergi_filtresi(arg.dergiler)
     cikti = Path(arg.cikti or KLASOR / siklik_dosya_adi(arg.dil, arg.n))
     parca_sayisi = arg.parca or (1 if arg.n == 1 else 8)
+    if arg.min_belge is None:
+        arg.min_belge = 1 if arg.n == 1 else 5
     alan = f"ozet_{arg.dil}"
     belge_sayisi = {}
 
@@ -246,7 +267,7 @@ def main():
             with open(arg.girdi, encoding="utf-8") as g:
                 for satir in g:
                     m = json.loads(satir)
-                    if m.get("yil_guvenilir") == yil and m.get(alan) and secili(m, dergiler):
+                    if m.get("yil_guvenilir") == yil and analize_girer(m, alan, dergiler):
                         ozet_ogeleri.append(gruplar(m[alan], arg.dil, arg.n))
             belge_sayisi[yil] = len(ozet_ogeleri)
             farkli = tutulan = 0

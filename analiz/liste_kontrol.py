@@ -22,7 +22,7 @@ from collections import Counter
 from pathlib import Path
 
 from asiri_kullanim import karsi_olgusal
-from kelime_siklik import VARSAYILAN_GIRDI, dergi_filtresi, gruplar, secili, yil_araligi
+from kelime_siklik import VARSAYILAN_GIRDI, dergi_filtresi, gruplar, analize_girer, yil_araligi
 
 KLASOR = Path(__file__).resolve().parent
 
@@ -55,7 +55,7 @@ def main():
         for satir in g:
             m = json.loads(satir)
             y = m.get("yil_guvenilir")
-            if y not in sayi or not m.get(alan) or not secili(m, dergiler):
+            if y not in sayi or not analize_girer(m, alan, dergiler):
                 continue
             n[y] += 1
             ogeler = set().union(*(gruplar(m[alan], arg.dil, u) for u in uzunluklar))

@@ -412,6 +412,26 @@ Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --di
 - Alt sınır: işaretçilerden en az birini içeren özet oranı için
   `L ≥ (p − q) / (1 − q)`.
 - Kelime grupları cümle/yan cümle sınırını aşmaz.
+- **Kobak vd. ile birebir uyum (kullanıcı kararı, 2026-11-11; gerekçe:
+  TR ve EN sonuçları ile Kobak vd. doğrudan karşılaştırılabilsin).** Kaynak:
+  `berenslab/llm-excess-vocab` kodu (`notlar/literatur.md`).
+  1. **Özet uzunluğu filtresi:** yalnızca 250 < karakter < 4000 özetler
+     (`kelime_siklik.analize_girer`; `kelime_siklik`, `alt_sinir`,
+     `liste_kontrol`, `ek_siklik` hepsi kullanır). Yıllara göre atılan sayı
+     ve ortalama/medyan uzunluk: `ozet_uzunluk.py`.
+  2. **Sıklık yumuşatma:** `p = (sayı + 1) / (özet sayısı + 1)`.
+  3. **Hesaba giren kelime:** hedef yılda ve bir önceki yılda p ≥ 10⁻⁴;
+     yalnızca harflerden oluşan kelimeler.
+  4. **Aşırı kelime kuralı:** `δ > 0,01` VEYA
+     `log10(r) > log10(2) − (log10(p) + 4)·log10(2)/4`.
+  5. Sayımda artık bütün kelimeler tutulur (`--min-belge` n=1 için 1;
+     Kobak `min_df` ≈ 0), yoksa taban yıllarında az geçen kelimelerin sayısı
+     0 sanılır ve oran şişer.
+  - Eski "hedef yılda ≥ 30 özet" eşiği (Claude'un seçimiydi) varsayılandan
+    kaldırıldı; `--en-az-belge 30` ile sağlamlık kontrolü olarak
+    çalıştırılabilir. Not (Claude): veri PubMed'den ~300 kat küçük; 10⁻⁴
+    bizde yılda ~5 özet → nadir kelimelerde rastlantısal dalgalanma daha
+    büyük; sonuçlar ≥30 filtresiyle de raporlanmalı.
 
 ## 7. Dergi paneli
 

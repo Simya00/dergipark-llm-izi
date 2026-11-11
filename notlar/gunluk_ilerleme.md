@@ -929,3 +929,17 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     çalışma, önemli, gibi, ortaya, ayrıca: +2–6 puan) → özetler
     uzamış olabilir; uzunluk artışı her kelimenin "geçme" olasılığını
     yükseltir. Yıllara göre özet uzunluğu kontrolü önerildi.
+- Kullanıcı: "Kobak vd. ne yaptı, biz ne yapıyoruz?" → Kobak vd. kodu
+  okundu, parametreler `literatur.md`'ye yazıldı; benzerlik/farklar ve
+  özgün katkılar (Türkçe biçimbilim/ek analizi, ön kayıtlı liste, yeniden
+  yazım deneyi, doğrulanmış temizlik, dergi paneli, iki dilli karşılaştırma)
+  anlatıldı; Lee (2026) uyarısı tekrarlandı.
+- **Karar (kullanıcı): uzunluk filtresi ve aşırı kelime kuralı Kobak vd.
+  ile birebir aynı** ("İngilizce özetlerde tam uyum"). Kod: `kelime_siklik`
+  (`analize_girer`, 250–4000 karakter; n=1'de tüm kelimeler tutulur),
+  `asiri_kullanim` (yumuşatma, p ≥ 1e-4, Kobak kuralı, `asiri` sütunu),
+  `ozet_uzunluk.py` (yeni), `gorsellestir asiri` yalnızca aşırı kelimeler.
+  Sahte veriyle test edildi (atılan kısa/uzun sayıları doğru; sabit
+  kelime aşırı sayılmadı, artan sayıldı; eşik değerleri ×2/×1,68/×1,41).
+- Kullanıcı yeniden çalıştıracak: `ozet_uzunluk.py` → `kelime_siklik.py`
+  → `asiri_kullanim.py` (önceki sonuç filtresizdi, geçersiz).

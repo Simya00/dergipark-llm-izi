@@ -36,7 +36,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from asiri_kullanim import karsi_olgusal
-from kelime_siklik import VARSAYILAN_GIRDI, dergi_filtresi, kelime_listesi, secili, yil_araligi
+from kelime_siklik import VARSAYILAN_GIRDI, dergi_filtresi, kelime_listesi, analize_girer, yil_araligi
 
 KLASOR = Path(__file__).resolve().parent
 ONBELLEK = KLASOR / "ek_onbellek.json.gz"
@@ -160,7 +160,7 @@ def main():
         for satir in g:
             m = json.loads(satir)
             y = m.get("yil_guvenilir")
-            if y not in yillar or not m.get("ozet_tr") or not secili(m, dergiler):
+            if y not in yillar or not analize_girer(m, "ozet_tr", dergiler):
                 continue
             sayac, ekler, zincirler, n_kelime, n_tanin = ozet_ekleri(m["ozet_tr"], cozumleyici)
             belge[y] += 1
