@@ -945,3 +945,16 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   → `asiri_kullanim.py` (önceki sonuç filtresizdi, geçersiz).
 - Karar (kullanıcı): her sonuç hem Kobak kuralıyla hem ≥30 özet sağlamlık
   filtresiyle raporlanacak → `asiri_kullanim.py --saglamlik 30` (varsayılan).
+- **Özet uzunluğu (kullanıcı, TR, filtre sonrası):** ortalama kelime
+  2015: 130 → 2019: 154 → 2022: 166 → 2023: 170 → 2024: 173 → 2025: 178
+  (2026 kısmi: 186). Yılda ~3,5–4,5 kelime, düzenli; 2023'te kırılma yok.
+  Filtre yılda %0,9–3,8 özeti atıyor (çoğu kısa).
+- **Kobak kuralıyla 2024 (TR):** 63.643 kelime hesaba girdi; **5.846 aşırı**
+  (δ > 0,01: 103); **≥30 özet: 1.254**. Kata göre listenin çoğu ≤30 özetli
+  nadir kelime (çalgılarının, icracılara, hukuksuz…: büyük olasılıkla tek
+  dergi/sayı etkisi) → küçük veride Kobak kuralı çok fazla rastlantısal
+  aşırı kelime üretiyor; asıl karşılaştırma yıllar arası.
+- `yillara_gore_asiri.py` yazıldı (Kobak Şekil 2 karşılığı: her T için taban
+  T−2; yıl başına aşırı / ≥30 / δ>0,01 sayısı; tüm aşırı kelimeler
+  `asiri_kelimeler_<dil>.tsv` → elle içerik/üslup işaretleme girdisi).
+  `asiri_kullanim.asiri_hesapla` fonksiyona ayrıldı. Sahte veriyle test.

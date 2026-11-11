@@ -71,6 +71,29 @@ def oku(siklik_dosyasi):
     return belge, sayi
 
 
+def asiri_hesapla(belge, sayi, b, T, en_az_belge=0):
+    """Her kelime icin p, q, delta, oran ve Kobak vd. asiri kelime karari (satir listesi)."""
+    yillar = sorted(belge)
+    satirlar = []
+    for kelime, s in sayi.items():
+        if not kelime.replace(" ", "").isalpha() or s.get(T, 0) < en_az_belge:
+            continue  # yalnizca harflerden olusan ogeler (Kobak: allowedWords)
+        # Kobak vd.: yumusatilmis siklik (sayi + 1) / (toplam + 1)
+        oranlar = {y: (s.get(y, 0) + 1) / (belge[y] + 1) for y in yillar if belge[y]}
+        if oranlar[T] < KOBAK_EN_AZ_SIKLIK or oranlar[T - 1] < KOBAK_EN_AZ_SIKLIK:
+            continue
+        q = karsi_olgusal(oranlar[b - 1], oranlar[b], T - b)
+        pT = oranlar[T]
+        delta, oran = pT - q, pT / q
+        satirlar.append({
+            "kelime": kelime, "p": pT, "q": q, "delta": delta, "oran": oran,
+            "asiri": int(kobak_asiri_mi(pT, delta, oran)), "sayi": s.get(T, 0),
+            **{f"p{y}": oranlar.get(y, 0.0) for y in yillar},
+        })
+
+    return satirlar
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--dil", choices=["tr", "en"], required=True)
@@ -93,22 +116,7 @@ def main():
             raise SystemExit(f"{y} yilinda hic ozet yok; --yillar araligini kontrol edin.")
     yillar = sorted(belge)
 
-    satirlar = []
-    for kelime, s in sayi.items():
-        if not kelime.replace(" ", "").isalpha() or s.get(T, 0) < arg.en_az_belge:
-            continue  # yalnizca harflerden olusan ogeler (Kobak: allowedWords)
-        # Kobak vd.: yumusatilmis siklik (sayi + 1) / (toplam + 1)
-        oranlar = {y: (s.get(y, 0) + 1) / (belge[y] + 1) for y in yillar if belge[y]}
-        if oranlar[T] < KOBAK_EN_AZ_SIKLIK or oranlar[T - 1] < KOBAK_EN_AZ_SIKLIK:
-            continue
-        q = karsi_olgusal(oranlar[b - 1], oranlar[b], T - b)
-        pT = oranlar[T]
-        delta, oran = pT - q, pT / q
-        satirlar.append({
-            "kelime": kelime, "p": pT, "q": q, "delta": delta, "oran": oran,
-            "asiri": int(kobak_asiri_mi(pT, delta, oran)), "sayi": s.get(T, 0),
-            **{f"p{y}": oranlar.get(y, 0.0) for y in yillar},
-        })
+    satirlar = asiri_hesapla(belge, sayi, b, T, arg.en_az_belge)
 
     satirlar.sort(key=lambda r: -r["delta"])
     cikti = KLASOR / (f"asiri_{arg.dil}_{T}.tsv" if arg.n == 1 else f"asiri_{arg.dil}_{arg.n}gram_{T}.tsv")
