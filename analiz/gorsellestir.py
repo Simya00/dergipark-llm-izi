@@ -16,11 +16,17 @@ seyi yeniden hesaplamaz ve degistirmez.
             Kaynak: asiri_kullanim.py ciktisi (asiri_<dil>_<hedef>.tsv).
             Her kelime icin iki nokta: gri = beklenen (q), mavi = gerceklesen (p);
             aradaki cizgi = fark (delta).
+3) dagilim: Histogram. Hedef yilda >= 30 ozette gecen TUM kelimelerin "kac kat"
+            (oran = p / q) dagilimi, log2 olcekte (x1 = degisim yok, x2 = iki kat).
+            Kelimelerin cogu x1 civarinda toplanir; LLM isaretcileri saga, kuyruga
+            dusmeli. --liste verilirse listedeki kelimeler turuncu cizgilerle
+            isaretlenir (nerede durduklari gorulsun).
 
 Kullanim:
   python3 gorsellestir.py egilim --dil tr --liste aday_liste_tr.txt
   python3 gorsellestir.py egilim --dil tr --kelimeler kapsamlı,kritik,derinlemesine
   python3 gorsellestir.py asiri --dil tr --hedef 2024 --ilk 30
+  python3 gorsellestir.py dagilim --dil tr --hedef 2024 --liste aday_liste_tr.txt
 Grafikler: analiz/grafikler/*.png (makale icin 300 dpi)
 
 Kurulum (gerekirse, Fedora):
@@ -44,6 +50,7 @@ GRAFIK_KLASORU = KLASOR / "grafikler"
 
 # Renkler (dataviz referans paleti, acik tema): tek seri = 1. kategorik renk
 MAVI = "#2a78d6"       # gerceklesen
+TURUNCU = "#eb6834"    # 2. kategorik renk: listedeki kelimeler (histogram)
 GRI = "#8a8985"        # beklenen (karsi-olgusal) ve yardimci cizgiler
 YAZI = "#0b0b0b"
 YAZI_IKINCIL = "#52514e"
@@ -170,6 +177,48 @@ def asiri(arg):
     kaydet(fig, arg.cikti or f"asiri_{arg.dil}_{arg.hedef}.png")
 
 
+# ------------------------------------------------------------------
+# 3) Dagilim (histogram): tum kelimelerin "kac kat" degeri
+# ------------------------------------------------------------------
+
+def dagilim(arg):
+    import numpy as np
+    yol = KLASOR / (f"asiri_{arg.dil}_{arg.hedef}.tsv" if arg.n == 1 else f"asiri_{arg.dil}_{arg.n}gram_{arg.hedef}.tsv")
+    if not yol.exists():
+        raise SystemExit(f"{yol} yok. Once: python3 asiri_kullanim.py --dil {arg.dil} --hedef {arg.hedef}")
+    df = pd.read_csv(yol, sep="\t", dtype={"kelime": str}, keep_default_na=False)
+    log_oran = np.log2(df["oran"].clip(lower=1 / 64, upper=64))  # cok uc degerler kenarda toplanir
+
+    fig, ax = plt.subplots(figsize=(7, 3.6))
+    ax.hist(log_oran, bins=arg.kutu, color=MAVI, edgecolor="white", linewidth=0.5,
+            label=f"tüm kelimeler (n = {len(df):,})".replace(",", "."))
+    ax.axvline(0, color=GRI, linewidth=1, linestyle=":")  # x1: degisim yok
+    if arg.liste:
+        liste = set(liste_oku(arg.liste))
+        secili = df[df["kelime"].isin(liste)]
+        # alt kenarda kisa cizgiler ("hali" isareti): cubuklari ortmeden yerlerini gosterir
+        ax.vlines(np.log2(secili["oran"].clip(lower=1 / 64, upper=64)), 0, 0.12,
+                  transform=ax.get_xaxis_transform(), color=TURUNCU, linewidth=1.5,
+                  label=f"aday listedeki kelimeler (n = {len(secili)})")
+        ust = len(df[df["oran"] > secili["oran"].median()]) if len(secili) else 0
+        print(f"Listeden {len(secili)}/{len(liste)} kelime veride (hedef yilda >= 30 ozet). "
+              f"Liste medyani: x{secili['oran'].median():.2f}; tum kelimelerin "
+              f"%{100 * ust / len(df):.1f}'i bundan buyuk.")
+    ax.set_yscale("log")  # cogu kelime ortada; kuyruktaki az sayida kelime de gorunsun
+    ax.yaxis.set_major_formatter(lambda v, _: f"{v:g}")
+    alt, ust = int(np.floor(log_oran.min())), int(np.ceil(log_oran.max()))  # yalnizca verinin araligi
+    ax.set_xlim(alt - 0.2, ust + 0.2)
+    ax.set_xticks(range(alt, ust + 1), [f"×{2 ** k}" if k >= 0 else f"×1/{2 ** -k}" for k in range(alt, ust + 1)])
+    ax.set_xlabel(f"{arg.hedef}'te gerçekleşen / beklenen (kaç kat)")
+    ax.set_ylabel("kelime sayısı (log ölçek)")
+    ax.grid(axis="y", color=IZGARA, linewidth=0.6)
+    ax.tick_params(length=0)
+    ax.set_title(f"Kelimelerin {arg.hedef}'teki değişim dağılımı ({arg.dil.upper()})", loc="left", fontsize=11)
+    ax.legend(loc="upper right", frameon=False, fontsize=8)
+    fig.tight_layout()
+    kaydet(fig, arg.cikti or f"dagilim_{arg.dil}_{arg.hedef}.png")
+
+
 def kaydet(fig, ad):
     GRAFIK_KLASORU.mkdir(exist_ok=True)
     yol = GRAFIK_KLASORU / ad
@@ -181,7 +230,7 @@ def kaydet(fig, ad):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     alt = p.add_subparsers(dest="komut", required=True)
-    for ad in ("egilim", "asiri"):
+    for ad in ("egilim", "asiri", "dagilim"):
         a = alt.add_parser(ad)
         a.add_argument("--dil", choices=["tr", "en"], required=True)
         a.add_argument("--n", type=int, default=1, help="1: tek kelime, 2-4: kelime gruplari")
@@ -196,8 +245,11 @@ def main():
     e.add_argument("--son-yil", type=int, default=2025, help="2026 eksik yil oldugu icin varsayilan 2025")
     e.add_argument("--en-fazla", type=int, default=16, help="en cok kac panel")
     alt.choices["asiri"].add_argument("--ilk", type=int, default=30, help="en cok artan kac kelime")
+    d = alt.choices["dagilim"]
+    d.add_argument("--liste", help="isaretlenecek aday listesi (orn. aday_liste_tr.txt)")
+    d.add_argument("--kutu", type=int, default=60, help="histogram kutu (cubuk) sayisi")
     arg = p.parse_args()
-    egilim(arg) if arg.komut == "egilim" else asiri(arg)
+    {"egilim": egilim, "asiri": asiri, "dagilim": dagilim}[arg.komut](arg)
 
 
 if __name__ == "__main__":

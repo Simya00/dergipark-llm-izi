@@ -907,3 +907,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   (hedef yılda en çok artan N kelime: beklenen q ile gerçekleşen p noktaları).
   Sahte veriyle test edildi (grafik çıktısı kontrol edildi). Gerçek veri
   kullanıcının `kelime_siklik.py` çalıştırmasını bekliyor.
+- Kullanıcı: "histogram grafiği de olsun" → `gorsellestir.py dagilim`:
+  hedef yılda ≥30 özette geçen tüm kelimelerin oran (p/q) dağılımı, log2
+  x ekseni (×1 = değişim yok), log y ekseni (kuyruk görünsün); `--liste`
+  ile aday listedeki kelimeler alt kenarda turuncu çizgilerle; ekrana liste
+  medyanı ve tüm kelimelerin yüzde kaçının ondan büyük olduğu yazılır.
+  Kutu sayısı 60 (Claude'un seçimi). Sahte veriyle test edildi.
