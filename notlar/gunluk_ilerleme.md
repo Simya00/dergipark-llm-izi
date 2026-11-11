@@ -894,3 +894,16 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Ücretsiz ChatGPT web yalnızca yedek (sessizce küçük modele geçebiliyor →
   sürüm raporlanamaz).
 - Sıradaki: ana analiz (kelime sayımı → aşırı kullanım), LLM gerektirmiyor.
+
+## 2026-11-11
+
+- Kullanıcı sorusu: kelime sayımı ekran kartı kullanıyor mu? → Hayır
+  (yalnızca CPU/RAM/disk).
+- Kullanıcı isteği: sonuçları görselleştiren pandas kodu →
+  `analiz/gorsellestir.py` (yalnızca okur, hesap değiştirmez):
+  `egilim` (kelime başına küçük panel: gerçekleşen oran, Kobak vd.
+  karşı-olgusalı, ChatGPT çizgisi; varsayılan 2015–2025, 2026 eksik yıl
+  olduğu için dışarıda; paneller hedef yıldaki farka göre sıralı) ve `asiri`
+  (hedef yılda en çok artan N kelime: beklenen q ile gerçekleşen p noktaları).
+  Sahte veriyle test edildi (grafik çıktısı kontrol edildi). Gerçek veri
+  kullanıcının `kelime_siklik.py` çalıştırmasını bekliyor.
