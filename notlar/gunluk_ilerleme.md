@@ -1029,3 +1029,8 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   işaretlemeden sonra yeniden değerlendirilecek. İşaretlemede her biçim ayrı
   etiketlenir; `hesapla` sonrası aynı kökün farklı etiket alan biçimleri
   tutarlılık için listelenebilir.
+- Kullanıcı örneği: "ilişki" ve "ilişkili" ayrı sayılmış. → Claude: bu yapım
+  eki (isim → sıfat, ayrı sözlük maddesi); "etkiler/etkilerini" ise çekim
+  eki. Kök analizi yapılırsa iki düzey seçeneği: sözlük maddesi (lemma:
+  etki ← etkiler, etkilerini; ilişki ≠ ilişkili) ya da kök (hepsi "ilişki").
+  İşaretlemede ayrı ayrı etiketlenir. (Açık soruya örnek olarak eklendi.)
