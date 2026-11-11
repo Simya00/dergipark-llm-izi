@@ -913,3 +913,19 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   ile aday listedeki kelimeler alt kenarda turuncu çizgilerle; ekrana liste
   medyanı ve tüm kelimelerin yüzde kaçının ondan büyük olduğu yazılır.
   Kutu sayısı 60 (Claude'un seçimi). Sahte veriyle test edildi.
+- **İLK GERÇEK SONUÇ** (kullanıcı, `asiri_kullanim.py --dil tr --hedef 2024`,
+  taban 2021–2022, ≥30 özet):
+  - Farka göre: sunum fiilleri belirgin: göstermektedir ×1,64,
+    amaçlamaktadır ×1,81, (ortaya) koymaktadır ×2,68, sunmaktadır ×2,25,
+    vurgulamaktadır ×6,94 (%0,37 → %3,42), incelemektedir ×2,76; ayrıca
+    kritik ×2,63, kapsamlı ×1,95, rol ×1,68, önemini ×2,09, teşvik ×2,40,
+    katkıda ×1,88, etkilerini ×2,11.
+  - Kata göre: vurgulamakta ×24,6, vurguluyor ×39,8, içgörüler ×19,3,
+    şekillendirmedeki, perspektiflerini, kesişiminde, boşluklarını,
+    oynayabileceğini, artırabileceğini… (İngilizce LLM kalıplarının
+    çevirisi gibi). Konu kelimeleri: chatgpt, gpt, gemini, yapay, deprem*,
+    hamas, gazze, filistinli, afetin. `r²` belirteç yan etkisi olabilir.
+  - **Dikkat (Claude):** çok sık işlev kelimeleri de artmış (için ×1,05,
+    çalışma, önemli, gibi, ortaya, ayrıca: +2–6 puan) → özetler
+    uzamış olabilir; uzunluk artışı her kelimenin "geçme" olasılığını
+    yükseltir. Yıllara göre özet uzunluğu kontrolü önerildi.
