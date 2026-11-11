@@ -38,7 +38,22 @@ dağılım düzeyinde.
 - [ ] Lee (2026) tam metin — birimler (biçimbirim mi, kök mü, ek mi, n-gram mı?),
       işaretçi seçimi, sağlamlık testleri, sınırlılıklar.
 - [ ] Koo, Kim, Kim (2026).
-- [ ] Kobak vd. ek materyal: kelime listesi ve eşikler; `berenslab/llm-excess-vocab` kodu.
+- [x] Kobak vd. kodu okundu (2026-11-11, `berenslab/llm-excess-vocab`,
+  `scripts/preprocess_and_count_utils.py` ve `01-process-baseline.ipynb`):
+  - Özet uzunluğu filtresi: 250–4000 karakter arası özetler.
+  - Kelime: sklearn `CountVectorizer(binary=True)`, yalnızca İngiliz alfabesi
+    harfleri (`allowedWords`).
+  - Sıklık yumuşatılmış: `(sayı + 1) / (toplam + 1)`; kelime hedef yılda VE
+    bir önceki yılda sıklık ≥ 10⁻⁴ ise hesaba girer.
+  - Karşı-olgusal: `p(T−2) + max((p(T−2) − p(T−3)) · 2, 0)` (bizimkiyle aynı).
+  - **Aşırı kelime kuralı:** `δ > 0,01` VEYA
+    `log10(r) > log10(2) − (log10(p) + 4) · log10(2)/4` (p = hedef yıl
+    sıklığı). Yani eşik sıklığa göre değişir: p = 10⁻⁴ → r > 2;
+    p = 10⁻³ → r > 1,68; p = 10⁻² → r > 1,41; p = 1 → r > 1.
+  - 2013–2024 her yıl için uygulanmış → 900 farklı aşırı kelime, elle
+    işaretlenmiş (`results/excess_words.csv`): içerik 462, üslup 407
+    (üslup: 268 fiil, 53 sıfat, 43 isim, 23 zarf), karışık 27, diğer 4.
+  - Lemmatize edilmiş sürüm de var (`excess-per-year-lemmatized`).
 - [ ] Tübingen tam metin çalışması (asıl kaynak).
 - [ ] Liang vd. (2024) dağılımsal tahmin; Gray (2024); Geng & Trotta (2024).
 
