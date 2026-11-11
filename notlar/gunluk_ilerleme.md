@@ -979,3 +979,27 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   aynı zamanlama. 2018–2019 δ>0,01 (56/43) beklenenden yüksek → dergi
   karışımı değişimi olabilir; dergi paneliyle kontrol edilecek. 42.876
   farklı aşırı kelime (gürültü dahil) → işaretleme için daraltma gerekli.
+- Kullanıcıya sade anlatım (okul örneği): 2022–2023'te çok artan (δ>0,01)
+  kelime 5–7, 2024'te 103, 2025'te 215; 2023'te yayın gecikmesi.
+  Kullanıcı: "heyecanlandım, bir şey bulduk galiba." → Claude: hakemin üç
+  sorusu kaldı (önceki yıllar ✔ bugün cevaplandı; dergi karışımı; içerik mi
+  üslup mu).
+
+**Yarın (2026-11-12) yapılacaklar:**
+1. **Elle işaretleme Excel'i:** herhangi bir yılda δ > 0,01 olan kelimeler
+   (~400), her biri için arttığı yıllar, p/q değerleri ve örnek cümle;
+   kullanıcı Ü / İ / B işaretler. (Claude önce kodu gösterip açıklar.)
+2. **Dergi paneli kontrolü:** `dergi_paneli.py` (2021–2025 her yıl ≥5
+   makale) → `kelime_siklik.py --dergiler` → `yillara_gore_asiri.py`
+   aynı tablo; özellikle 2018–2019'daki yüksek δ>0,01 (56/43) dergi
+   karışımından mı?
+3. **Ön kayıtlı liste sonucu:** `liste_kontrol.py` / `gorsellestir.py
+   egilim --liste aday_liste_tr.txt` + `dagilim` histogramı; 54 adayın
+   kaçı aşırı çıktı.
+4. **İlk grafikler:** eğilim panelleri (vurgulamaktadır, kritik, kapsamlı,
+   içgörüler…), yıllara göre aşırı kelime sayısı grafiği (yeni; Kobak
+   Şekil 2 gibi — önce anlatılacak).
+5. Sonra: alt sınır (`alt_sinir.py`, üslup kelimeleriyle), İngilizce
+   özetlerde aynı zincir (pozitif kontrol), ek analizi (Zemberek).
+6. Bekleyen: LLM deneyi gelecek ay (OpenAI API), Lee (2026) tam metni,
+   Türkçe için önceki çalışma taraması.

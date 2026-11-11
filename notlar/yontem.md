@@ -436,6 +436,18 @@ Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --di
     raporlanır:** Kobak vd. kuralı (ana) + hedef yılda ≥ 30 özette geçenler
     (sağlamlık). `asiri_kullanim.py --saglamlik 30` (varsayılan) ikisini de
     yazar; tablolarda < 30 olanlar `*` ile işaretli; TSV'de `sayi` sütunu.
+- **Yıllara göre aşırı kelime (Kobak vd. Şekil 2 karşılığı;
+  `yillara_gore_asiri.py`, 2026-11-11):** her hedef yıl T (2018–2025) için
+  taban T−2 (eğilim T−3 → T−2). Raporlanan: aşırı kelime sayısı (ham; küçük
+  veride gürültülü, yorumlanmaz), ≥30 özette geçenler (sağlamlık) ve
+  δ > 0,01 olanlar (büyük etki). Tüm aşırı kelimeler
+  `asiri_kelimeler_<dil>.tsv` → elle içerik/üslup işaretleme.
+- **Özet uzunluğu (`ozet_uzunluk.py`):** TR ortalama kelime 2015: 130 →
+  2025: 178, yılda ~3–5 kelime düzenli artış, 2023'te kırılma yok →
+  karşı-olgusal eğilim büyük kısmını içeriyor; ekte raporlanacak.
+- **Planlanan elle işaretleme (Claude önerisi, kullanıcı onayı bekliyor):**
+  herhangi bir yılda δ > 0,01 olan kelimeler (~400); etiketler Ü (üslup) /
+  İ (içerik) / B (belirsiz); Kobak vd. 900 kelimeyi işaretlemişti.
 
 ## 7. Dergi paneli
 
