@@ -958,3 +958,24 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   T−2; yıl başına aşırı / ≥30 / δ>0,01 sayısı; tüm aşırı kelimeler
   `asiri_kelimeler_<dil>.tsv` → elle içerik/üslup işaretleme girdisi).
   `asiri_kullanim.asiri_hesapla` fonksiyona ayrıldı. Sahte veriyle test.
+- **ANA SONUÇ (ilk hali; kullanıcı, `yillara_gore_asiri.py --dil tr`, her T
+  için taban T−2, Kobak kuralı):**
+
+  | yıl | özet | aşırı | ≥30 özet | δ>0,01 |
+  |---|---|---|---|---|
+  | 2018 | 30.649 | 9.055 | 866 | 56 |
+  | 2019 | 34.614 | 7.630 | 862 | 43 |
+  | 2020 | 41.572 | 6.228 | 751 | 11 |
+  | 2021 | 45.700 | 5.535 | 802 | 25 |
+  | 2022 | 45.968 | 5.431 | 487 | 5 |
+  | 2023 | 45.763 | 5.615 | 554 | 7 |
+  | 2024 | 48.461 | 5.846 | 1.254 | 103 |
+  | 2025 | 53.668 | 7.109 | 2.789 | 215 |
+
+  Yorum (Claude): ham "aşırı" sayısı gürültü (küçük veri; özet sayısı
+  azaldıkça artıyor) → anlamsız. ≥30 ve δ>0,01 sütunları net: 2022–2023
+  en düşük (487/554; 5/7), 2024'te sıçrama (1.254; 103), 2025'te daha büyük
+  (2.789; 215). 2023'te etki yok → yayın gecikmesi; Lee (2026) Korece ile
+  aynı zamanlama. 2018–2019 δ>0,01 (56/43) beklenenden yüksek → dergi
+  karışımı değişimi olabilir; dergi paneliyle kontrol edilecek. 42.876
+  farklı aşırı kelime (gürültü dahil) → işaretleme için daraltma gerekli.
