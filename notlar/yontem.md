@@ -480,6 +480,13 @@ analizi olarak kalır; İngilizce biçim düzeyinde.
   `govde_parcalar/`'a yazılır, kesilirse devam eder. Ekran kartı kullanılmaz.
 - **Doğrulama:** 2018–2025'ten rastgele 73 özet × 1 kelime, kullanıcı D/Y
   (`govde_dogrulama_tr.xlsx`); Wilson %95 aralığı raporlanır.
+- **Sonuç (kullanıcı, 2026-11-12): 73/73 doğru = %100 (%95 Wilson
+  95,0–100).** Kullanıcının tereddüt ettiği örnekler (Claude ile konuşuldu,
+  hepsi kurala göre doğru): üreten → üret (Zemberek: üre + Caus), tanınmayan
+  `gastrointestinal` olduğu gibi, çevreye → çevre, üçüncü (sıra sayısı),
+  etkinliklerin → etkinlik (-lik yapım eki), cerrahi, walsh (özel isim,
+  küçük harf). Not: kullanıcı dilbilgisi uzmanı değil; soru "sözlükte bu
+  hali mi arardım?" biçiminde sadeleştirildi.
 
 ## 7. Dergi paneli
 

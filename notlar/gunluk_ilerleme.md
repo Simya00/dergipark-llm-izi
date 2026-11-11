@@ -1060,3 +1060,7 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   değerlendirme → değerlendir, değişikliğinin → değişiklik, edilen → et),
   zincirler doğru (Prog2+A3sg+Cop). Hız ~107 kelime/sn/işçi → gerçek veri
   (~112M kelime) 10 işçiyle ~1–1,5 gün (tahmin; kullanıcıda ölçülecek).
+- **Gövde doğrulaması (kullanıcı): 73/73 = %100 (Wilson 95,0–100).**
+  Kullanıcı dilbilgisi terimlerinde zorlandı ("bu denli dilbilgisi bilgim
+  yok") → soru "sözlükte bu hali mi arardım?" diye sadeleştirildi; çözümleme
+  sütununa bakmak gerekmiyor. Sıradaki: süre denemesi (1.000 özet).
