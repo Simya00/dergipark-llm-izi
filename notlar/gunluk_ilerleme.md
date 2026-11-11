@@ -1051,3 +1051,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     TR derlemi (~110M kelime) tek çekirdekte ~14 gün.
   - Açık kararlar: düzey (kök mü, gövde = kök + yapım ekleri mi), yöntem
     (ilk çözümleme mi, bağlamlı mı; paralel çalıştırma), doğrulama örneklemi.
+- Kararlar (kullanıcı): (a) gövde: yapım ekleri korunur, edilgen ve
+  fiilimsiler atılır; (b) cümle içinde çözümleme; (c) bilgisayarı 20 iş
+  parçacığı. Ekler de aynı geçişte sayılsın ("-mektedir çok kullanılıyor").
+  Kullanıcı: ekran kartı hızlandırır mı? → Hayır (Zemberek saf Python, CPU).
+- `analiz/govde_siklik.py` yazıldı (sayim / birlestir / ornek / excel /
+  hesapla). Sahte 96 özetle test: gövdeler doğru (sonuçlar → sonuç,
+  değerlendirme → değerlendir, değişikliğinin → değişiklik, edilen → et),
+  zincirler doğru (Prog2+A3sg+Cop). Hız ~107 kelime/sn/işçi → gerçek veri
+  (~112M kelime) 10 işçiyle ~1–1,5 gün (tahmin; kullanıcıda ölçülecek).

@@ -449,6 +449,38 @@ Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --di
   herhangi bir yılda δ > 0,01 olan kelimeler (~400); etiketler Ü (üslup) /
   İ (içerik) / B (belirsiz); Kobak vd. 900 kelimeyi işaretlemişti.
 
+## 6.1 Türkçe kelime (gövde) düzeyi analiz (`govde_siklik.py`, 2026-11-12)
+
+**Karar (kullanıcı): Türkçe ANA analiz kelime düzeyinde.** Gerekçe
+(kullanıcı): İngilizce sondan eklemeli değil (zaman/kip ayrı kelime: will
+be, did); Türkçede ekler kelimeye bitişik → biçim düzeyi sayım İngilizceyle
+eşdeğer değil, aynı kelimenin artışı onlarca biçime dağılır (etkiler,
+etkilerini, etkisini…). Biçim düzeyi (§6, Kobak ile birebir) sağlamlık
+analizi olarak kalır; İngilizce biçim düzeyinde.
+
+- **Gövde = kök + yapım ekleri** (kullanıcı: "kapsam ve kapsamlı iki farklı
+  anlam"). Çekim ekleri, **edilgen** (-Il/-In) ve **fiilimsiler** (-ArAk,
+  -An, -mA, -mAk, -DIk, -AcAk…) atılır (kullanıcı onayı); ayrıca ek-fiil
+  (Zero), -ki (Rel), yeterlik (-Abil) ve birleşik fiil türleri (Claude'un
+  seçimi; `ATILAN`). İlk atılan ekte durulur. Yumuşamış son ünsüz yalın
+  biçime (değişikliğ → değişiklik). Örnek: vurgulamaktadır, vurgulayarak,
+  vurgulanmaktadır → vurgula; değerlendirilmiştir → değerlendir;
+  kapsamlı → kapsamlı; edilen → et; çalışma(da) → çalış.
+- **Cümle içinde çözümleme** (kullanıcı kararı): Zemberek
+  `analyze_and_disambiguate`, `best_analysis`. İlk çözümleme sık kelimelerde
+  sistematik hatalıydı (sonuçlar → sonuçlamak). Zemberek'in tanımadığı
+  kelimeler (covid, chatgpt) olduğu gibi sayılır; yıllara göre oran raporlanır.
+- **Ekler aynı geçişte** (kullanıcı isteği): tek tek ekler (`siklik_tr_ek`)
+  ve son ek zinciri (`siklik_tr_ekzinciri`; vurgulamaktadır →
+  Prog2+A3sg+Cop = -mAktAdIr; değerlendirilmiştir → Pass+Narr+A3sg+Cop).
+- Girdi: ana analizle aynı (uzunluk filtresi, birleşik onarımı, kesme
+  sonrası ek atılır); cümleler `.!?;:` sonrası bölünür.
+- Hız: ~10 ms/kelime (bu ortamda ölçüm); paralel (`--isci`, kullanıcının
+  bilgisayarında 20 iş parçacığı → 10 işçi önerildi), parçalar
+  `govde_parcalar/`'a yazılır, kesilirse devam eder. Ekran kartı kullanılmaz.
+- **Doğrulama:** 2018–2025'ten rastgele 73 özet × 1 kelime, kullanıcı D/Y
+  (`govde_dogrulama_tr.xlsx`); Wilson %95 aralığı raporlanır.
+
 ## 7. Dergi paneli
 
 - Geç katılan dergiler (ör. `gazimmfd` 2023) tabanda yok, hedef yılda var →

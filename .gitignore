@@ -45,3 +45,6 @@ analiz/birlesik_karar_*.tsv
 analiz/birlesik_onayli_*.tsv
 analiz/zemberek_birlesik_onbellek.json
 analiz/birlesik_ornek_*.json
+analiz/govde_parcalar/
+analiz/govde_bicimleri_*.json.gz
+analiz/govde_dogrulama_*.json
