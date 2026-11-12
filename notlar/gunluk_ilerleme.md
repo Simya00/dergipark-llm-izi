@@ -1181,3 +1181,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   - Not (Claude): ~8 bin özette karşı-olgusal (iki yıl ileri uzatma)
     rastgele dalgalanmayı büyütür; sık kelimelerde δ>0,01 kısmen gürültü
     olabilir → uzun panelin LLM öncesi yıllarında 20–71 arası değerler.
+- Kullanıcı fikri: pandemi başlangıcı → sağlık dergilerinde sıçrama?
+  Claude: hedef yıl 2019 pandemi öncesi (taban 2016–2017) → açıklamaz;
+  2021 (taban 2018–2019; 25/30/47) pandemi içerik kelimeleriyle uyumlu
+  olabilir. Test: (1) elle İ/Ü işaretlemesinde 2020–2021 aşırı kelimeleri
+  içerik mi (Kobak vd.'nin covid karşılaştırması gibi), (2) ileride alan
+  analizi (dergi adından yaklaşık sağlık dergisi listesi; veride alan yok).
