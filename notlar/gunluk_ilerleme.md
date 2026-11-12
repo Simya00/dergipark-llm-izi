@@ -1064,3 +1064,11 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Kullanıcı dilbilgisi terimlerinde zorlandı ("bu denli dilbilgisi bilgim
   yok") → soru "sözlükte bu hali mi arardım?" diye sadeleştirildi; çözümleme
   sütununa bakmak gerekmiyor. Sıradaki: süre denemesi (1.000 özet).
+- **Gövde sayımı bitti (kullanıcı, 10 işçi, bir gecede).** Yıllara göre
+  tanınmayan kelime %3,5–4,4 (2015–2019 ~4,3 → 2022–2025 ~3,6), farklı gövde
+  64–118 bin/yıl (biçim düzeyinde 150–269 bin). 1.000 özetlik denemede tanınmayan
+  ~%1–2 idi (örnek küçük). Süre denemesinde yalnızca 2 parça vardı → 2 işçi;
+  işçi başına ~6.700 özet/saat ölçüldü.
+- `asiri_kullanim.py` ve `yillara_gore_asiri.py`'ye `--siklik` (gövde, ek,
+  ek zinciri dosyaları); ek dosyalarında harf filtresi uygulanmaz (Prog2 vb.).
+  Çıktı adları: `asiri_kelimeler_tr_govde.tsv` vb. Sahte veriyle test.

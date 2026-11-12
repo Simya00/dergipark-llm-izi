@@ -71,12 +71,17 @@ def oku(siklik_dosyasi):
     return belge, sayi
 
 
-def asiri_hesapla(belge, sayi, b, T, en_az_belge=0):
+def harf_filtresi_gerekli(siklik_dosyasi):
+    """Ek ve ek zinciri dosyalarinda ogeler 'Prog2', 'Prog2+A3sg+Cop' gibi: harf filtresi uygulanmaz."""
+    return "_ek" not in Path(str(siklik_dosyasi)).name
+
+
+def asiri_hesapla(belge, sayi, b, T, en_az_belge=0, harf_filtresi=True):
     """Her kelime icin p, q, delta, oran ve Kobak vd. asiri kelime karari (satir listesi)."""
     yillar = sorted(belge)
     satirlar = []
     for kelime, s in sayi.items():
-        if not kelime.replace(" ", "").isalpha() or s.get(T, 0) < en_az_belge:
+        if (harf_filtresi and not kelime.replace(" ", "").isalpha()) or s.get(T, 0) < en_az_belge:
             continue  # yalnizca harflerden olusan ogeler (Kobak: allowedWords)
         # Kobak vd.: yumusatilmis siklik (sayi + 1) / (toplam + 1)
         oranlar = {y: (s.get(y, 0) + 1) / (belge[y] + 1) for y in yillar if belge[y]}
@@ -109,17 +114,22 @@ def main():
     p.add_argument("--goster", type=int, default=40)
     arg = p.parse_args()
 
-    belge, sayi = oku(arg.siklik or KLASOR / siklik_dosya_adi(arg.dil, arg.n))
+    siklik_dosyasi = arg.siklik or KLASOR / siklik_dosya_adi(arg.dil, arg.n)
+    belge, sayi = oku(siklik_dosyasi)
     b, T = arg.taban, arg.hedef
     for y in (b - 1, b, T):
         if not belge.get(y):
             raise SystemExit(f"{y} yilinda hic ozet yok; --yillar araligini kontrol edin.")
     yillar = sorted(belge)
 
-    satirlar = asiri_hesapla(belge, sayi, b, T, arg.en_az_belge)
+    satirlar = asiri_hesapla(belge, sayi, b, T, arg.en_az_belge, harf_filtresi_gerekli(siklik_dosyasi))
 
     satirlar.sort(key=lambda r: -r["delta"])
-    cikti = KLASOR / (f"asiri_{arg.dil}_{T}.tsv" if arg.n == 1 else f"asiri_{arg.dil}_{arg.n}gram_{T}.tsv")
+    if arg.siklik:  # orn. siklik_tr_govde.tsv.gz -> asiri_tr_govde_2024.tsv
+        ek = Path(str(arg.siklik)).name.replace("siklik_", "").replace(".tsv.gz", "")
+        cikti = KLASOR / f"asiri_{ek}_{T}.tsv"
+    else:
+        cikti = KLASOR / (f"asiri_{arg.dil}_{T}.tsv" if arg.n == 1 else f"asiri_{arg.dil}_{arg.n}gram_{T}.tsv")
     with open(cikti, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(satirlar[0]) if satirlar else ["kelime"], delimiter="\t")
         w.writeheader()

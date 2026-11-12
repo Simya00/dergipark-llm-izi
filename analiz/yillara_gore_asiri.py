@@ -25,9 +25,10 @@ Kullanim:
 
 import argparse
 import csv
+from pathlib import Path
 from collections import defaultdict
 
-from asiri_kullanim import KLASOR, asiri_hesapla, oku
+from asiri_kullanim import KLASOR, asiri_hesapla, harf_filtresi_gerekli, oku
 from kelime_siklik import siklik_dosya_adi, yil_araligi
 
 
@@ -38,9 +39,15 @@ def main():
     p.add_argument("--yillar", default="2018-2025",
                    help="hedef yillar (ilk yil icin T-3 verisi gerekir; 2026 eksik yil, varsayilan disinda)")
     p.add_argument("--saglamlik", type=int, default=30)
+    p.add_argument("--siklik", help="baska sayim dosyasi, orn. siklik_tr_govde.tsv.gz / siklik_tr_ekzinciri.tsv.gz")
     arg = p.parse_args()
 
-    belge, sayi = oku(KLASOR / siklik_dosya_adi(arg.dil, arg.n))
+    siklik_dosyasi = Path(arg.siklik) if arg.siklik else KLASOR / siklik_dosya_adi(arg.dil, arg.n)
+    if not siklik_dosyasi.is_absolute() and not siklik_dosyasi.exists():
+        siklik_dosyasi = KLASOR / siklik_dosyasi
+    belge, sayi = oku(siklik_dosyasi)
+    harf = harf_filtresi_gerekli(siklik_dosyasi)
+    print(f"Sayim dosyasi: {siklik_dosyasi.name}")
     hedefler = [T for T in yil_araligi(arg.yillar) if all(belge.get(y) for y in (T - 3, T - 2, T - 1, T))]
 
     tum = defaultdict(lambda: {"yillar": [], "delta": 0.0, "oran": 0.0, "sayi": 0})
@@ -48,7 +55,7 @@ def main():
     print(f"{'yil':>5} {'ozet':>7} {'hesaba giren':>13} {'asiri':>7} {'>=' + str(arg.saglamlik) + ' ozet':>10} "
           f"{'delta>0.01':>11}")
     for T in hedefler:
-        satirlar = asiri_hesapla(belge, sayi, T - 2, T)
+        satirlar = asiri_hesapla(belge, sayi, T - 2, T, harf_filtresi=harf)
         asiri = [r for r in satirlar if r["asiri"]]
         for r in asiri:
             k = tum[r["kelime"]]
@@ -58,7 +65,8 @@ def main():
         print(f"{T:>5} {belge[T]:>7} {len(satirlar):>13} {len(asiri):>7} "
               f"{sum(r['sayi'] >= arg.saglamlik for r in asiri):>10} {sum(r['delta'] > 0.01 for r in asiri):>11}")
 
-    cikti = KLASOR / f"asiri_kelimeler_{arg.dil}.tsv"
+    ad = siklik_dosyasi.name.replace("siklik_", "").replace(".tsv.gz", "")  # tr, tr_govde, tr_ekzinciri
+    cikti = KLASOR / f"asiri_kelimeler_{ad}.tsv"
     with open(cikti, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, delimiter="\t")
         w.writerow(["kelime", "yillar", "en_buyuk_delta", "en_buyuk_oran", "en_yuksek_ozet_sayisi"])
