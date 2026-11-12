@@ -1166,3 +1166,18 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     (taban 2015–2016 ile hedef 2018 farklı dergi kümeleri).
   - Dergi başına yıllık TR özetli makale: ortanca 13–15, Q1 7–9, Q3 26–31 →
     eşik 12 ≈ ortanca; her yıl aktif dergilerin ~%55–63'ü ≥12.
+- **Panel sonuçları, biçim düzeyi (kullanıcı):**
+  - Kısa panel (710 dergi) δ>0,01: 2018 44, 2019 63, 2020 19, 2021 30,
+    2022 14, 2023 8, **2024 98, 2025 212**; ≥30: 709/797/687/778/403/464/
+    **1.049/2.219**. Sıçrama panelde de var (tüm veri: 103/215).
+  - Uzun panel (154 dergi) δ>0,01: 2018 22, 2019 71, 2020 36, 2021 47,
+    2022 20, 2023 36, **2024 117, 2025 213**; ≥30: 397/503/442/390/238/399/
+    **687/1.092**. 2018 tüm veride 56 → uzun panelde 22 (dergi karışımı
+    açıklamasıyla uyumlu); 2019 yine yüksek (71).
+  - **HATA bulundu:** uzun panelde "hesaba giren" her yıl 377.245 (tüm
+    sözlük), ham "aşırı" 2020–2023'te ~50 bin → küçük veride yumuşatılmış
+    oranla 10⁻⁴ eşiği anlamsızlaşıyor. Düzeltildi (ham oran); ≥30 ve δ>0,01
+    sütunları etkilenmez. Uzun panel tablosu yeniden çalıştırılacak.
+  - Not (Claude): ~8 bin özette karşı-olgusal (iki yıl ileri uzatma)
+    rastgele dalgalanmayı büyütür; sık kelimelerde δ>0,01 kısmen gürültü
+    olabilir → uzun panelin LLM öncesi yıllarında 20–71 arası değerler.

@@ -421,7 +421,13 @@ Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --di
      ve ortalama/medyan uzunluk: `ozet_uzunluk.py`.
   2. **Sıklık yumuşatma:** `p = (sayı + 1) / (özet sayısı + 1)`.
   3. **Hesaba giren kelime:** hedef yılda ve bir önceki yılda p ≥ 10⁻⁴;
-     yalnızca harflerden oluşan kelimeler.
+     yalnızca harflerden oluşan kelimeler. **Düzeltme (2026-11-12):** eşik
+     HAM oran (sayı/toplam) üzerinden. Kobak vd.'de yumuşatılmış oran
+     kullanılıyor ama yılda ~1,4 milyon özette +1'in etkisi ~10⁻⁶; küçük
+     veride (uzun panel ~8 bin özet) (0+1)/8001 = 1,25·10⁻⁴ > 10⁻⁴ olur ve hiç
+     geçmeyen kelimeler bile hesaba girerdi (uzun panelde "hesaba giren"
+     her yıl 377.245 = tüm sözlük). Etki: yalnızca ham "aşırı" sütunu; ≥30
+     ve δ > 0,01 sütunları değişmez (o kelimeler zaten sık).
   4. **Aşırı kelime kuralı:** `δ > 0,01` VEYA
      `log10(r) > log10(2) − (log10(p) + 4)·log10(2)/4`.
   5. Sayımda artık bütün kelimeler tutulur (`--min-belge` n=1 için 1;

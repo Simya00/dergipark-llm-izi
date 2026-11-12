@@ -18,7 +18,8 @@ Kobak vd. ile BIREBIR ayni olan kisimlar (2026-11-11, kullanici karari; kaynak:
 berenslab/llm-excess-vocab, preprocess_and_count_utils.py compute_excess):
   - Siklik yumusatilir: p = (sayi + 1) / (ozet sayisi + 1)  (hic gecmeyen kelimede
     oran sonsuza gitmesin diye)
-  - Hesaba giren kelime: hedef yilda VE bir onceki yilda p >= 1e-4; yalnizca
+  - Hesaba giren kelime: hedef yilda VE bir onceki yilda HAM oran (sayi/toplam) >= 1e-4
+    (Kobak'ta yumusatilmis; buyuk veride ayni, kucuk veride ham oran sart); yalnizca
     harflerden olusan kelimeler (Kobak: yalnizca alfabe harfleri)
   - ASIRI KELIME: delta > 0.01  VEYA
         log10(oran) > log10(2) - (log10(p) + 4) * log10(2) / 4
@@ -85,7 +86,11 @@ def asiri_hesapla(belge, sayi, b, T, en_az_belge=0, harf_filtresi=True):
             continue  # yalnizca harflerden olusan ogeler (Kobak: allowedWords)
         # Kobak vd.: yumusatilmis siklik (sayi + 1) / (toplam + 1)
         oranlar = {y: (s.get(y, 0) + 1) / (belge[y] + 1) for y in yillar if belge[y]}
-        if oranlar[T] < KOBAK_EN_AZ_SIKLIK or oranlar[T - 1] < KOBAK_EN_AZ_SIKLIK:
+        # Esik HAM oran uzerinden (2026-11-12 duzeltme): Kobak vd.'nin verisinde (yilda ~1,4 milyon ozet)
+        # yumusatmanin +1'i (~1e-6) esigin cok altinda kalir. Kucuk veride (or. uzun panel, ~8 bin ozet)
+        # (0+1)/(8000+1) = 1.25e-4 > 1e-4 olur ve HIC GECMEYEN kelimeler bile esigi gecerdi.
+        if (s.get(T, 0) / belge[T] < KOBAK_EN_AZ_SIKLIK
+                or s.get(T - 1, 0) / belge[T - 1] < KOBAK_EN_AZ_SIKLIK):
             continue
         q = karsi_olgusal(oranlar[b - 1], oranlar[b], T - b)
         pT = oranlar[T]
