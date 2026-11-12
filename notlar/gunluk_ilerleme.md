@@ -1105,3 +1105,14 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Ness (-lIk) biçimleri. Hipotez (Claude): geleneksel "incelenmiştir"
   (geçmiş, edilgen) yerine İngilizce "This study examines" kalıbı
   ("çalışma … incelemektedir"); Pass+Narr+A3sg+Cop eğilimine bakılacak.
+- Kullanıcı: Türkçe artanların İngilizce karşılıklarının oranlarını
+  kaynağıyla görelim. → Kobak vd. (2025) yayımlanmış verisi
+  (`results/yearly-counts.csv.gz`, PubMed, 2024'te 1.442.378 özet) ile
+  aynı formülle hesaplandı (`analiz/kobak_karsilastir.py`; veri repoya
+  eklenmedi). 2024 kat: underscores ×13,8, highlighting ×2,58, highlights
+  ×1,91, crucial ×2,11, critical ×1,18, fostering ×3,12, challenges ×1,60,
+  comprehensive ×1,76, potential ×1,30, strategies ×1,29, strategy ×0,98,
+  role ×1,09, play ×1,01, enhance ×1,76, enhancing ×2,43, understanding
+  ×1,30, insights ×2,04, pivotal ×3,06, delves ×28,0. Not: İngilizce biçim
+  düzeyinde, Türkçe gövde düzeyinde; PubMed yalnızca biyotıp; eşleştirme
+  (çeviri) Claude'un.
