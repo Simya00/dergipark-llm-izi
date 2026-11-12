@@ -25,6 +25,13 @@ Ciktilar (kelime_siklik.py ile ayni bicim; asiri_kullanim.py --siklik ile calisi
   siklik_tr_ekzinciri.tsv.gz   (+ .belge.json)
   govde_bicimleri_tr.json.gz   govde -> en sik bicimleri (Excel'de gosterilir)
 
+MAKALE BASINA SONUC (2026-11-12, kullanici karari): her parca dosyasi her makale
+icin [yil, dergi_kodu, govdeler, ekler, zincirler] saklar. Boylece dergi
+panelleri ve alt gruplar Zemberek'i yeniden calistirmadan, dakikalar icinde
+hesaplanir:
+  python3 govde_siklik.py birlestir --dergiler dergi_paneli_tr_kisa.txt --ad-eki panel_kisa
+  -> siklik_tr_govde_panel_kisa.tsv.gz, siklik_tr_ek_panel_kisa.tsv.gz, ...
+
 HIZ: cumle icinde cozumleme yavas (~10 ms/kelime). Is parcalara (--parca-boyu
 ozet) bolunur, --isci kadar islemde paralel calisir; her biten parca
 govde_parcalar/ klasorune yazilir. Kesilirse ayni komutla KALDIGI YERDEN devam
@@ -33,6 +40,7 @@ eder. Ekran karti kullanilmaz (Zemberek saf Python, islemci ile calisir).
 Kullanim (Zemberek ortami gerekir):
   zemberek_env/bin/python3 govde_siklik.py sayim --isci 10 --sinir 1000   # sure denemesi
   zemberek_env/bin/python3 govde_siklik.py sayim --isci 10                # tamami
+  python3 govde_siklik.py birlestir --dergiler dergi_paneli_tr_kisa.txt --ad-eki panel_kisa
   zemberek_env/bin/python3 govde_siklik.py ornek                          # 73'luk dogrulama ornegi (JSON)
   python3 govde_siklik.py excel                                           # ornegi Excel'e (normal python)
   python3 govde_siklik.py hesapla                                         # isaretli Excel'den dogruluk
@@ -69,6 +77,7 @@ ATILAN = {
 YUMUSAMA = {"ğ": "k", "b": "p", "c": "ç"}
 
 TOHUM = 20261112
+SURUM = 2  # parca dosyasi bicimi (2: makale basina sonuc); eski parcalarla karistirilmasin
 ORNEK_SAYISI = 73
 
 
@@ -158,24 +167,21 @@ def _isci_baslat():
 def _parca_isle(is_):
     """Bir parca ozeti isler, sonucu govde_parcalar/<no>.json.gz'ye yazar."""
     no, ozetler = is_
-    say = {"govde": defaultdict(Counter), "ek": defaultdict(Counter), "zincir": defaultdict(Counter)}
-    belge, kelime, taninmayan = Counter(), Counter(), Counter()
+    makaleler = []
+    kelime, taninmayan = Counter(), Counter()
     bicim = defaultdict(Counter)
-    for yil, metin in ozetler:
+    for yil, dergi, metin in ozetler:
         g, e, z, ciftler, n, t = ozet_coz(_MORFOLOJI, metin)
-        belge[yil] += 1
         kelime[yil] += n
         taninmayan[yil] += t
-        say["govde"][yil].update(g)
-        say["ek"][yil].update(e)
-        say["zincir"][yil].update(z)
+        makaleler.append([yil, dergi, sorted(g), sorted(e), sorted(z)])
         for b, gv in ciftler:
             if b != gv:
                 bicim[gv][b] += 1
     gecici = PARCA_KLASORU / f"{no:06d}.json.gz.gecici"
     with gzip.open(gecici, "wt", encoding="utf-8") as f:
-        json.dump({"belge": belge, "kelime": kelime, "taninmayan": taninmayan, "bicim": bicim,
-                   **{k: {str(y): c for y, c in v.items()} for k, v in say.items()}}, f, ensure_ascii=False)
+        json.dump({"surum": SURUM, "kelime": kelime, "taninmayan": taninmayan, "bicim": bicim,
+                   "makaleler": makaleler}, f, ensure_ascii=False)
     gecici.rename(PARCA_KLASORU / f"{no:06d}.json.gz")  # yarim parca kalmasin
     return no, len(ozetler)
 
@@ -191,7 +197,7 @@ def parcalar(arg):
             y = m.get("yil_guvenilir")
             if y not in yillar or not analize_girer(m, "ozet_tr", dergiler):
                 continue
-            paket.append((y, m["ozet_tr"]))
+            paket.append((y, m.get("dergi_kodu"), m["ozet_tr"]))
             toplam += 1
             if len(paket) == arg.parca_boyu or (arg.sinir and toplam >= arg.sinir):
                 yield no, paket
@@ -205,7 +211,8 @@ def parcalar(arg):
 def sayim(arg):
     import multiprocessing as mp
     PARCA_KLASORU.mkdir(exist_ok=True)
-    ayar = {"yillar": arg.yillar, "parca_boyu": arg.parca_boyu, "dergiler": arg.dergiler, "sinir": arg.sinir}
+    ayar = {"surum": SURUM, "yillar": arg.yillar, "parca_boyu": arg.parca_boyu, "dergiler": arg.dergiler,
+            "sinir": arg.sinir}
     ayar_dosyasi = PARCA_KLASORU / "ayar.json"
     if ayar_dosyasi.exists() and json.loads(ayar_dosyasi.read_text()) != ayar:
         raise SystemExit(f"{PARCA_KLASORU} baska ayarlarla baslatilmis ({ayar_dosyasi.read_text()}). "
@@ -221,25 +228,37 @@ def sayim(arg):
             gecen = time.time() - basla
             print(f"  parca {no} bitti | bu calistirmada {islenen} ozet, {gecen / 60:.1f} dk, "
                   f"{islenen / gecen * 3600:.0f} ozet/saat", flush=True)
+    arg.dergiler_birlestir, arg.ad_eki = None, None
     birlestir(arg)
 
 
 def birlestir(arg):
+    """Parca dosyalarindaki makale basina sonuclardan sayim dosyalarini yazar; --dergiler ile alt grup."""
+    dergiler = dergi_filtresi(getattr(arg, "dergiler_birlestir", None))
+    ad_eki = f"_{arg.ad_eki}" if getattr(arg, "ad_eki", None) else ""
     say = {k: defaultdict(Counter) for k in ("govde", "ek", "zincir")}
     belge, kelime, taninmayan = Counter(), Counter(), Counter()
     bicim = defaultdict(Counter)
     for p in sorted(PARCA_KLASORU.glob("*.json.gz")):
         with gzip.open(p, "rt", encoding="utf-8") as f:
             d = json.load(f)
-        for k in say:
-            for y, c in d[k].items():
-                say[k][int(y)].update(c)
-        for s, hedef in ((d["belge"], belge), (d["kelime"], kelime), (d["taninmayan"], taninmayan)):
-            hedef.update({int(y): v for y, v in s.items()})
-        for g, c in d["bicim"].items():
-            bicim[g].update(c)
+        if d.get("surum") != SURUM:
+            raise SystemExit(f"{p} eski bicimde (makale basina sonuc yok). govde_parcalar klasorunu silip "
+                             "sayimi yeniden calistirin.")
+        for yil, dergi, g, e, z in d["makaleler"]:
+            if dergiler is not None and dergi not in dergiler:
+                continue
+            belge[yil] += 1
+            say["govde"][yil].update(g)
+            say["ek"][yil].update(e)
+            say["zincir"][yil].update(z)
+        if dergiler is None:  # taninmayan/bicim istatistikleri yalnizca tum veri icin
+            kelime.update({int(y): v for y, v in d["kelime"].items()})
+            taninmayan.update({int(y): v for y, v in d["taninmayan"].items()})
+            for g, c in d["bicim"].items():
+                bicim[g].update(c)
     for k, ad in (("govde", "govde"), ("ek", "ek"), ("zincir", "ekzinciri")):
-        yol = KLASOR / f"siklik_tr_{ad}.tsv.gz"
+        yol = KLASOR / f"siklik_tr_{ad}{ad_eki}.tsv.gz"
         with gzip.open(yol, "wt", encoding="utf-8") as f:
             f.write("yil\tkelime\tbelge_sayisi\n")
             for y in sorted(say[k]):
@@ -247,6 +266,9 @@ def birlestir(arg):
                     f.write(f"{y}\t{oge}\t{adet}\n")
         Path(str(yol) + ".belge.json").write_text(json.dumps({str(y): belge[y] for y in sorted(belge)}, indent=1))
         print(f"-> {yol}")
+    if dergiler is not None:
+        print(f"\nAlt grup ({len(dergiler)} dergi): " + ", ".join(f"{y}:{belge[y]}" for y in sorted(belge)))
+        return
     with gzip.open(KLASOR / "govde_bicimleri_tr.json.gz", "wt", encoding="utf-8") as f:
         json.dump({g: dict(c.most_common(10)) for g, c in bicim.items()}, f, ensure_ascii=False)
     print(f"\n{'yil':>5} {'ozet':>7} {'kelime':>10} {'taninmayan':>11} {'%':>6} {'farkli govde':>13}")
@@ -355,7 +377,9 @@ def main():
     e = alt.add_parser("excel")
     e.add_argument("--uzerine-yaz", action="store_true")
     alt.add_parser("hesapla")
-    alt.add_parser("birlestir")
+    b = alt.add_parser("birlestir")
+    b.add_argument("--dergiler", dest="dergiler_birlestir", help="yalnizca bu dergiler (dergi_paneli_*.txt)")
+    b.add_argument("--ad-eki", help="cikti adina eklenir: siklik_tr_govde_<ek>.tsv.gz")
     arg = p.parse_args()
     {"sayim": sayim, "ornek": ornek, "excel": excel, "hesapla": hesapla, "birlestir": birlestir}[arg.komut](arg)
 

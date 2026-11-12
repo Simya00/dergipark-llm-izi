@@ -1147,3 +1147,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   yaramadı). TR Dizin dergi sayfası: yıllık makale sayısı + dizinlendiği
   yıllar. Resmi "TR Dizin Dizinlenen Dergi Listesi" (ULAKBİM) bulundu →
   TR Dizin paneli fikri. **Kullanıcı: "şimdilik bunu boşver"** → ertelendi.
+- **Kararlar (kullanıcı): panel eşiği 12; Zemberek makale başına sonuç
+  saklasın (bir gece daha çalıştırma).** `dergi_paneli.py` (uzunluk filtresi,
+  varsayılan 12, dergi dağılımı çıktısı) ve `govde_siklik.py` (parça
+  dosyalarında makale başına [yıl, dergi, gövdeler, ekler, zincirler];
+  `birlestir --dergiler … --ad-eki …`; SURUM=2, eski parçalar reddedilir)
+  güncellendi. Sahte veriyle test: panel seçimi doğru (az yayınlı dergi
+  dışarıda, geç katılan uzun panelde yok), alt grup sayımları doğru.

@@ -494,6 +494,22 @@ analizi olarak kalır; İngilizce biçim düzeyinde.
   dergi karışımı değişimi sahte artış üretebilir. Panel: 2021–2025'in her
   yılında ≥5 makalesi olan dergiler. Tüm sonuçlar hem tüm veride hem panelde
   raporlanacak.
+- **Panel tanımı ve eşik (kullanıcı kararı, 2026-11-12):** yılda **en az
+  12 makale** (analize giren, 250–4000 karakter Türkçe özet). Dış gerekçe:
+  TR Dizin sağlık bilimleri dergilerinden yılda ≥12 araştırma makalesi
+  bekliyor (ULAKBİM belgeleri, 2013/2021; güncel kriterden doğrulanacak);
+  DOAJ'ın alt sınırı yılda 5. İki panel:
+  - **kısa** 2021–2025 her yıl ≥12 (`dergi_paneli_tr_kisa.txt`): 2024–2025
+    sonucunun kontrolü;
+  - **uzun** 2015–2025 her yıl ≥12 (`dergi_paneli_tr_uzun.txt`): yıllık
+    tablonun tamamı (2018 satırı 2015'i kullanır), 2018–2019 yüksekliği.
+  Her ikisi üç düzeyde: biçim (`kelime_siklik --dergiler`), gövde ve ek
+  zinciri (`govde_siklik birlestir --dergiler`; Zemberek'i yeniden
+  çalıştırmadan, makale başına saklanan sonuçlardan).
+- `dergi_paneli.py` ayrıca yıllara göre aktif/yeni dergi sayısı ve dergi
+  başına yıllık makale dağılımını (çeyrekler; ≥5, ≥12 sayıları) yazar.
+- TR Dizin'de dizinli dergilerden panel (ULAKBİM resmi listesi) fikri
+  ertelendi (kullanıcı).
 
 ## 8. İşaretçi listeleri
 
