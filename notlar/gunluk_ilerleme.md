@@ -1072,3 +1072,36 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - `asiri_kullanim.py` ve `yillara_gore_asiri.py`'ye `--siklik` (gövde, ek,
   ek zinciri dosyaları); ek dosyalarında harf filtresi uygulanmaz (Prog2 vb.).
   Çıktı adları: `asiri_kelimeler_tr_govde.tsv` vb. Sahte veriyle test.
+- **GÖVDE DÜZEYİ ANA SONUÇ (kullanıcı, `yillara_gore_asiri.py --siklik
+  siklik_tr_govde.tsv.gz`):**
+
+  | yıl | özet | aşırı | ≥30 özet | δ>0,01 |
+  |---|---|---|---|---|
+  | 2018 | 30.649 | 2.997 | 364 | 82 |
+  | 2019 | 34.614 | 2.752 | 414 | 60 |
+  | 2020 | 41.572 | 2.232 | 298 | 12 |
+  | 2021 | 45.700 | 1.834 | 335 | 35 |
+  | 2022 | 45.968 | 1.743 | 192 | 6 |
+  | 2023 | 45.763 | 1.806 | 205 | 22 |
+  | 2024 | 48.461 | 1.787 | 404 | 120 |
+  | 2025 | 53.668 | 2.715 | 1.101 | 237 |
+
+  δ>0,01: 2022–2023 6/22 → 2024 120 → 2025 237. ≥30 sütununda 2024 (404)
+  2019 (414) düzeyinde; 2025 (1.101) belirgin. 2018–2019 δ>0,01 (82/60)
+  yine yüksek → dergi paneli kontrolü gerekli.
+- **2024 en çok artan gövdeler (δ):** sun ×1,43, **vurgula ×2,74
+  (%3,5 → %9,7)**, koy ×1,40, rol ×1,52, artır ×1,58, katkı ×1,33,
+  potansiyel ×1,94, strateji ×1,89, kritik ×2,60, oyna ×1,71, kapsamlı
+  ×1,94, zorluk ×2,11, teşvik ×2,29, anla ×1,52, bağlam, yaklaşım, gelecek
+  → İngilizce LLM sözcükleriyle örtüşüyor (highlight, role/play a role,
+  enhance, contribute, potential, strategy, critical, comprehensive,
+  challenges, foster, understanding, context, approach). Kata göre liste:
+  konu (chatgpt, gpt, openaı, gazze, hamas, siyonist, depremzede) + ≤30
+  özetli gürültü. `openaı`: Türkçe küçültme "I → ı" (yabancı ad) yan etkisi.
+- **Ek zinciri 2024:** 843 zincir hesaba girdi, 58 aşırı (δ>0,01: 32).
+  **1. sırada Prog2+A3sg+Cop (-mAktAdIr): %52,9 → %62,6 (beklenen %53,8,
+  δ +8,8 puan; tüm analizdeki en büyük fark).** Ayrıca PastPart+…+Acc
+  (-DIğInI: "olduğunu"), Inf2+Acc (-mAyI), Related (-sAl), Rel (-ki),
+  Ness (-lIk) biçimleri. Hipotez (Claude): geleneksel "incelenmiştir"
+  (geçmiş, edilgen) yerine İngilizce "This study examines" kalıbı
+  ("çalışma … incelemektedir"); Pass+Narr+A3sg+Cop eğilimine bakılacak.
