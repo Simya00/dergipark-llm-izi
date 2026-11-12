@@ -69,10 +69,24 @@ plt.rcParams.update({
 # Veri okuma
 # ------------------------------------------------------------------
 
-def oranlar_tablosu(dil, n=1):
+# Ek zincirlerinin okunur adlari (Zemberek kimlikleri -> Turkce ek kalibi)
+ZINCIR_ADI = {
+    "Prog2+A3sg+Cop": "-mAktAdIr (incelemektedir)",
+    "Pass+Prog2+A3sg+Cop": "edilgen -mAktAdIr (incelenmektedir)",
+    "Pass+Narr+A3sg+Cop": "edilgen -mIştIr (incelenmiştir)",
+    "Narr+A3sg+Cop": "-mIştIr (incelemiştir)",
+    "Pass+Narr+A3sg": "edilgen -mIş (incelenmiş)",
+    "Past+A3sg": "-DI (inceledi)",
+    "Pass+Past+A3sg": "edilgen -DI (incelendi)",
+    "Prog1+A3sg": "-Iyor (inceliyor)",
+    "Aor+A3sg": "geniş zaman (inceler)",
+}
+
+
+def oranlar_tablosu(dil, n=1, siklik=None):
     """Satir = kelime, sutun = yil, deger = o yil kelimenin gectigi ozet orani (0-1)."""
-    ad = f"siklik_{dil}.tsv.gz" if n == 1 else f"siklik_{dil}_{n}gram.tsv.gz"
-    yol = KLASOR / ad
+    ad = siklik or (f"siklik_{dil}.tsv.gz" if n == 1 else f"siklik_{dil}_{n}gram.tsv.gz")
+    yol = Path(ad) if Path(ad).is_absolute() else KLASOR / ad
     if not yol.exists():
         raise SystemExit(f"{yol} yok. Once: python3 kelime_siklik.py --dil {dil}")
     sayilar = pd.read_csv(yol, sep="\t", dtype={"kelime": str}, keep_default_na=False)
@@ -102,7 +116,7 @@ def karsi_olgusal(seri, taban, yillar):
 # ------------------------------------------------------------------
 
 def egilim(arg):
-    tablo = oranlar_tablosu(arg.dil, arg.n)
+    tablo = oranlar_tablosu(arg.dil, arg.n, arg.siklik)
     yillar = [y for y in tablo.columns if arg.ilk_yil <= y <= arg.son_yil]
     tablo = tablo[yillar]
     istenen = liste_oku(arg.liste) if arg.liste else [k.strip() for k in arg.kelimeler.split(",")]
@@ -117,10 +131,11 @@ def egilim(arg):
     def fark(k):
         q = karsi_olgusal(tablo.loc[k], arg.taban, yillar)
         return tablo.loc[k].get(arg.hedef, 0) - q.get(arg.hedef, 0)
-    bulunan.sort(key=fark, reverse=True)
+    if arg.siralama == "fark":
+        bulunan.sort(key=fark, reverse=True)
     bulunan = bulunan[:arg.en_fazla]
 
-    sutun = 4
+    sutun = min(4, len(bulunan))  # az panel varsa bos yer kalmasin
     satir = -(-len(bulunan) // sutun)  # yukari yuvarlama
     fig, eksenler = plt.subplots(satir, sutun, figsize=(sutun * 2.6, satir * 2.0), squeeze=False, sharex=True)
     for ax, kelime in zip(eksenler.flat, bulunan):
@@ -129,7 +144,7 @@ def egilim(arg):
         ax.axvline(CHATGPT_YIL, color=GRI, linewidth=1, linestyle=":")
         ax.plot(q.index, q.values, color=GRI, linewidth=1.5, linestyle="--")
         ax.plot(seri.index, seri.values, color=MAVI, linewidth=2, marker="o", markersize=3)
-        ax.set_title(kelime, fontsize=10, loc="left", color=YAZI)
+        ax.set_title(ZINCIR_ADI.get(kelime, kelime), fontsize=10, loc="left", color=YAZI)
         ax.set_ylim(bottom=0)
         ax.grid(axis="y", color=IZGARA, linewidth=0.6)
         ax.tick_params(length=0)
@@ -139,7 +154,8 @@ def egilim(arg):
     for ax in list(eksenler.flat)[len(bulunan):]:
         ax.set_visible(False)
 
-    fig.suptitle(f"Kelimelerin geçtiği özet oranı ({arg.dil.upper()}, {yillar[0]}–{yillar[-1]})",
+    tur = "Ek kalıplarının" if arg.siklik and "_ek" in str(arg.siklik) else "Kelimelerin"
+    fig.suptitle(f"{tur} geçtiği özet oranı ({arg.dil.upper()}, {yillar[0]}–{yillar[-1]})",
                  x=0.01, ha="left", fontsize=11)
     fig.text(0.01, 0.005, "Mavi: gerçekleşen   Gri kesikli: LLM olmasaydı beklenen (Kobak vd., taban "
              f"{arg.taban - 1}–{arg.taban})   Noktalı dikey: ChatGPT (Kasım 2022)",
@@ -243,6 +259,9 @@ def main():
     grup.add_argument("--liste", help="aday listesi dosyasi (orn. aday_liste_tr.txt)")
     grup.add_argument("--kelimeler", help="virgulle ayrilmis kelimeler")
     e.add_argument("--taban", type=int, default=2022)
+    e.add_argument("--siklik", help="baska sayim dosyasi, orn. siklik_tr_govde.tsv.gz / siklik_tr_ekzinciri.tsv.gz")
+    e.add_argument("--siralama", choices=["fark", "verilen"], default="fark",
+                   help="paneller hedef yildaki farka gore mi, verilen sirada mi")
     e.add_argument("--ilk-yil", type=int, default=2015)
     e.add_argument("--son-yil", type=int, default=2025, help="2026 eksik yil oldugu icin varsayilan 2025")
     e.add_argument("--en-fazla", type=int, default=16, help="en cok kac panel")

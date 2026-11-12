@@ -1116,3 +1116,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   ×1,30, insights ×2,04, pivotal ×3,06, delves ×28,0. Not: İngilizce biçim
   düzeyinde, Türkçe gövde düzeyinde; PubMed yalnızca biyotıp; eşleştirme
   (çeviri) Claude'un.
+- **Ek zinciri, yıllara göre (kullanıcı):** δ>0,01: 2018 23, 2019 31, 2020 3,
+  2021 13, 2022 3, 2023 8, **2024 32, 2025 38**; ≥30: 30/42/20/22/6/11/39/54.
+  Üç analizde de (biçim, gövde, ek zinciri) aynı desen: 2022–2023 en düşük,
+  2024–2025 sıçrama, 2018–2019 da yüksek → dergi paneli kontrolü öncelikli.
+- `gorsellestir.py egilim`: `--siklik` (gövde/ek dosyaları), `--siralama
+  verilen`, ek zincirleri için okunur adlar (Prog2+A3sg+Cop →
+  "-mAktAdIr (incelemektedir)" vb.), az panelde sütun sayısı uyarlanır.
