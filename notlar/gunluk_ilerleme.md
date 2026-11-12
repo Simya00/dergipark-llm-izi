@@ -1154,3 +1154,15 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `birlestir --dergiler … --ad-eki …`; SURUM=2, eski parçalar reddedilir)
   güncellendi. Sahte veriyle test: panel seçimi doğru (az yayınlı dergi
   dışarıda, geç katılan uzun panelde yok), alt grup sayımları doğru.
+- **Paneller (kullanıcı, eşik 12):**
+  - Kısa (2021–2025): 2.813 dergiden **710**; özetlerin 2021–2024'te
+    %61–62'si, 2025'te %58'i.
+  - Uzun (2015–2025): **154** dergi; 2015'te %41 → 2025'te %16 (yılda
+    ~7–8,6 bin özet).
+  - Dergi dünyası: aktif dergi 2015: 732 → 2018: 1.439 → 2025: 2.246; yeni
+    katılan dergi 2015–2018 yılda 207–288 (**en çok 2018: 288**), sonra
+    azalıyor (2025: 120). 2015→2018 aktif dergi sayısı iki katına çıkmış →
+    2018–2019 yıllık tablodaki yüksekliğin olası nedeni dergi karışımı
+    (taban 2015–2016 ile hedef 2018 farklı dergi kümeleri).
+  - Dergi başına yıllık TR özetli makale: ortanca 13–15, Q1 7–9, Q3 26–31 →
+    eşik 12 ≈ ortanca; her yıl aktif dergilerin ~%55–63'ü ≥12.
