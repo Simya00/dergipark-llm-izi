@@ -71,3 +71,18 @@ Yöntemin parçaları için dayanak olabilecekler:
 
 Sonuç (2026-11-01): iki dilli alanlar analiz dışı bırakıldı (`yontem.md`
 §4.4); bu kaynaklar yöntem bölümünde "denenen yaklaşımlar" için.
+
+## Bağlam verisi: Türkiye'nin yayın sayısı (eklendi 2026-11-12)
+
+- **TÜBİTAK, "Türkiye Kaynaklı Bilimsel Yayın Sayısı"** (PDF:
+  https://tubitak.gov.tr/sites/default/files/2026-05/60_TR_bilimsel_yayin.pdf;
+  kaynak: WoS-InCites, Mayıs 2026 itibarıyla güncel; belge türü: makale,
+  derleme). Tam künye (hazırlayan birim, başlık) PDF'ten kontrol edilecek;
+  sayılar kullanıcının paylaştığı grafikten.
+- 2021: 49.677 · 2022: 49.091 · 2023: 49.303 · 2024: 52.611 (+%7) ·
+  **2025: 65.693 (+%25)**.
+- **Kullanım kararı (kullanıcı):** duruma göre, yalnızca bağlam olarak.
+  "Yapay zekâ yayın üretimini hızlandırdı" denmeyecek; sansasyon yok. Olası
+  başka nedenler (teşvik/doçentlik kuralları, WoS kapsamının genişlemesi,
+  pandemi sonrası birikim) birlikte anılmalı. WoS ≠ DergiPark dergi kümesi.
+- Kendi verimizde: DergiPark TR özet 2022: 46.568 → 2025: 54.181 (+%16).

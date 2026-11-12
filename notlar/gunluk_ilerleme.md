@@ -1135,3 +1135,6 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     artış ETKEN çatıya özgü (özne = "bu çalışma"; İngilizce "This study
     examines" kalıbıyla uyumlu; yorum Claude'un).
 - Grafik başlıkları iki satıra bölündü (uzun başlık kesiliyordu).
+- TÜBİTAK yayın sayısı grafiği (WoS-InCites; 2025 +%25) literatür
+  notlarına bağlam olarak eklendi. Kullanıcı: "sansasyon yaratmanın faydası
+  yok, yapay zekâ hızlandırdı diyecek durumda değiliz."
