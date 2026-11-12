@@ -70,16 +70,16 @@ plt.rcParams.update({
 # ------------------------------------------------------------------
 
 # Ek zincirlerinin okunur adlari (Zemberek kimlikleri -> Turkce ek kalibi)
-ZINCIR_ADI = {
-    "Prog2+A3sg+Cop": "-mAktAdIr (incelemektedir)",
-    "Pass+Prog2+A3sg+Cop": "edilgen -mAktAdIr (incelenmektedir)",
-    "Pass+Narr+A3sg+Cop": "edilgen -mIştIr (incelenmiştir)",
-    "Narr+A3sg+Cop": "-mIştIr (incelemiştir)",
-    "Pass+Narr+A3sg": "edilgen -mIş (incelenmiş)",
-    "Past+A3sg": "-DI (inceledi)",
-    "Pass+Past+A3sg": "edilgen -DI (incelendi)",
-    "Prog1+A3sg": "-Iyor (inceliyor)",
-    "Aor+A3sg": "geniş zaman (inceler)",
+ZINCIR_ADI = {  # ornek ikinci satirda: panel basligi kesilmesin
+    "Prog2+A3sg+Cop": "-mAktAdIr\n(incelemektedir)",
+    "Pass+Prog2+A3sg+Cop": "edilgen -mAktAdIr\n(incelenmektedir)",
+    "Pass+Narr+A3sg+Cop": "edilgen -mIştIr\n(incelenmiştir)",
+    "Narr+A3sg+Cop": "-mIştIr\n(incelemiştir)",
+    "Pass+Narr+A3sg": "edilgen -mIş\n(incelenmiş)",
+    "Past+A3sg": "-DI\n(inceledi)",
+    "Pass+Past+A3sg": "edilgen -DI\n(incelendi)",
+    "Prog1+A3sg": "-Iyor\n(inceliyor)",
+    "Aor+A3sg": "geniş zaman\n(inceler)",
 }
 
 

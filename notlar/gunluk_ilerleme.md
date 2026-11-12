@@ -1123,3 +1123,15 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - `gorsellestir.py egilim`: `--siklik` (gövde/ek dosyaları), `--siralama
   verilen`, ek zincirleri için okunur adlar (Prog2+A3sg+Cop →
   "-mAktAdIr (incelemektedir)" vb.), az panelde sütun sayısı uyarlanır.
+- **Ek kalıbı grafiği (kullanıcı, gerçek veri):**
+  - -mAktAdIr (etken; "çalışma … incelemektedir"): 2022 ~%53 → 2024 ~%63
+    → 2025 ~%75; beklenenin belirgin üstünde.
+  - edilgen -mIştIr ("incelenmiştir"): 2021–2025 düz (~%77–78) →
+    **"yerine geçti" hipotezi DESTEKLENMEDİ**; geleneksel kalıp azalmadı,
+    -mAktAdIr ona EKLENDİ. (Ölçü "özette geçiyor mu"; ~%77'de doymuş olabilir,
+    yoğunluk/100 kelime ölçüsüyle bakılabilir.)
+  - edilgen -mIş ("incelenmiş"): 2024 hafif, 2025 belirgin artış.
+  - edilgen -mAktAdIr ("incelenmektedir"): beklenenle aynı, değişim yok →
+    artış ETKEN çatıya özgü (özne = "bu çalışma"; İngilizce "This study
+    examines" kalıbıyla uyumlu; yorum Claude'un).
+- Grafik başlıkları iki satıra bölündü (uzun başlık kesiliyordu).
