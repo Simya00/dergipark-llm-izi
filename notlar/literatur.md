@@ -86,3 +86,26 @@ Sonuç (2026-11-01): iki dilli alanlar analiz dışı bırakıldı (`yontem.md`
   başka nedenler (teşvik/doçentlik kuralları, WoS kapsamının genişlemesi,
   pandemi sonrası birikim) birlikte anılmalı. WoS ≠ DergiPark dergi kümesi.
 - Kendi verimizde: DergiPark TR özet 2022: 46.568 → 2025: 54.181 (+%16).
+
+## Mevzuat bağlamı (eklendi 2026-11-12)
+
+- **7100 sayılı Kanun**, "Yükseköğretim Kanunu ile Bazı Kanun ve Kanun
+  Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanun", kabul
+  22.02.2018, **Resmî Gazete 6 Mart 2018, Sayı 30352** (yayımı tarihinde
+  yürürlükte, md. 35). Kullanıcının yüklediği PDF'ten okundu.
+  - md. 3 (2547 s.K. 11/b-6): doçentlik unvanı Üniversitelerarası Kurulca,
+    jürilerin adayın yayın ve çalışmalarını değerlendirmesiyle verilir.
+  - md. 5 (2547 s.K. 24): başvuru yılda iki kez; şart "yeterli sayı ve
+    nitelikte özgün bilimsel yayın"; esaslar YÖK yönetmeliğiyle (ç bendi).
+  - md. 1, 11 vd.: "yardımcı doçent" → "doktor öğretim üyesi".
+  - TR Dizin / ulusal dergi şartı bu kanunda YOK → Doçentlik Yönetmeliği
+    (2018) ve ÜAK doçentlik başvuru şartlarına bakılacak.
+  - Kullanım: yalnızca bağlam ("2018'de doçentlik yayın değerlendirmesine
+    bağlandı; aynı dönemde DergiPark'ta dergi sayısı hızla arttı, en çok
+    yeni dergi 2018'de: 288"). Neden-sonuç iddiası yok.
+- Not: kullanıcının paylaştığı kaynaksız bir metin (muhtemelen başka bir
+  yapay zekâdan) 2019 için dört neden öne sürüyordu (doçentlik/teşvik,
+  DergiPark altyapı/PDF, TR Dizin şartları, genişletilmiş özet). Yalnızca
+  doçentlik değişikliği belgelendi; PDF/tam metin iddiası bizim analizle
+  ilgisiz (yalnızca özet), özet uzunluğunda 2019 sıçraması yok. Test
+  edilebilir fikirler: özel/ek sayı oranı (2019), "etik kurul" (2020+).

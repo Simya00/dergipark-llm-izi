@@ -1187,3 +1187,6 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   olabilir. Test: (1) elle İ/Ü işaretlemesinde 2020–2021 aşırı kelimeleri
   içerik mi (Kobak vd.'nin covid karşılaştırması gibi), (2) ileride alan
   analizi (dergi adından yaklaşık sağlık dergisi listesi; veride alan yok).
+- Kullanıcı: 7100 s. Kanun PDF'i (RG 6.3.2018) ve TR Dizin ret nedenleri
+  yazısı (modelistatistik.com) → literatur.md (mevzuat bağlamı) ve yeni
+  notlar/dergi_secimi.md.
