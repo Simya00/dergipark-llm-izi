@@ -1138,3 +1138,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - TÜBİTAK yayın sayısı grafiği (WoS-InCites; 2025 +%25) literatür
   notlarına bağlam olarak eklendi. Kullanıcı: "sansasyon yaratmanın faydası
   yok, yapay zekâ hızlandırdı diyecek durumda değiliz."
+- Panel eşiği için dış kaynak arandı: **DOAJ** kabul şartı "yılda en az 5
+  araştırma makalesi" (doaj.org/apply/guide); **TR Dizin** (eski
+  belgeler, 2013/2021): sağlık bilimleri yılda ≥3 sayı ve ≥12 araştırma
+  makalesi, mühendislik/temel ≥2 sayı, sosyal ≥1 sayı (güncel kriterlerden
+  doğrulanmalı). Öneri: ana panel ≥5, sağlamlık ≥12 (kullanıcı onayı bekliyor).
+- DergiPark "trends" sayfası yalnızca popülerlik listeleri veriyor (işe
+  yaramadı). TR Dizin dergi sayfası: yıllık makale sayısı + dizinlendiği
+  yıllar. Resmi "TR Dizin Dizinlenen Dergi Listesi" (ULAKBİM) bulundu →
+  TR Dizin paneli fikri. **Kullanıcı: "şimdilik bunu boşver"** → ertelendi.
