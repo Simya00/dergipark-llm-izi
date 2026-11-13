@@ -1190,3 +1190,17 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Kullanıcı: 7100 s. Kanun PDF'i (RG 6.3.2018) ve TR Dizin ret nedenleri
   yazısı (modelistatistik.com) → literatur.md (mevzuat bağlamı) ve yeni
   notlar/dergi_secimi.md.
+
+## 2026-11-13
+
+- Gövde sayımı (sürüm 2, makale başına sonuç) yeniden başlatıldı. Eski
+  parçalar `govde_parcalar_eski`, ilk sayımın sonuç dosyaları `yedek_v1/`
+  (tekrarlanabilirlik karşılaştırması için).
+- Sayım akşam kesilmiş (neden bilinmiyor: `tee -a` kullanılmadığı için kayıt
+  üzerine yazıldı). Aynı komutla yeniden başlatıldı: "Onceden biten parca:
+  792" → kaldığı yerden devam ediyor (~396 bin özet, kabaca %60).
+- Sanal ortam kontrolü (`ps aux`): işçiler `analiz/zemberek_env` Python'u ve
+  paketleriyle çalışıyor.
+- Sıradaki: sayım bitince `yedek_v1` ile karşılaştırma; `birlestir
+  --dergiler` ile kısa/uzun panel; panel gövde ve ek zinciri tabloları;
+  düzeltilmiş uzun panel biçim tablosu.
