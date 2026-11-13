@@ -1204,3 +1204,13 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Sıradaki: sayım bitince `yedek_v1` ile karşılaştırma; `birlestir
   --dergiler` ile kısa/uzun panel; panel gövde ve ek zinciri tabloları;
   düzeltilmiş uzun panel biçim tablosu.
+- Gövde sayımı bitti: 2015–2026 toplam 430.398 özet; tanınmayan kelime
+  %3,5–4,4 (yıllar içinde hafif düşüş: 2015 %4,3 → 2024 %3,5).
+  (Düzeltme: "792 parça ≈ %60" tahmini yanlıştı, gerçekte ≈ %92.)
+- Tekrarlanabilirlik: ek birebir aynı; ek zinciri 1 kayıt, gövde 42 gövde /
+  219 kayıt farklı (iki yazımlı kelimeler: periyod/periyot, etüd/etüt…;
+  Zemberek eşit puanlı çözüm seçimi). Yıllara göre gövde tablosu yeni
+  dosyayla δ>0,01 birebir aynı; ≥30 yalnız 2021'de +1. Ayrıntı yontem.md §6.1.
+  Kullanıcı sorusu: kelimeleri kural listesiyle birleştirmek? → kısmen çözer
+  (liste eksik kalır; genel d/t kuralı ad/at, kod/kot gibi farklı kelimeleri
+  birleştirir); sonuç etkilenmediği için kurulmadı.

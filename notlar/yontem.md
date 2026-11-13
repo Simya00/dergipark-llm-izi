@@ -493,6 +493,23 @@ analizi olarak kalır; İngilizce biçim düzeyinde.
   etkinliklerin → etkinlik (-lik yapım eki), cerrahi, walsh (özel isim,
   küçük harf). Not: kullanıcı dilbilgisi uzmanı değil; soru "sözlükte bu
   hali mi arardım?" biçiminde sadeleştirildi.
+- **Tekrarlanabilirlik (2026-11-13):** sayım (sürüm 2) baştan tekrarlandı,
+  ilk sayımın çıktıları (`yedek_v1/`) ile karşılaştırıldı (satırlar
+  sıralanıp `diff`). Ek sayıları birebir aynı; yıl başına özet sayıları aynı;
+  ek zincirinde 1 kayıt farklı (2015 A3pl+P3pl 2267 → 2266); gövdede 42
+  gövde / 219 kayıt (binde birden az) farklı. Gövde kuralı iki sayım arasında
+  değişmedi (git diff). Farklar sözlükte iki yazımı olan kelimelerde:
+  periyod/periyot, etüd/etüt, miyokard/miyokart, ayçiçeği/ayçiçek,
+  feyiz/feyz, özgüven/özgüvenli… → Zemberek eşit puanlı iki çözüm arasında
+  seçimi çalıştırmadan çalıştırmaya farklı yapıyor (Claude'un tahmini,
+  doğrulanmadı: Python'un her açılışta rastgele kurduğu iç sıralama,
+  PYTHONHASHSEED; ileride tam sayım gerekirse `PYTHONHASHSEED=0` ile).
+  Etkisi: 42 gövdeden 8'i aşırı kelime listesinde, hiçbiri δ>0,01 değil;
+  ikisi ≥30 özet (özgüven 2025, miyokard 2019). Yıllara göre tablo yeni
+  dosyayla: δ>0,01 2018–2025 **birebir aynı** (82/60/12/35/6/22/120/237);
+  ≥30 yalnız 2021'de 335 → 336; ham aşırı sayıları ±1 (2021, 2022, 2025).
+  **Karar (kullanıcı):** birleştirme listesi kurulmadı; makalede
+  sınırlılık olarak yazılır.
 
 ## 7. Dergi paneli
 
