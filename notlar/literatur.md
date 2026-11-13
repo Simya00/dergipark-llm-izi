@@ -109,3 +109,18 @@ Sonuç (2026-11-01): iki dilli alanlar analiz dışı bırakıldı (`yontem.md`
   doçentlik değişikliği belgelendi; PDF/tam metin iddiası bizim analizle
   ilgisiz (yalnızca özet), özet uzunluğunda 2019 sıçraması yok. Test
   edilebilir fikirler: özel/ek sayı oranı (2019), "etik kurul" (2020+).
+- **YÖK Genel Kurulu kararı, 07.03.2019 (yağmacı/şaibeli dergiler)** —
+  kaynak: ÜAK Genel Sekreterlik yazısı, 23.09.2020, sayı
+  23932784-204.01.01-E.8912, konu "Yağmacı/Şaibeli Dergiler hk."
+  (kullanıcının paylaştığı metin, 2026-11-13; karar duyurusu:
+  uak.gov.tr/duyuru/2019E_Duyuru_YÖK Kararı_140319.pdf, ağ engeli nedeniyle
+  tarafımızdan açılmadı). İçerik: 07.03.2019 sonrası yayımlanan ve "kabulden
+  sonra yayın için ücret isteyen" dergilerdeki makaleler doçentlik
+  beyannamesinde kullanılamaz; başvuruda ücret alan, açık erişim ücreti
+  isteyen abonelik dergileri ve ücretsiz dergiler kullanılabilir.
+  - Olası ilişki (Claude değerlendirmesi): ücretsiz yerli dergilere (DergiPark)
+    yönelmeyi artırmış olabilir → yazar/alan karışımı değişir. Zayıf yanları:
+    karar Mart 2019, hakem süreci nedeniyle etki daha çok 2019 sonu–2020'de
+    beklenir; ama 2020 hedef yılı (taban 2018) düşük (12/22/36). Kalıcı bir
+    karışım değişimi 2020'de de aşırı kelime üretirdi. Uzun panel (sabit
+    dergiler) de 2019'da yüksek. Kullanım: yalnızca bağlam; neden-sonuç yok.
