@@ -508,7 +508,7 @@ analizi olarak kalır; İngilizce biçim düzeyinde.
   ikisi ≥30 özet (özgüven 2025, miyokard 2019). Yıllara göre tablo yeni
   dosyayla: δ>0,01 2018–2025 **birebir aynı** (82/60/12/35/6/22/120/237);
   ≥30 yalnız 2021'de 335 → 336; ham aşırı sayıları ±1 (2021, 2022, 2025).
-  **Karar (kullanıcı):** birleştirme listesi kurulmadı; makalede
+  **Öneri (Claude, kullanıcı onayı bekleniyor):** birleştirme listesi kurulmasın; makalede
   sınırlılık olarak yazılır.
 
 ## 7. Dergi paneli

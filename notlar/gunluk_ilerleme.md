@@ -1213,4 +1213,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   dosyayla δ>0,01 birebir aynı; ≥30 yalnız 2021'de +1. Ayrıntı yontem.md §6.1.
   Kullanıcı sorusu: kelimeleri kural listesiyle birleştirmek? → kısmen çözer
   (liste eksik kalır; genel d/t kuralı ad/at, kod/kot gibi farklı kelimeleri
-  birleştirir); sonuç etkilenmediği için kurulmadı.
+  birleştirir); sonuç etkilenmediği için kurulmaması önerildi (onay bekleniyor).
