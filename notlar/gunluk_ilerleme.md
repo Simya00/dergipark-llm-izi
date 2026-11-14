@@ -1214,3 +1214,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Kullanıcı sorusu: kelimeleri kural listesiyle birleştirmek? → kısmen çözer
   (liste eksik kalır; genel d/t kuralı ad/at, kod/kot gibi farklı kelimeleri
   birleştirir); sonuç etkilenmediği için kurulmaması önerildi (onay bekleniyor).
+
+## 2026-11-14
+
+- Makale başlığı seçildi (kullanıcı): "Kelimeleri Ayarlama Enstitüsü:
+  DergiPark Özetlerinde Büyük Dil Modeli İzleri" → yeni `notlar/makale.md`
+  (diğer adaylar ve "İzleri" kelimesine dair uyarı ile).
+- 2019 için: YÖK 07.03.2019 yağmacı dergi kararı (ÜAK yazısı 23.09.2020)
+  bağlam olarak literatur.md'ye eklendi (13'ünde). Sıradaki: 2019 hedef
+  yılının aşırı kelime tablosu (tüm veri + uzun panel, gövde).
