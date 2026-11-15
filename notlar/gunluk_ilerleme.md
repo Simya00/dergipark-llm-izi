@@ -1223,3 +1223,18 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - 2019 için: YÖK 07.03.2019 yağmacı dergi kararı (ÜAK yazısı 23.09.2020)
   bağlam olarak literatur.md'ye eklendi (13'ünde). Sıradaki: 2019 hedef
   yılının aşırı kelime tablosu (tüm veri + uzun panel, gövde).
+- **2019 hedef yılı kelimeleri (gövde, taban 2016–2017; kullanıcı çıktısı):**
+  tüm veri δ>0,01 = 60, uzun panel = 82. Baştakiler: bulgu, tespit, amaçla,
+  anlamlı, kadın, hasta, yaş, erkek, ortalama, gereç, hastane, retrospektif,
+  demografik, cinsiyet, tedavi, başvur, dahil, tara, tarih, karşılaştır…
+  → klinik (retrospektif) tıp özeti kelimeleri ("Gereç ve Yöntem: … tarihleri
+  arasında başvuran hastalar retrospektif olarak tarandı"). İçerik/alan
+  karışımı değişimi; 2024'ün üslup kelimeleriyle (vurgula, kritik, kapsamlı)
+  zıt. Uzun panelde (sabit dergiler) de aynı. Taban etkisi de var: hasta
+  2016 %7,1 → 2017 %5,6 → 2019 %7,8 (2017'de özet sayısı 19,5k → 29,4k).
+  Açıklanamayan gövde: "i" (+%14), örnek cümleye bakılacak.
+- Kullanıcı: kanıtlamak gerekli mi? Claude: ana iddia için şart değil;
+  asıl kanıt planlanan elle Ü/İ/B işaretlemesi (2019 = İ, 2024 = Ü
+  beklentisi). İsteğe bağlı ucuz destek: yıllara göre "gereç ve yöntem" /
+  "retrospektif" içeren özet payı (Test 1). Test 2 (klinik özetleri çıkarıp
+  2019'u yeniden hesaplama) hakem sorarsa. Karar kullanıcıda.
