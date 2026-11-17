@@ -1249,3 +1249,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Özeti" (araştırma sorusu, araçlar, veri/temizlik ve doğrulamalar, yöntem,
   bulgular + grafik, 2019, sınırlılıklar, durum, sorular). Sorulara 5 (hedef
   dergi/dil) ve 6 (yapay zekâ asistanı beyanı) eklendi.
+- Kullanıcı isteği: uzun ve tam rapor → Claude Docs "Kelimeleri Ayarlama
+  Enstitüsü — Ara Rapor" (https://claude.ai/artifact/SG9tLoHTk7jqPPxUrHYd5N):
+  özet, giriş, veri (grafik), temizlik/doğrulama, yöntem, bulgular (grafik),
+  2019, tartışma, sınırlılıklar, sonraki adımlar, 8 danışman sorusu (yeni:
+  ikinci işaretleyici, veri paylaşımı), Ek A (araçlar, kod dosyaları,
+  kararların sahibi), kaynaklar.
