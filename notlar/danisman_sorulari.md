@@ -52,3 +52,15 @@ Claude önerisi: birleştirme listesi kurulmasın, sınırlılık olarak yazıls
 "Kelimeleri Ayarlama Enstitüsü: DergiPark Özetlerinde Büyük Dil Modeli
 İzleri". **Soru:** alt başlıktaki "İzleri" iddialı mı? Alternatif:
 "… Kelime Tercihlerinin Değişimi (2015–2025)".
+
+## 5. Hedef dergi ve dil (2026-11-17)
+
+Makale Türkçe mi İngilizce mi yazılmalı, hangi dergiye gönderilmeli?
+
+## 6. Yapay zekâ asistanı kullanımının beyanı (2026-11-17)
+
+Kodlama asistanı (Claude Code) kullanımı yöntem bölümünde ya da beyanlar
+kısmında nasıl belirtilmeli? (Kod asistanla yazıldı; eşik/yöntem kararları
+ve elle doğrulamalar kullanıcıya ait, notlarda ayrı ayrı kayıtlı.)
+
+Görüşme özeti belgesi (Claude Docs): https://claude.ai/artifact/T4UPHJdEtY4PVFEh2CFexg

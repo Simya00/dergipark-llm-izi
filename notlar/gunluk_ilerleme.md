@@ -1244,3 +1244,8 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Kullanıcı 2019 testlerini (Test 1/Test 2) danışman hocasına soracak →
   yeni `notlar/danisman_sorulari.md` (2019 testleri, mevzuat bağlamı,
   tekrarlanabilirlik önerisi, başlık).
+- Kullanıcı isteği: danışman görüşmesi (ertesi gün) için baştan sona özet →
+  Claude Docs belgesi "DergiPark Özetlerinde LLM İzleri — Danışman Görüşmesi
+  Özeti" (araştırma sorusu, araçlar, veri/temizlik ve doğrulamalar, yöntem,
+  bulgular + grafik, 2019, sınırlılıklar, durum, sorular). Sorulara 5 (hedef
+  dergi/dil) ve 6 (yapay zekâ asistanı beyanı) eklendi.
