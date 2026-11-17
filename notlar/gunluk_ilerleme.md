@@ -1238,3 +1238,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   beklentisi). İsteğe bağlı ucuz destek: yıllara göre "gereç ve yöntem" /
   "retrospektif" içeren özet payı (Test 1). Test 2 (klinik özetleri çıkarıp
   2019'u yeniden hesaplama) hakem sorarsa. Karar kullanıcıda.
+
+## 2026-11-17
+
+- Kullanıcı 2019 testlerini (Test 1/Test 2) danışman hocasına soracak →
+  yeni `notlar/danisman_sorulari.md` (2019 testleri, mevzuat bağlamı,
+  tekrarlanabilirlik önerisi, başlık).
