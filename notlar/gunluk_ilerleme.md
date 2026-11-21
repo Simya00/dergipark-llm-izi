@@ -1276,3 +1276,18 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     metni (web-fetch), Doçentlik Yönetmeliği TR Dizin şartı, makalenin
     yöntem bölümü taslağı.
   - Cumartesi 28: yedek gün.
+- **Panel tabloları (kullanıcı):**
+  - Uzun panel, gövde, δ>0,01: 2018 41, 2019 82, 2020 51, 2021 57, 2022 23,
+    2023 58, **2024 140, 2025 223**; ≥30: 198/286/263/242/130/228/**350/609**.
+  - Kısa panel, ek zinciri, δ>0,01: 24, 40, 5, 18, 7, 9, **35, 41**.
+  - Uzun panel, ek zinciri, δ>0,01: 12, 37, 14, 19, 5, 29, **42, 32**.
+  - **Sorun:** uzun panelde "hesaba giren" her yıl aynı (gövde 184.196, ek
+    zinciri 1.479) → kullanıcının yerel kopyasında 2026-11-12 ham oran
+    düzeltmesi (8d85d0a) yok (git pull yapılmamış). Etkilenen yalnızca
+    "hesaba giren" ve ham "aşırı" sütunları; ≥30 ve δ>0,01 sütunları
+    etkilenmez (bu kelimeler eşiği zaten geçiyor). git pull + iki uzun panel
+    komutu yeniden.
+  - Yorum (Claude): gövdede uzun panel de 2024–2025 sıçramasını gösteriyor
+    ama LLM öncesi yıllar gürültülü (23–82; ~8 bin özet). Ek zinciri
+    sayıları panellerde daha az ayırt edici (2019 ≈ 2024–2025); ek düzeyinde
+    asıl kanıt sayı değil -mAktAdIr kalıbının kendisi.
