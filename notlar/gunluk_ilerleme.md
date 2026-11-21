@@ -1255,3 +1255,24 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   2019, tartışma, sınırlılıklar, sonraki adımlar, 8 danışman sorusu (yeni:
   ikinci işaretleyici, veri paylaşımı), Ek A (araçlar, kod dosyaları,
   kararların sahibi), kaynaklar.
+
+## 2026-11-21
+
+- Kullanıcı: "nerede kaldık; LLM yeniden yazım deneyi hariç (ay başı
+  bekleniyor) kalanları bu hafta bitirelim." → Haftalık plan (22–28 Kasım):
+  - **Pazar 22:** panel tabloları (uzun panel gövde, kısa/uzun panel ek
+    zinciri; kullanıcı); `isaretleme.py` gövde düzeyine (Claude, kod
+    açıklanır) → kullanıcı Excel'i üretir; İngilizce sıklık sayımı başlatılır
+    (`kelime_siklik.py --dil en`, kullanıcı); danışman cevapları notlara.
+  - **Pazartesi 23 – Salı 24:** elle Ü/İ/B işaretlemesi (kullanıcı; en büyük
+    iş). Aynı anda Claude: `alt_sinir.py` gövde sürümü (parçalardaki makale
+    başına gövde listesinden), `liste_kontrol.py` ile ön kayıtlı liste.
+  - **Çarşamba 25:** `isaretleme.py hesapla` (yıllara göre Ü/İ oranı; 2019 = İ,
+    2024 = Ü beklentisi), alt sınır hesabı (tüm veri + kısa panel).
+  - **Perşembe 26:** İngilizce sonuçlar (Kobak kelimeleri çıkıyor mu), ön
+    kayıtlı liste sonucu, danışman isterse 2019 Test 1/2, -mAktAdIr yoğunluğu
+    (100 kelimede; yüzey biçimiyle yaklaşık).
+  - **Cuma 27:** son grafikler, ara raporun güncellenmesi, Lee (2026) tam
+    metni (web-fetch), Doçentlik Yönetmeliği TR Dizin şartı, makalenin
+    yöntem bölümü taslağı.
+  - Cumartesi 28: yedek gün.
