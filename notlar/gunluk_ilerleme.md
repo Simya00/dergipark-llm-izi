@@ -1291,3 +1291,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     ama LLM öncesi yıllar gürültülü (23–82; ~8 bin özet). Ek zinciri
     sayıları panellerde daha az ayırt edici (2019 ≈ 2024–2025); ek düzeyinde
     asıl kanıt sayı değil -mAktAdIr kalıbının kendisi.
+- Kullanıcının yerel kopyası `main` dalındaydı, parametresiz `git pull`
+  origin/main'e bakıyordu → `git pull origin claude/vigilant-hawking-22h7la`
+  ile güncellendi. Uzun panel yeniden: "hesaba giren" artık yıla göre
+  değişiyor (gövde 19.405–21.637; ek zinciri 708–775); δ>0,01 ve ≥30
+  sütunları beklendiği gibi birebir aynı (gövde δ>0,01: 41, 82, 51, 57, 23,
+  58, 140, 223; ek zinciri: 12, 37, 14, 19, 5, 29, 42, 32).
