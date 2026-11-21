@@ -1297,3 +1297,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   değişiyor (gövde 19.405–21.637; ek zinciri 708–775); δ>0,01 ve ≥30
   sütunları beklendiği gibi birebir aynı (gövde δ>0,01: 41, 82, 51, 57, 23,
   58, 140, 223; ek zinciri: 12, 37, 14, 19, 5, 29, 42, 32).
+- `isaretleme.py` gövde düzeyine (Claude): `--siklik siklik_tr_govde.tsv.gz`;
+  seçim aynı (2018–2025'ten birinde aşırı ve δ>0,01; Kobak kuralı, harf
+  filtresi dosyaya göre); Excel'de yeni "en sık biçimler" sütunu (ilk 5,
+  `govde_bicimleri_tr.json.gz`); örnek cümle gövdenin kendisini ya da en sık
+  10 biçiminden birini içermeli, eşleşen biçim ⟦ ⟧ içinde; aynı cümle iki kez
+  gösterilmez; etiket sütunu F, `hesapla` sütunu başlıktan bulur. Çıktılar:
+  `isaretleme_tr_govde.xlsx`, `uslup_kelimeleri_tr_govde.txt`. Sahte veriyle
+  test edildi. Bilinen zayıflık: yalnızca en sık 10 biçimle eşleşme (seyrek
+  biçimli cümleler örneklemde yok); bir biçim iki gövdeye ait olabilir.
