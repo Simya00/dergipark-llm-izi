@@ -410,7 +410,7 @@ Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --di
 - Karşı-olgusal: `q_T = p_2022 + (T − 2022) · max(p_2022 − p_2021, 0)`.
 - Fark `δ = p_T − q_T`, kat `r = p_T / q_T`.
 - Alt sınır: işaretçilerden en az birini içeren özet oranı için
-  `L ≥ (p − q) / (1 − q)`.
+  `L ≥ (p − q) / (1 − q)`. **Değişti (2026-11-22): Kobak vd. gibi Δ = p − q; bkz. §6.2.**
 - Kelime grupları cümle/yan cümle sınırını aşmaz.
 - **Kobak vd. ile birebir uyum (kullanıcı kararı, 2026-11-11; gerekçe:
   TR ve EN sonuçları ile Kobak vd. doğrudan karşılaştırılabilsin).** Kaynak:
@@ -510,6 +510,54 @@ analizi olarak kalır; İngilizce biçim düzeyinde.
   ≥30 yalnız 2021'de 335 → 336; ham aşırı sayıları ±1 (2021, 2022, 2025).
   **Öneri (Claude, kullanıcı onayı bekleniyor):** birleştirme listesi kurulmasın; makalede
   sınırlılık olarak yazılır.
+
+## 6.2 Alt sınır — ÖN KAYIT (2026-11-22, sonuçlar görülmeden)
+
+Yazıldığı anda: elle Ü/İ/B işaretlemesi başlamadı, hiçbir alt sınır hesabı
+yapılmadı. Kararlar kullanıcıya ait (aşağıda "kullanıcı").
+
+**Kobak vd.'nin gerçek uygulaması** (`berenslab/llm-excess-vocab`,
+`scripts/03-figures.ipynb` hücre 25–27 ve `preprocess_and_count_utils.py`
+satır 440–451; 2026-11-22'de koddan okundu):
+- İşaretçiler: hedef yılda (2024) aşırı çıkan ve elle "style" denen kelimeler
+  (seçim ve ölçüm AYNI yıl).
+- Bu kelimeler hedef yıldaki sıklıklarına göre 11 eşikle gruplanır (0,0002 …
+  0,5); her eşik için "eşiğin altındaki işaretçilerden en az birini içeren
+  özet" oranı p ve aynı karşı-olgusal q hesaplanır.
+- **Alt sınır = Δ = p − q** (frekans farkı); raporlanan değer eşikler
+  arasındaki en büyük Δ (0,136 → "en az %13,5").
+- Not: §6'daki eski "L ≥ (p − q)/(1 − q)" formülü yerine Kobak'ın daha
+  temkinli Δ'sı kullanılır (kullanıcı: "Kobak vd.'nin yaptığını yapalım").
+  Δ ≤ Δ/(1 − q) olduğundan bu seçim alt sınırı küçültür, büyütmez.
+
+**Kararlar (kullanıcı, 2026-11-22):**
+1. **Ana sonuç: çapraz seçim (A).** 2024'te aşırı ve Ü işaretli gövdelerle
+   2025 ölçülür; 2025'te aşırı ve Ü işaretli gövdelerle 2024 ölçülür (seçim ve
+   ölçüm ayrı yıllar → "çifte daldırma" yok).
+   **Karşılaştırma (C): Kobak vd. ile birebir** — aynı yılda seçim ve ölçüm,
+   11 eşik taraması, en büyük Δ; makalede "Kobak ile karşılaştırma için,
+   iyimser" diye etiketlenir.
+2. **Ön kayıtlı aday liste (`aday_liste_tr.txt`) ile alt sınır:** taban
+   yılında (2022) özetlerin **%10'undan** fazlasında geçen öğeler hesaba
+   girmez (X = %10; Claude önerisi, kullanıcı kararı). Hangi öğelerin
+   kaldığına X seçildikten sonra bakılır. Sağlamlık: %5 ve %20 de raporlanır.
+3. **Veri:** ana sonuç tüm veri; sağlamlık kısa panel (710 dergi).
+4. **Formül:** Kobak vd. gibi Δ = p − q; q aynı karşı-olgusal (taban T−2,
+   eğilim T−3 → T−2).
+- **Onay bekleyen (Claude'un yorumu):** A'da eşik taraması yapılmaz (en
+  büyüğü seçmek de bir seçim etkisi); tek sabit eşik olarak karar 2'deki
+  kural (tabanda %10'dan az) Ü gövdelerine de uygulanır.
+- Ölçüm düzeyi: Ü işaretleri gövde düzeyinde olduğundan gövde sayımı
+  (parçalardaki makale başına gövde listesi); ön kayıtlı liste yüzey
+  biçimlerinden oluştuğu için biçim düzeyinde (`liste_kontrol` / `alt_sinir`).
+
+**İngilizce hipotezi H-İng (kullanıcı onayı, 2026-11-22; İngilizce sonuçlar
+görülmeden):** Yazarlar LLM'i daha çok İngilizce özeti yazmak/çevirmek için
+kullandıysa (1) DergiPark İngilizce özetlerinde LLM kelimelerindeki artış
+Türkçe özetlerden daha erken başlar (2023 ya da 2024) ve daha büyüktür;
+(2) iki dilli makalelerde İngilizce özette işaretçi bulunma oranı Türkçe
+özettekinden yüksektir. Böyle çıkarsa Türkçe bulgu kullanımın alt sınırı
+olarak yorumlanır. Yanlış çıkması da raporlanır.
 
 ## 7. Dergi paneli
 

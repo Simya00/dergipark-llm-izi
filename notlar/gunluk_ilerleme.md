@@ -1343,3 +1343,11 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Kullanıcı: Aralık bitmeden bitirmek istiyor, başka bir işi de var → genel
   bitiş planı `notlar/plan_aralik.md` (5 hafta; kritik yol işaretleme → alt
   sınır → bulgular → yazım; kesilebilir maddeler ayrı).
+- **Alt sınır ön kaydı (kullanıcı kararları, sonuçlardan önce) → yontem.md
+  §6.2:** ana sonuç çapraz seçim (A) + Kobak ile birebir karşılaştırma (C);
+  ön kayıtlı listede X = %10 (tabanda); tüm veri + kısa panel; H-İng onaylandı.
+  Kullanıcı: "Kobak vd.'nin yaptığını yapalım" → Kobak kodu (03-figures hücre
+  25–27) okundu: Kobak alt sınırı Δ = p − q (1 − q'ya bölmüyor), işaretçiler
+  hedef yılın style kelimeleri, 11 sıklık eşiği taranıp en büyük Δ alınıyor
+  (0,136). Formül Kobak'a göre değiştirildi (daha temkinli). Onay bekleyen:
+  A'da tarama yerine sabit %10 eşiği.
