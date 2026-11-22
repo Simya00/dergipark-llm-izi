@@ -1306,3 +1306,26 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `isaretleme_tr_govde.xlsx`, `uslup_kelimeleri_tr_govde.txt`. Sahte veriyle
   test edildi. Bilinen zayıflık: yalnızca en sık 10 biçimle eşleşme (seyrek
   biçimli cümleler örneklemde yok); bir biçim iki gövdeye ait olabilir.
+
+## 2026-11-22
+
+- Kullanıcı başka bir oturumdan bir değerlendirme yapıştırdı (kod, notlar, git
+  geçmişi okunarak yazılmış). Claude kontrolü:
+  - **Doğrulanan hata 1:** `oai_ayristir.py` `BASLIK` ifadesi büyük harfli
+    "ÖZ…" kelimesiyle başlayan özleri bozuyor (ÖZEL → EL, ÖZGÜN → GÜN, ÖZETLE →
+    LE). Claude'un yazdığı kural; dondurulmuş veride etkisi ölçülecek.
+  - **Hata 2** (büyük harfli Türkçe kelimede I → i: AMACI → amaci) zaten
+    2026-11-12'de sınırlılık adayı olarak not edilmişti; etkisi ölçülmedi.
+  - Değerlendirmenin bir kısmı eski duruma göre yazılmış: Kobak kodu okundu
+    (11-11), özet uzunluğu ölçüldü (11-11), gövde analizi var (11-12), iki
+    dilli bölme bırakıldı (11-01), birleşik kelime rastgele örneklemle
+    doğrulandı (143/146, 70/72), LLM öncesi yıllar tablosu fiilen plasebo testi.
+  - Geçerli ve yeni bulunan noktalar: alt sınırda çifte daldırma (seçim ve
+    ölçüm aynı yıl), ön kayıtlı listede çok yaygın kelimeler (q → 1), arşiv
+    kuralının rastgele örneklemle doğrulanmaması, yayın tarihi ≠ gönderim
+    tarihi, LLM'in yalnızca İngilizce özete dokunmuş olabileceği hipotezi,
+    deneyde nötr komut / çeviri koşulu / eski model, "dokunulmadı 50/50"nin
+    "%7'den az" diye yazılması, veri anlık görüntüsünün özeti (hash), README,
+    `deney_hazirla.py`'de eski dil fonksiyonları, anahtar kelime kararının
+    teyidi.
+  - Karar kullanıcıda; Claude önceliklendirme önerdi (sohbette).
