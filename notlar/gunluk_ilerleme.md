@@ -1351,3 +1351,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   hedef yılın style kelimeleri, 11 sıklık eşiği taranıp en büyük Δ alınıyor
   (0,136). Formül Kobak'a göre değiştirildi (daha temkinli). Onay bekleyen:
   A'da tarama yerine sabit %10 eşiği.
+- A'da tek sabit eşik (tabanda %10'dan az) kullanıcı tarafından onaylandı.

@@ -544,7 +544,7 @@ satır 440–451; 2026-11-22'de koddan okundu):
 3. **Veri:** ana sonuç tüm veri; sağlamlık kısa panel (710 dergi).
 4. **Formül:** Kobak vd. gibi Δ = p − q; q aynı karşı-olgusal (taban T−2,
    eğilim T−3 → T−2).
-- **Onay bekleyen (Claude'un yorumu):** A'da eşik taraması yapılmaz (en
+- **Kullanıcı onayı (2026-11-22, Claude önerisi):** A'da eşik taraması yapılmaz (en
   büyüğü seçmek de bir seçim etkisi); tek sabit eşik olarak karar 2'deki
   kural (tabanda %10'dan az) Ü gövdelerine de uygulanır.
 - Ölçüm düzeyi: Ü işaretleri gövde düzeyinde olduğundan gövde sayımı
