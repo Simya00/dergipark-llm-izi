@@ -1352,3 +1352,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   (0,136). Formül Kobak'a göre değiştirildi (daha temkinli). Onay bekleyen:
   A'da tarama yerine sabit %10 eşiği.
 - A'da tek sabit eşik (tabanda %10'dan az) kullanıcı tarafından onaylandı.
+- `toplama/hata_etkisi.py` (Claude; yalnızca sayar): `baslik` ham sayfalardan
+  BASLIK kuralının sildiği öz alanlarını sınıflar (normal / bitişik başlık /
+  hata şüphesi: tamamı büyük harfli ÖZEL, ÖZGÜN…), en sık kelimeler ve
+  örnekler; `harf` analize giren TR özetlerde büyük harfli, ÇĞİÖŞÜ içermeyen
+  ve I içeren kelimeleri (AMACI → amaci) yıllara göre sayar. Sahte veriyle
+  test edildi. Sınıflama kuralı Claude'un; "ÖZETBU" gibi tamamı büyük harfli
+  bitişik başlık da "hata şüphesi"ne düşer (örneklerde görülecek).
