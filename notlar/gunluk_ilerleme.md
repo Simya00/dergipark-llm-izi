@@ -1340,3 +1340,6 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   işaretlemeye başlama; (5) İngilizce sıklık sayımı arka planda; (6) Claude:
   arşiv kuralı doğrulama Excel'i (73 örnek), alt_sinir gövde sürümü,
   sınırlılıklar/README/hash; (7) danışman cevapları notlara.
+- Kullanıcı: Aralık bitmeden bitirmek istiyor, başka bir işi de var → genel
+  bitiş planı `notlar/plan_aralik.md` (5 hafta; kritik yol işaretleme → alt
+  sınır → bulgular → yazım; kesilebilir maddeler ayrı).
