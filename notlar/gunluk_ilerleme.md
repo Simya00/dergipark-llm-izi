@@ -1329,3 +1329,14 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     `deney_hazirla.py`'de eski dil fonksiyonları, anahtar kelime kararının
     teyidi.
   - Karar kullanıcıda; Claude önceliklendirme önerdi (sohbette).
+- Kullanıcı öncelik sırasını onayladı. Claude alt sınır kuralı için üç karar
+  (seçim/ölçüm yılları: çapraz önerildi; ön kayıtlı listede taban yılı
+  eşiği X: %10 önerildi, Claude'un seçimi; ölçüm verisi: tüm veri + kısa
+  panel) ve İngilizce hipotez (H-İng) taslağı sundu → kullanıcı kararı
+  bekleniyor (sonuçlar görülmeden yontem.md'ye yazılacak).
+- **Yarın (2026-11-23) sırası:** (1) alt sınır kararları + H-İng onayı →
+  yontem.md; (2) iki hatanın etki sayımı (ÖZ… başlık, büyük harf I); (3)
+  git pull + gövde işaretleme Excel'i, ilk 10 satıra birlikte bakış; (4)
+  işaretlemeye başlama; (5) İngilizce sıklık sayımı arka planda; (6) Claude:
+  arşiv kuralı doğrulama Excel'i (73 örnek), alt_sinir gövde sürümü,
+  sınırlılıklar/README/hash; (7) danışman cevapları notlara.
