@@ -635,6 +635,25 @@ temizliğin getirisi azalırken yeni hata ekleme riski artıyor.
    onarımı yalnızca iki parçaya bölüyor; daha uzun yapışmalar tek "kelime"
    olarak kalıyor (nadir oldukları için aşırı kelime hesabına girmezler).
 
+7. **Başlık silme kuralının yan etkisi (2026-11-23, kullanıcı kararı:
+   sınırlılık; veri dondurması açılmadı).** `oai_ayristir.py` `BASLIK`, "ÖZ"
+   ya da "ÖZET"ten sonra büyük harf gelince başlık sayıyor; tamamı büyük
+   harfli "ÖZ…" kelimeleri (ÖZEL → EL, ÖZELLİKLE → ELLİKLE) ve rakama bitişik
+   başlıkları (ÖZET1960 → ET1960) bozuyor. Ölçüm (`toplama/hata_etkisi.py
+   baslik`): başlığı silinen 23.295 öz alanından en fazla 228'i (bir kısmı
+   aslında doğru silinmiş büyük harfli bitişik başlık: ÖZETAMAÇ); tüm öz
+   alanlarının ~%0,02'si, her birinde yalnızca ilk kelime. Bulan: dış
+   değerlendirme (2026-11-22).
+8. **Büyük harfli Türkçe kelimelerin küçültülmesi (2026-11-23, kullanıcı
+   kararı: sınırlılık).** `kelime_siklik.py` tamamı büyük harfli ve ÇĞİÖŞÜ
+   içermeyen kelimeleri İngilizce kısaltma sayıp İngilizce kurala göre
+   küçültüyor (COVID → covid doğru; AMACI → amaci, ISI → isi yanlış).
+   Ölçüm (`hata_etkisi.py harf`; "Türkçe" = küçük harfli metinde Türkçe
+   küçültmesi daha sık): etkilenen TR özet yılda %0,4 (2015) – %0,9 (2025).
+   Ayrım nadir kısaltmaları da (ICC, ARIMA, MRI) Türkçe saydığı için bu
+   oranlar üst sınır. Tek bir kelimenin δ > 0,01 olması için özetlerin %1'i
+   gerekir; etki bunun çok altında.
+
 ### 10.1 İlgili düzeltme: İngilizce küçük harfe çevirme (2026-11-05)
 - `kelime_siklik.py` İngilizce özlerde `.lower()` kullanıyordu; Python bu
   komutla "İ"yi "i" + ayrı nokta (U+0307) yapar ve kelime bölünür

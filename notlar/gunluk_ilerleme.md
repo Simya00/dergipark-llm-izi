@@ -1387,3 +1387,6 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     (~1,3 milyon öz alanının ~%0,02'si); her birinde yalnızca ilk kelime.
   - Claude önerisi: veri dondurması açılmasın; ikisi de sayılarıyla
     sınırlılık olarak yazılsın. Karar kullanıcıda.
+- Karar (kullanıcı): iki hata sınırlılık olarak yazıldı (yontem.md §10,
+  madde 7–8); veri dondurması açılmadı. Kodun ileriye dönük düzeltilmesi ve
+  diğer işler yarına.
