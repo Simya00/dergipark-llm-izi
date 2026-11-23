@@ -1370,3 +1370,20 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   İngilizce küçültmeden (amaci) daha sık geçiyorsa kelime Türkçe sayılır;
   tablo yalnızca bunlarla. Sahte veriyle test edildi. Kullanıcı yeniden
   çalıştıracak; `baslik` çıktısı da bekleniyor.
+- **Hata etkisi sonuçları (kullanıcı):**
+  - `harf` (yalnızca "Türkçe" sayılanlar): etkilenen TR özet yılda %0,4–0,9
+    (2015: 82 → 2025: 509 özet; kelime geçişi 150 → 968). Türkçe/İngilizce
+    ayrımı nadir kelimelerde zayıf: ICC, ARIMA, MRI, INR, MALDI gibi
+    kısaltmalar "ıcc: 1, icc: 0" gibi tek geçişle Türkçe sayıldı → sayılar
+    ÜST SINIR. Gerçek Türkçe olanlar: ISI (ısı), ARI, ACI, SIRT, SIR, KIT,
+    SAVI, YILMAZ… Tek bir kelimenin δ > 0,01 olması için özetlerin %1'i
+    gerekir; etki bunun çok altında.
+  - `baslik`: başlığı silinen 23.295 öz alanının 10.876'sı normal, 12.191'i
+    bitişik başlık, 228'i "hata şüphesi". Şüphelilerin bir kısmı aslında
+    doğru (ÖZETAMAÇ, ÖZAMAÇ, ABSTRACTOBJECTIVE, ÖZETXV. → büyük harfli bitişik
+    başlık). Gerçek bozulmalar: ÖZEL, ÖZELLİKLE, ÖZDEK… ve **yeni bulunan
+    ikinci biçim: rakamla bitişik başlık** ("ÖZET1960 Darbesi" → "ET1960";
+    ÖZET önce eşleşmiyor, sonra ÖZ eşleşip "ET" kalıyor). Üst sınır 228 alan
+    (~1,3 milyon öz alanının ~%0,02'si); her birinde yalnızca ilk kelime.
+  - Claude önerisi: veri dondurması açılmasın; ikisi de sayılarıyla
+    sınırlılık olarak yazılsın. Karar kullanıcıda.
