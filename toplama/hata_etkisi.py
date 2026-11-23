@@ -77,9 +77,11 @@ def baslik(arg):
 
 
 def harf(arg):
-    from kelime_siklik import KELIME, TR_BUYUK, VARSAYILAN_GIRDI, analize_girer
+    from kelime_siklik import KELIME, TR_BUYUK, VARSAYILAN_GIRDI, analize_girer, turkce_kucult
     ozet, etkilenen, gecis = Counter(), Counter(), Counter()
     kelimeler = Counter()
+    kucuk = Counter()  # metinde zaten kucuk harfle yazilmis kelimeler (hangi kucultmenin dogru oldugunu soyler)
+    yil_kelime = []
     with open(VARSAYILAN_GIRDI, encoding="utf-8") as g:
         for satir in g:
             m = json.loads(satir)
@@ -87,19 +89,30 @@ def harf(arg):
             if not y or not analize_girer(m, "ozet_tr", None):
                 continue
             ozet[y] += 1
-            bulunan = [k for k in KELIME.findall(m["ozet_tr"])
+            tum = KELIME.findall(m["ozet_tr"])
+            kucuk.update(k for k in tum if k.islower())
+            bulunan = [k for k in tum
                        if len(k) > 1 and k.isupper() and "I" in k and not (set(k) & TR_BUYUK)]
             if bulunan:
-                etkilenen[y] += 1
-                gecis[y] += len(bulunan)
+                yil_kelime.append((y, bulunan))
                 kelimeler.update(bulunan)
+    # Turkce mi? Kucuk harfli metinde Turkce kucultmesi (amacı) Ingilizce kucultmesinden (amaci)
+    # daha sik geciyorsa kelime Turkce sayilir: COVID -> covid (Ingilizce, dogru), AMACI -> amacı (Turkce, hatali)
+    turkce = {k for k in kelimeler if kucuk[turkce_kucult(k)] > kucuk[k.lower()]}
+    for y, bulunan in yil_kelime:
+        tr = [k for k in bulunan if k in turkce]
+        if tr:
+            etkilenen[y] += 1
+            gecis[y] += len(tr)
+    print("YALNIZCA TURKCE KELIMELER (hatali kucultulen; Ingilizce kisaltmalar haric):")
     print(f"{'yil':>5} {'ozet':>7} {'etkilenen':>10} {'%':>6} {'kelime gecisi':>14}")
     for y in sorted(ozet):
         if 2015 <= y <= 2026:
             print(f"{y:>5} {ozet[y]:>7} {etkilenen[y]:>10} {100 * etkilenen[y] / ozet[y]:>5.1f}% {gecis[y]:>14}")
-    print("\nEn sik etkilenen kelimeler (bir kismi gercekten Ingilizce kisaltma: COVID, MRI...):")
-    for k, n in kelimeler.most_common(arg.ornek):
-        print(f"  {k:<20} {n:>7}")
+    print(f"\nTurkce sayilan {len(turkce)} farkli kelime, en sik {arg.ornek}"
+          " (kucuk harfli metindeki TR / EN kucultme sayisiyla):")
+    for k, n in Counter({k: kelimeler[k] for k in turkce}).most_common(arg.ornek):
+        print(f"  {k:<20} {n:>7}   {turkce_kucult(k)}: {kucuk[turkce_kucult(k)]}  {k.lower()}: {kucuk[k.lower()]}")
 
 
 def main():

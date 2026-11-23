@@ -1359,3 +1359,14 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   ve I içeren kelimeleri (AMACI → amaci) yıllara göre sayar. Sahte veriyle
   test edildi. Sınıflama kuralı Claude'un; "ÖZETBU" gibi tamamı büyük harfli
   bitişik başlık da "hata şüphesi"ne düşer (örneklerde görülecek).
+
+## 2026-11-23
+
+- `hata_etkisi.py harf` (kullanıcı): büyük harfli, ÇĞİÖŞÜ içermeyen, I içeren
+  kelime içeren TR özet yılda %9,5 (2015) → %15,5 (2025); ama en sık 40
+  kelimenin tamamı İngilizce kısaltma / Roma rakamı (COVID, II, III, BIST,
+  TOPSIS, HIV, ELISA…) → bunlar için kural doğru. Türkçe olanları ayırmak
+  için betiğe ekleme (Claude): küçük harfli metinde Türkçe küçültme (amacı)
+  İngilizce küçültmeden (amaci) daha sık geçiyorsa kelime Türkçe sayılır;
+  tablo yalnızca bunlarla. Sahte veriyle test edildi. Kullanıcı yeniden
+  çalıştıracak; `baslik` çıktısı da bekleniyor.
