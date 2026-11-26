@@ -1410,3 +1410,25 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   ŞÜPHELİ HATA: "yönetim" ikinci örnek cümlesinde işaretli kelime
   "sonucunda" (aynı cümle "sonuç"ta da) → govde_bicimleri eşleşmesi
   kontrol edilecek (kullanıcı komutu).
+- **İkinci gözden geçirme, notlu 26 satır (kullanıcı kararı):** 7 etiket
+  değişti (grup Ü→B, bireysel İ→B, buçalışmada Ü→D, al Ü→D, yay B→İ, da B→Ü,
+  gereç Ü→B), 5 boş dolduruldu (de→D, tematik→İ, yaş→İ, i→Ü, yönetim→İ),
+  11 aynı kaldı, 3'ü kullanıcı yeniden bakacak (tema, vadeli, en). Ölçüt:
+  Kobak vd. etiketleri (Claude önerisi, kullanıcı onayı). **D etiketi
+  eklendi** (diğer/teknik sorun; Kobak "other"; oran hesabına girmez).
+  `isaretleme.py`: ETIKETLER'e D; `hesapla` D sütunu ve "ilk etiket (kör)"
+  sütunu varsa değişen/doldurulan sayısı. Excel'e "ilk etiket (kör)" sütunu
+  (H) eklendi; değişikliklerin gerekçesi "not" sütununda.
+- **Önemli gözlem (Claude, `hesapla` deneme çalıştırması):** üslup oranı
+  her yıl yüksek: 2018 %97, 2019 %83, 2020 %57, 2021 %86, 2022 %100, 2023
+  %94, 2024 %95, 2025 %95 (B/D/boş hariç). LLM öncesi aşırı kelimeler de
+  çoğunlukla "Ü": 2018 yöntem, için, amaç, bir, analiz, bulgu, veri, sonuç…
+  (yapılandırılmış özet başlıkları ve genel sık kelimeler); 2019 bulgu,
+  tespit, amaçla, anlamlı… (klinik özet kalıbı). → Kobak'ın "LLM öncesi
+  içerik, sonrası üslup" karşıtlığı bizim veride Ü/İ oranıyla görünmüyor;
+  ayrım hangi üslup kelimeleri olduğunda (2018: şablon/başlık ve işlev
+  kelimeleri; 2024: vurgula, rol, potansiyel, kritik, strateji, zorluk).
+  Alt sınır için önceden konan "tabanda %10'dan az" kuralı çok sık genel
+  kelimeleri (için, bir, analiz, gibi) zaten dışarıda bırakıyor. Sonraki
+  adım kullanıcı/danışman kararı; sonradan konacak bir ayrım keşif amaçlı
+  olarak etiketlenmeli.

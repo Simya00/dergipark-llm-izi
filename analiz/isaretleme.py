@@ -23,6 +23,9 @@ bulgulari: LLM oncesi yillarda asiri kelimeler hep icerik kelimeleriydi,
 Etiketler:  Ü = uslup (yazim tarzi; konu degisse de kullanilabilir)
             İ = icerik (bir konuya, olaya, yonteme ozgu)
             B = belirsiz (ikisi de olabilir / karar verilemedi)
+            D = diger / teknik sorun (2026-11-26, kullanici onayi): esyazimli kelimelerin
+                birlesmesi (de bagaci + demek), birlesik kelime artefakti (buçalışmada);
+                uslup orani hesabina girmez (Kobak vd.'nin "other" etiketi gibi)
 
 GOVDE DUZEYI (2026-11-21; Turkce ana analiz govde duzeyinde, kullanici karari
 2026-11-12): --siklik siklik_tr_govde.tsv.gz ile secim govdelerden yapilir
@@ -53,7 +56,8 @@ TOHUM = 20261112
 FARK_ESIGI = 0.01       # delta > 0.01 (Kobak vd. kuralinin "buyuk fark" kolu)
 ORNEK_SAYISI = 2
 CUMLE = re.compile(r"(?<=[.!?])\s+")  # basit cumle bolme
-ETIKETLER = ("Ü", "İ", "B")
+ETIKETLER = ("Ü", "İ", "B", "D")  # D: diger / teknik sorun (2026-11-26; Kobak vd. "other")
+ILK_BASLIK = "ilk etiket (kör)"
 BICIM_GOSTER = 5        # Excel'de govdenin yaninda gosterilen en sik bicim sayisi
 ETIKET_BASLIK = "etiket (Ü/İ/B)"
 
@@ -221,6 +225,7 @@ def excel(arg):
         "(kapsamli, vurgulamaktadir, kritik, ayrica, temel).",
         "İ = ICERIK: bir konuya, olaya, yonteme ozgu (deprem, covid, yapay, gazze, veri, kultürel).",
         "B = BELIRSIZ: ikisi de olabilir ya da karar veremediniz.",
+        "D = DIGER / TEKNIK SORUN: farkli kelimeler birlesmis (de + demek) ya da metin hatasi (buçalışmada).",
         "Kelimenin hangi yilda arttigina bakmadan karar verin ('bilgi' sayfasi sonra).",
         "Ornek cumleler kelimenin ASIRI ciktigi yillardan rastgele secildi; kelime ⟦ ⟧ icinde.",
         "Govde duzeyinde: 'en sik bicimler' govdenin metinde en cok gectigi halleridir; ornek "
@@ -249,14 +254,24 @@ def hesapla(arg):
     baslik = [h.value for h in wb["bilgi"][1]]
     yil_sutun = {int(h.split()[1]): i for i, h in enumerate(baslik) if h and h.startswith("delta ")}
 
-    print(f"Toplam: {Counter(etiket.values())}\n")
+    print(f"Toplam: {Counter(etiket.values())}")
+    basliklar = [h.value for h in wb["isaretleme"][1]]
+    if ILK_BASLIK in basliklar:  # kor ilk isaretleme ile ikinci gozden gecirme karsilastirmasi
+        j = basliklar.index(ILK_BASLIK)
+        ilk = {r[1]: str(r[j] or "").strip().upper()[:1].replace("I", "İ").replace("U", "Ü")
+               for r in wb["isaretleme"].iter_rows(min_row=2, values_only=True) if r[1]}
+        degisen = [k for k in etiket if ilk.get(k) in ETIKETLER and etiket[k] != ilk[k]]
+        dolan = [k for k in etiket if ilk.get(k) not in ETIKETLER and etiket[k] != "bos"]
+        print(f"Ikinci gozden gecirme: {len(degisen)} etiket degisti, {len(dolan)} bos etiket dolduruldu "
+              f"(toplam {len(etiket)} oge)")
+    print()
     print("Her yil, farki (delta) 0.01'den buyuk asiri kelimelerin etiketleri:")
-    print(f"{'yil':>5} {'toplam':>7} {'Ü uslup':>8} {'İ icerik':>9} {'B':>4} {'bos':>4} {'uslup %':>8}")
+    print(f"{'yil':>5} {'toplam':>7} {'Ü uslup':>8} {'İ icerik':>9} {'B':>4} {'D':>4} {'bos':>4} {'uslup %':>8}")
     for y, i in sorted(yil_sutun.items()):
         c = Counter(etiket[k] for k, r in bilgi.items() if r[i] is not None and r[i] > 100 * FARK_ESIGI)
         n = sum(c.values())
         isaretli = c["Ü"] + c["İ"]
-        print(f"{y:>5} {n:>7} {c['Ü']:>8} {c['İ']:>9} {c['B']:>4} {c['bos']:>4} "
+        print(f"{y:>5} {n:>7} {c['Ü']:>8} {c['İ']:>9} {c['B']:>4} {c['D']:>4} {c['bos']:>4} "
               f"{(100 * c['Ü'] / isaretli if isaretli else 0):>7.0f}%")
     uslup = sorted(k for k, e in etiket.items() if e == "Ü")
     cikti = KLASOR / f"uslup_kelimeleri_{ad(arg)}.txt"
