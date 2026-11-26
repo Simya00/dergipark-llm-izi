@@ -1444,3 +1444,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   (doğrulanmadı): birleşik kelime onarımı yapışık kelimeleri "X + de/da"
   diye bölüyor; yapışmanın yoğun olduğu yıllarda (2017–2019) "de/da"
   sayısı yapay olarak artabilir; ayrıca "ºC' de" gibi ayrı yazılmış ekler.
+- **Şeffaflık notu (kullanıcı onayı):** "de", "da", "en" etiketleri üzerindeki
+  tartışma ve kararlar, Claude'un `hesapla` deneme çalıştırmasındaki üslup
+  oranı tablosu GÖRÜLDÜKTEN SONRA yapıldı. Bu üç kelime makalede "ikinci
+  gözden geçirme" sayısının içinde raporlanacak. Claude öz-eleştirisi: D
+  etiketine iki ayrı soru yüklendi (kelime ne? / sayımı güvenilir mi?);
+  güvenilirlik tahminle değil ölçümle, sistemli ele alınmalı. Öneri: en Ü,
+  da Ü, de "demek" fiili payının ölçümüne göre (siklik_tr.tsv.gz komutu);
+  D yalnızca kelimenin ne olduğu belirsizse (buçalışmada, al). Etiket kararı
+  bekleniyor; Excel şu an de D, da D, en Ü.
