@@ -1453,3 +1453,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   da Ü, de "demek" fiili payının ölçümüne göre (siklik_tr.tsv.gz komutu);
   D yalnızca kelimenin ne olduğu belirsizse (buçalışmada, al). Etiket kararı
   bekleniyor; Excel şu an de D, da D, en Ü.
+- Kullanıcı: de/da/en etiket kararı şimdilik ertelendi; Excel olduğu gibi (de D, da D, en Ü).
