@@ -1521,3 +1521,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   landscape = content/style). Kılavuz ilk işaretlemeden sonra yazıldı (dosyada
   belirtildi) → kullanıcı (kılavuzsuz) ile ikinci işaretleyici (kılavuzlu)
   arasında koşul farkı: sınırlılık. Kılavuz metni kullanıcı onayı bekliyor.
+- Kılavuza "Sık sorulanlar" eklendi (kullanıcı: hoca de/da gibi kelimeleri soracak): işlev kelimeleri neden listede (Kobak these/while), başka kelimeye ait biçimler (eşyazım birleşmesi → soru 1; baskın anlam varsa ona göre), tuhaf gövdeler (i, hast → Zemberek sınırlılığı).
