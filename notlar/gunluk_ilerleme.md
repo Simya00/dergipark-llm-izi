@@ -1458,3 +1458,18 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   kalıyor (ikinci gözden geçirme yalnızca notlu 26 satırda yapıldı). Ü/İ
   sonuçları bu haliyle "ilk işaretleme + notlu satırların gözden geçirmesi"
   olarak raporlanacak; kalanlar sonra ele alınabilir.
+- Kullanıcı: güncel işaretleme Excel'i Claude'da kalsın, kendi kopyası
+  olduğu gibi (kör ilk hal). → Depoya tarihli kayıt: `analiz/isaretleme_kayit/
+  isaretleme_tr_govde_kor_ilk.xlsx` (kullanıcının yüklediği kör ilk hal) ve
+  `isaretleme_tr_govde_2026-11-26.xlsx` (ikinci gözden geçirme sonrası; H
+  sütununda ilk etiket). Kullanıcı bicimleri komutunu ve İngilizce sayımı
+  çalıştırdı (çıktı bekleniyor).
+- `analiz/alt_sinir_govde.py` (Claude; ön kayıt §6.2'ye göre): etiketleri
+  kayıt Excel'inden okur; A) çapraz seçim (2024 seç → 2025 ölç; 2025 seç →
+  2024 ölç), Ü + seçim yılında Kobak'a göre aşırı + 2022 sıklığı < %10;
+  C) Kobak ile birebir (aynı yıl, 11 eşik, en büyük Δ). Δ = p − q,
+  yumuşatma (sayı+1)/(özet+1), q taban T−2. Ölçüm govde_parcalar'daki makale
+  başına gövde kümelerinden; --dergiler ile panel. Sahte veriyle test edildi
+  (hesap mekaniği doğru). Not: sahte testte %10 filtresi etkisizdi (sahte
+  sıklık dosyasında kelimeler yok); gerçek veride "bir, bu, için" gibi çok
+  sık gövdeler dışarıda kalmalı → çıktıdaki gövde listesinde kontrol edilecek.
