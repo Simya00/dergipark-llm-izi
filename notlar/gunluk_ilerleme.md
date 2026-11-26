@@ -1495,3 +1495,16 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
     olabilecek gövdeler de Ü.
   - Ön kayıt sonucu olduğu gibi raporlanacak; ek analizler (doygunluğu
     denetleyen kural, C için plasebo) sonuç görüldükten sonra → keşif amaçlı.
+- Kullanıcı: "Tam olarak nerede hata yaptık? İşaretleme de tam değil; tek
+  kişinin işaretlemesi doğruluk için yeterli değil." Claude'un dökümü:
+  (1) işaretleme havuzu δ > 0,01 kelimelerle sınırlıydı (Claude önerisi):
+  1 puanlık mutlak artış ancak sık kelimelerde olur → havuz yapısal olarak
+  sık/genel kelimelerden oluştu (Kobak'ın üslup kelimeleri çoğunlukla
+  oran kuralıyla seçilen nadir kelimeler: delves, showcasing); (2) ön kayıttaki
+  %10 kuralı tek kelimeyi sınırladı, birleşimi değil → doygunluk (Claude
+  önerisi; öngörülmedi); (3) Ü ölçütü ("her alanda kullanılabilir",
+  Excel açıklama sayfası Claude'un yazımı) genel isim/fiilleri de Ü yaptı;
+  (4) tek işaretleyici, kodlama kılavuzu yok, tutarsızlıklar (yapay Ü / zekâ İ);
+  (5) 2018 tabanı (2015–2016) metin kalitesi dönemi → plasebo gürültüsü.
+  Öneri: yazılı kodlama kılavuzu → ikinci bağımsız işaretleyici (kör, ayrı
+  rastgele sıra) → Cohen kappa → uzlaşma → A ve C yeniden. Karar kullanıcıda.
