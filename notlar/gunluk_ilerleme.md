@@ -1454,3 +1454,7 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   D yalnızca kelimenin ne olduğu belirsizse (buçalışmada, al). Etiket kararı
   bekleniyor; Excel şu an de D, da D, en Ü.
 - Kullanıcı: de/da/en etiket kararı şimdilik ertelendi; Excel olduğu gibi (de D, da D, en Ü).
+- Kullanıcı: kalan B (49), İ (23) ve boş (15) satırlar şimdilik olduğu gibi
+  kalıyor (ikinci gözden geçirme yalnızca notlu 26 satırda yapıldı). Ü/İ
+  sonuçları bu haliyle "ilk işaretleme + notlu satırların gözden geçirmesi"
+  olarak raporlanacak; kalanlar sonra ele alınabilir.
