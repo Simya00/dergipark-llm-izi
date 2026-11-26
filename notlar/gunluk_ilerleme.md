@@ -1390,3 +1390,23 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Karar (kullanıcı): iki hata sınırlılık olarak yazıldı (yontem.md §10,
   madde 7–8); veri dondurması açılmadı. Kodun ileriye dönük düzeltilmesi ve
   diğer işler yarına.
+
+## 2026-11-26
+
+- Kullanıcı gövde işaretleme Excel'ini (379 gövde) yükledi: Ü 285, B 50,
+  İ 23, boş 21; 26 satırda not. İstek: notlu, B ve İ satırlarını birlikte
+  yeniden incelemek.
+- Kobak vd. etiketleri (`results/excess_words.csv`, 900 kelime) okundu:
+  content 462, style 407, content/style 26, other 4. Örnek: patients,
+  treatment, clinical, economy, online, spread, codebook → content;
+  findings, outcomes, challenges, strategies, insights, individuals, role,
+  impact, potential, understanding, focusing, while, during → style;
+  background, landscape, significant → content/style. Kural (Claude'un
+  özetleme): konuya/alana/olaya/yönteme özgü → içerik; her konuda geçebilen
+  anlatım/sunum kelimesi (genel isimler dahil) → üslup.
+- Notlardan çıkan teknik sorunlar: eşyazımlı gövde birleşmesi (de bağlacı +
+  demek; alan + almak; en + eni; i = ise/idi), "hasta"nın üç gövdeye
+  dağılması (hasta, hast, has), birleşik onarımın kaçırdığı "buçalışmada";
+  ŞÜPHELİ HATA: "yönetim" ikinci örnek cümlesinde işaretli kelime
+  "sonucunda" (aynı cümle "sonuç"ta da) → govde_bicimleri eşleşmesi
+  kontrol edilecek (kullanıcı komutu).
