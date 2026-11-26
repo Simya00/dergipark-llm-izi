@@ -1473,3 +1473,25 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   (hesap mekaniği doğru). Not: sahte testte %10 filtresi etkisizdi (sahte
   sıklık dosyasında kelimeler yok); gerçek veride "bir, bu, için" gibi çok
   sık gövdeler dışarıda kalmalı → çıktıdaki gövde listesinde kontrol edilecek.
+- **ALT SINIR SONUÇLARI (kullanıcı, `alt_sinir_govde.py`; ön kayıtlı kurallar):**
+  - A (ana, çapraz): 2024'te seçilen 69 gövdeyle **2025: Δ = +3,6 puan**
+    (p 0,938, q 0,902; kısa panel +4,1); 2025'te seçilen 134 gövdeyle
+    **2024: Δ = +1,1** (p 0,970, q 0,958; kısa panel +1,8).
+  - C (Kobak ile birebir, iyimser): 2024 en büyük Δ **+11,8** (eşik 0,05; 34
+    gövde), 2025 **+15,2** (eşik 0,05; 51 gövde); kısa panel 10,5 / 14,2.
+    Kobak vd. PubMed 2024: 13,5.
+  - **Sorun (Claude): doygunluk/tavan.** Her gövde 2022'de %10'dan az geçse de
+    69–134 gövdenin birleşimi özetlerin %75–96'sında geçiyor (2015'te bile
+    0,75 / 0,90). Δ ≤ 1 − q olduğundan 2025 için tavan yalnızca 9,8 puan
+    (2024 seti) ve 3,3 puan (2025 seti) → A sonucu yapısal olarak sıkışık.
+    Ön kayıttaki %10 kuralı tek tek kelimeyi sınırlıyor, birleşimi değil.
+  - **Plasebo (aynı işaretçi setleriyle LLM öncesi yıllar; Claude'un
+    yuvarlanmış p'lerden hesabı):** 2024 seti 2018 +3,4, 2019 −1,8, 2020 −1,5,
+    2021 +0,5, 2022 −1,8, 2023 −0,2, 2024 +4,2, 2025 +3,6; 2025 seti 2018–2023
+    −1,1…−0,3, 2024 +1,1, 2025 +1,6. → 2019–2023 sıfır civarı, ama 2018'de
+    (taban 2015–2016, metin kalitesi dönemi) 2024 seti 2025 kadar büyük.
+  - Etiket tutarsızlığı: "yapay" Ü (yapay zekâ konusu; "zekâ" İ) ve A
+    setlerinde; "medya, risk, güvenlik, performans, tasarım" gibi içerik
+    olabilecek gövdeler de Ü.
+  - Ön kayıt sonucu olduğu gibi raporlanacak; ek analizler (doygunluğu
+    denetleyen kural, C için plasebo) sonuç görüldükten sonra → keşif amaçlı.
