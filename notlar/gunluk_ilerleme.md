@@ -1437,3 +1437,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   **en**: kullanıcı "en" ile "eni/enine"nin nasıl aynı sayıldığını sordu →
   eşyazımlı kelimelerin birleşmesi (gövde anahtarı yalnızca yazım); karar
   bekleniyor (de ile tutarlılık).
+- Kullanıcı: "de ve da bağlaç, kelime listesinde olmaları hatalı; en farklı,
+  en üslup" → **de D (kalıyor), da Ü→D, en → Ü**. Güncel sayım: 7 etiket
+  değişti (grup, bireysel, buçalışmada, al, yay, da, gereç), 6 boş dolduruldu
+  (de, tematik, yaş, i, yönetim, en), 13 aynı. Claude'un olası açıklaması
+  (doğrulanmadı): birleşik kelime onarımı yapışık kelimeleri "X + de/da"
+  diye bölüyor; yapışmanın yoğun olduğu yıllarda (2017–2019) "de/da"
+  sayısı yapay olarak artabilir; ayrıca "ºC' de" gibi ayrı yazılmış ekler.
