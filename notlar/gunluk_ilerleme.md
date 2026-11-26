@@ -1432,3 +1432,8 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   kelimeleri (için, bir, analiz, gibi) zaten dışarıda bırakıyor. Sonraki
   adım kullanıcı/danışman kararı; sonradan konacak bir ayrım keşif amaçlı
   olarak etiketlenmeli.
+- Kullanıcı yeniden baktı: **tema → Ü** (ilk etiket de Ü; değişmedi), **vadeli
+  → B** (ilk etiket de B; değişmedi). Sayım aynı: 7 değişti, 5 dolduruldu.
+  **en**: kullanıcı "en" ile "eni/enine"nin nasıl aynı sayıldığını sordu →
+  eşyazımlı kelimelerin birleşmesi (gövde anahtarı yalnızca yazım); karar
+  bekleniyor (de ile tutarlılık).
