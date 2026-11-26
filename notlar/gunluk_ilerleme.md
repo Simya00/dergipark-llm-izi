@@ -1508,3 +1508,16 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   (5) 2018 tabanı (2015–2016) metin kalitesi dönemi → plasebo gürültüsü.
   Öneri: yazılı kodlama kılavuzu → ikinci bağımsız işaretleyici (kör, ayrı
   rastgele sıra) → Cohen kappa → uzlaşma → A ve C yeniden. Karar kullanıcıda.
+- **İkinci işaretleyici Excel'i (kullanıcı hocasına soracak):**
+  `analiz/isaretleme_kayit/isaretleme_tr_govde_ikinci_bos.xlsx`. Aynı 379
+  gövde, aynı biçimler ve örnek cümleler; etiket ve yıl bilgisi yok; farklı
+  rastgele sıra (tohum 20261126); etiketler Ü/İ/B/D. "1_kilavuz" sayfası:
+  amaç, gövde tanımı, etiket tanımları, 4 karar sorusu, kurallar (yıl
+  araştırmamak, danışmadan ve YZ aracı kullanmadan, ~4–5 saat). Kılavuz
+  örnekleri bilerek listede OLMAYAN kelimelerden seçildi; İngilizce örnekler
+  Kobak vd. etiketlerinden (koddan doğrulandı: meticulous, intricate,
+  commendable, groundbreaking, while, these = style; ebola, vaccine,
+  lockdown, codebook, sentiment, telemedicine = content; background,
+  landscape = content/style). Kılavuz ilk işaretlemeden sonra yazıldı (dosyada
+  belirtildi) → kullanıcı (kılavuzsuz) ile ikinci işaretleyici (kılavuzlu)
+  arasında koşul farkı: sınırlılık. Kılavuz metni kullanıcı onayı bekliyor.
