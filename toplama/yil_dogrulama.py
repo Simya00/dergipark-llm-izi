@@ -18,6 +18,9 @@ YOK (kor): kullanici yalnizca makale sayfasindaki gercek yayin yilini yazar.
 Anahtar (grup, kayittaki yil) ayri dosyada: yil_dogrulama_anahtar.json.
 
   excel   : ornek secer -> yil_dogrulama.xlsx + yil_dogrulama_anahtar.json
+  gir     : KOLAY GIRIS: bos satirlarin makale sayfasini sirayla tarayicida acar,
+            terminalde yili sorar ve Excel'e yazar (her cevaptan sonra kaydeder).
+            Excel acikken calistirmayin (once kapatin).
   hesapla : doldurulmus Excel'den grup basina dogruluk ve Wilson %95 araligi
 
 Kullanim (toplama/ klasorunde):
@@ -119,6 +122,34 @@ def excel(arg):
     print(f"-> {EXCEL} ({len(secilen)} satir)\n-> {ANAHTAR} (anahtar: grup ve kayittaki yil; Excel'i doldururken acmayin)")
 
 
+def gir(arg):
+    import webbrowser
+    from openpyxl import load_workbook
+    wb = load_workbook(EXCEL)
+    ws = wb["dogrulama"]
+    j = [h.value for h in ws[1]].index(YIL_BASLIK)
+    bos = [row for row in ws.iter_rows(min_row=2) if row[0].value and row[j].value in (None, "")]
+    print(f"{len(bos)} bos satir. Her makale tarayicida acilacak; kunyedeki 'Yıl / Year' degerini yazin.")
+    print("Yil bulunamazsa ?  | atlamak icin bos Enter | cikmak icin q\n")
+    for row in bos:
+        url = row[1].value
+        print(f"#{row[0].value}  {url}")
+        if url:
+            webbrowser.open(url)
+        cevap = input("  Yil: ").strip()
+        if cevap.lower() == "q":
+            break
+        if not cevap:
+            continue
+        row[j].value = cevap
+        if cevap == "?":
+            row[j + 1].value = input("  Neden bulunamadi (kisaca, bos gecilebilir): ").strip() or None
+        wb.save(EXCEL)
+    wb.save(EXCEL)
+    kalan = sum(1 for row in ws.iter_rows(min_row=2) if row[0].value and row[j].value in (None, ""))
+    print(f"Kaydedildi. Kalan bos satir: {kalan}")
+
+
 def hesapla(arg):
     from openpyxl import load_workbook
     anahtar = {k["no"]: k for k in json.loads(ANAHTAR.read_text(encoding="utf-8"))}
@@ -167,8 +198,9 @@ def main():
     e = alt.add_parser("excel")
     e.add_argument("--uzerine-yaz", action="store_true")
     alt.add_parser("hesapla")
+    alt.add_parser("gir")
     arg = p.parse_args()
-    excel(arg) if arg.komut == "excel" else hesapla(arg)
+    {"excel": excel, "gir": gir, "hesapla": hesapla}[arg.komut](arg)
 
 
 if __name__ == "__main__":
