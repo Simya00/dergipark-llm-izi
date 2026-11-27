@@ -139,11 +139,16 @@ def gir(arg):
         print(f"#{row[0].value}  {url}" + (f"   (su anki deger: {row[j].value})" if row[j].value else ""))
         if url:
             webbrowser.open(url)
-        cevap = input("  Yil: ").strip()
+        while True:  # yazim hatasi korumasi: 4 haneli yil (1900-2099), ? , bos ya da q
+            cevap = input("  Yil: ").strip()
+            if cevap.lower() in ("q", "?", "") or re.search(r"(?<!\d)(19|20)\d{2}(?!\d)", cevap):
+                break
+            print(f"  '{cevap}' gecerli bir yil degil (4 hane olmali, orn. 2019). Tekrar yazin.")
         if cevap.lower() == "q":
             break
         if not cevap:
             continue
+        print(f"  -> kaydedildi: {cevap}")
         row[j].value = cevap
         if cevap == "?":
             row[j + 1].value = input("  Neden bulunamadi (kisaca, bos gecilebilir): ").strip() or None

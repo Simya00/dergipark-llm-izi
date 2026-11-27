@@ -1541,3 +1541,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   test edildi. B grubu Claude önerisi (sonuç için daha önemli); onay bekliyor.
 - yil_dogrulama hesapla: hücrede 'Yıl 2012 Cilt: 4 Sayı: 1' gibi metin de kabul (ilk 19xx/20xx yılı alınır). Kullanıcı cevap anahtarı JSON'unun ilk kaydını gördü (no 1, arşiv); kullanıcıya soruldu.
 - yil_dogrulama: kullanıcı Excel'de bağlantıya tıklayamadı ve kopyalamak zor → 'gir' komutu: boş satırların makale sayfasını tarayıcıda açar, terminalde yılı sorar, Excel'e yazar ve her cevaptan sonra kaydeder (q çıkış, ? bulunamadı + neden). Sahte veriyle test edildi.
+- yil_dogrulama gir: kullanıcının klavyesinde 3 tuşu zor basıyor (42: '201', 50: sorunlu) → giriş doğrulaması (4 haneli 19xx/20xx yıl, ?, boş ya da q; değilse tekrar sorar) ve '--no' ile satır düzeltme eklendi.
