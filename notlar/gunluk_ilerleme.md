@@ -1542,3 +1542,18 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - yil_dogrulama hesapla: hücrede 'Yıl 2012 Cilt: 4 Sayı: 1' gibi metin de kabul (ilk 19xx/20xx yılı alınır). Kullanıcı cevap anahtarı JSON'unun ilk kaydını gördü (no 1, arşiv); kullanıcıya soruldu.
 - yil_dogrulama: kullanıcı Excel'de bağlantıya tıklayamadı ve kopyalamak zor → 'gir' komutu: boş satırların makale sayfasını tarayıcıda açar, terminalde yılı sorar, Excel'e yazar ve her cevaptan sonra kaydeder (q çıkış, ? bulunamadı + neden). Sahte veriyle test edildi.
 - yil_dogrulama gir: kullanıcının klavyesinde 3 tuşu zor basıyor (42: '201', 50: sorunlu) → giriş doğrulaması (4 haneli 19xx/20xx yıl, ?, boş ya da q; değilse tekrar sorar) ve '--no' ile satır düzeltme eklendi.
+- **YIL DOĞRULAMASI SONUCU (kullanıcı, 146 makale, 2026-11-27):**
+  - A) arşiv kuralı (doğru = gerçek yıl < kayıttaki yıl): 42/73 = %57,5
+    (Wilson 46,1–68,2). Yanlışların çoğu gerçek yıl = kayıttaki yıl (2011,
+    2015, 2018, 2020, 2022…) → kural tarihi doğru olan makaleleri de arşiv
+    sayıp dışarıda bırakıyor (yanlış pozitif). 4 makalede kayıttaki yıl yok
+    (None) → ölçüt uygulanamıyor, yanlış sayıldı (düzeltilecek).
+  - B) analizdeki yıl (doğru = künyedeki sayı yılı): 50/73 = %68,5 (Wilson
+    57,1–78,0). 23 yanlışın 21'i künye yılı = kullanılan yıl + 1, biri −1,
+    biri +2 → ±1 içinde 72/73. Yani kullandığımız yıl (OAI dc:date, birden
+    çok tarih varsa EN KÜÇÜĞÜ) çoğu zaman sayının yılından bir yıl önce:
+    erken görünüm / çevrim içi yayın ya da başka bir tarih. Hangi yılın
+    "doğru" olduğu tanım sorusu (yazım zamanına yakınlık vs sayı yılı).
+  - Teşhis için kullanıcıdan B'deki yanlış makalelerin `tarihler` alanı
+    istenecek. Sonuç ana bulguyu etkileyebilir (2023 etiketli makalelerin bir
+    kısmı 2024 sayılarında) → öncelikli.
