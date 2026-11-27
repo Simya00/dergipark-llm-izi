@@ -29,6 +29,7 @@ import argparse
 import json
 import math
 import random
+import re
 import sys
 from pathlib import Path
 
@@ -135,10 +136,11 @@ def hesapla(arg):
         if not deger:
             s[3] += 1
             continue
-        if not deger.isdigit():
+        bulunan = re.search(r"(?<!\d)(19|20)\d{2}(?!\d)", deger)  # "Yıl 2012 Cilt: 4" de olur
+        if not bulunan:
             s[2] += 1
             continue
-        gercek = int(deger)
+        gercek = int(bulunan.group())
         if k["grup"] == "A":
             dogru = k["kayit_yili"] is not None and gercek < k["kayit_yili"]
         else:

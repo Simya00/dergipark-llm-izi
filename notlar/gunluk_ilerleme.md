@@ -1539,3 +1539,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   yıl = kullanılan yıl). Excel kör: grup ve yıl yok, karışık sıra; kullanıcı
   makale sayfasındaki künye yılını yazar; anahtar ayrı JSON. Sahte veriyle
   test edildi. B grubu Claude önerisi (sonuç için daha önemli); onay bekliyor.
+- yil_dogrulama hesapla: hücrede 'Yıl 2012 Cilt: 4 Sayı: 1' gibi metin de kabul (ilk 19xx/20xx yılı alınır). Kullanıcı cevap anahtarı JSON'unun ilk kaydını gördü (no 1, arşiv); kullanıcıya soruldu.
