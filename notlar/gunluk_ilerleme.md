@@ -1557,3 +1557,14 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   - Teşhis için kullanıcıdan B'deki yanlış makalelerin `tarihler` alanı
     istenecek. Sonuç ana bulguyu etkileyebilir (2023 etiketli makalelerin bir
     kısmı 2024 sayılarında) → öncelikli.
+- Teşhis (kullanıcı): B'deki yanlış 6 makalenin `tarihler` alanı TEK tarih
+  (ör. 812104: 2020-10-22, künye 2021 Cilt 12 Sayı 1; 1598426: 2024-12-09,
+  künye 2025; 993352: 2019-12-17, künye 2021; 285799: 2017-01-13, künye 2016).
+  → "en küçük tarih" sorunu değil; OAI dc:date = DergiPark'taki makale
+  "Yayımlanma Tarihi" (çevrim içi yayın), sayı yılı değil. Kullanılan yıl
+  tanım olarak "çevrim içi yayın yılı"; sayı yılıyla %68,5 aynı, ±1 yıl
+  içinde 72/73. Yazım zamanına sayı yılından daha yakın (LLM zamanlaması
+  için savunulabilir; 2024 sıçramasını büyütmez, olsa olsa erkene çeker).
+  Sınırlılık ve yöntem notu olarak yazılacak; tanım kararı kullanıcıda.
+- `hesapla`: A grubunda kayıttaki yıl yoksa (4 makale) "değerlendirilemeyen"
+  sayılır → A = 42/69 (%60,9).

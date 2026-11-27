@@ -180,6 +180,9 @@ def hesapla(arg):
             s[2] += 1
             continue
         gercek = int(bulunan.group())
+        if k["grup"] == "A" and k["kayit_yili"] is None:
+            s[2] += 1  # kayitta yil yok: olcut uygulanamaz (makale zaten yilsiz, analiz disi)
+            continue
         if k["grup"] == "A":
             dogru = k["kayit_yili"] is not None and gercek < k["kayit_yili"]
         else:
@@ -193,7 +196,7 @@ def hesapla(arg):
         n = d + y
         alt, ust = wilson(d, n)
         print(f"{adlar[g]}: {d}/{n} dogru" + (f" = %{100 * d / n:.1f} (%95 Wilson {100 * alt:.1f}-{100 * ust:.1f})" if n else "")
-              + f"; bulunamayan '?' {s}, bos {b}")
+              + f"; degerlendirilemeyen ('?' ya da kayitta yil yok) {s}, bos {b}")
     if yanlislar:
         print("\nYanlislar (no, grup, gercek, kayittaki yil, kullanilan yil, url):")
         for y in yanlislar:
