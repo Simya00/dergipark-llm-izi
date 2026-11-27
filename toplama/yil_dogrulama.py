@@ -133,14 +133,14 @@ def gir(arg):
     else:
         bos = [row for row in ws.iter_rows(min_row=2) if row[0].value and row[j].value in (None, "")]
     print(f"{len(bos)} bos satir. Her makale tarayicida acilacak; kunyedeki 'Yıl / Year' degerini yazin.")
-    print("Yil bulunamazsa ?  | atlamak icin bos Enter | cikmak icin q\n")
+    print("Yil bulunamazsa ?  | atlamak icin bos Enter | cikmak icin q | 3 yerine x yazabilirsiniz (201x = 2013)\n")
     for row in bos:
         url = row[1].value
         print(f"#{row[0].value}  {url}" + (f"   (su anki deger: {row[j].value})" if row[j].value else ""))
         if url:
             webbrowser.open(url)
         while True:  # yazim hatasi korumasi: 4 haneli yil (1900-2099), ? , bos ya da q
-            cevap = input("  Yil: ").strip()
+            cevap = input("  Yil: ").strip().replace("x", "3").replace("X", "3")  # 3 tusu yerine x
             if cevap.lower() in ("q", "?", "") or re.search(r"(?<!\d)(19|20)\d{2}(?!\d)", cevap):
                 break
             print(f"  '{cevap}' gecerli bir yil degil (4 hane olmali, orn. 2019). Tekrar yazin.")
