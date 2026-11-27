@@ -128,12 +128,15 @@ def gir(arg):
     wb = load_workbook(EXCEL)
     ws = wb["dogrulama"]
     j = [h.value for h in ws[1]].index(YIL_BASLIK)
-    bos = [row for row in ws.iter_rows(min_row=2) if row[0].value and row[j].value in (None, "")]
+    if arg.no:  # belirli satirlari yeniden gir (yanlis yazilan yil)
+        bos = [row for row in ws.iter_rows(min_row=2) if row[0].value in set(arg.no)]
+    else:
+        bos = [row for row in ws.iter_rows(min_row=2) if row[0].value and row[j].value in (None, "")]
     print(f"{len(bos)} bos satir. Her makale tarayicida acilacak; kunyedeki 'Yıl / Year' degerini yazin.")
     print("Yil bulunamazsa ?  | atlamak icin bos Enter | cikmak icin q\n")
     for row in bos:
         url = row[1].value
-        print(f"#{row[0].value}  {url}")
+        print(f"#{row[0].value}  {url}" + (f"   (su anki deger: {row[j].value})" if row[j].value else ""))
         if url:
             webbrowser.open(url)
         cevap = input("  Yil: ").strip()
@@ -198,7 +201,8 @@ def main():
     e = alt.add_parser("excel")
     e.add_argument("--uzerine-yaz", action="store_true")
     alt.add_parser("hesapla")
-    alt.add_parser("gir")
+    g = alt.add_parser("gir")
+    g.add_argument("--no", type=int, nargs="+", help="yalnizca bu satirlari yeniden gir (orn. --no 42)")
     arg = p.parse_args()
     {"excel": excel, "gir": gir, "hesapla": hesapla}[arg.komut](arg)
 
