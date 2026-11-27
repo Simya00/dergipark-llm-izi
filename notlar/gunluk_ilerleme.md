@@ -1523,3 +1523,19 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   arasında koşul farkı: sınırlılık. Kılavuz metni kullanıcı onayı bekliyor.
 - Kılavuza "Sık sorulanlar" eklendi (kullanıcı: hoca de/da gibi kelimeleri soracak): işlev kelimeleri neden listede (Kobak these/while), başka kelimeye ait biçimler (eşyazım birleşmesi → soru 1; baskın anlam varsa ona göre), tuhaf gövdeler (i, hast → Zemberek sınırlılığı).
 - Kullanıcı ikinci işaretleme Excel'ini hocasına gönderdi; hoca başladı, pazartesiye (2026-11-30) yetiştirmeye çalışacak.
+- "yönetim" örnek cümle sorunu (kullanıcı çıktısı): `govde_bicimleri_tr.json.gz`
+  doğru (yönetim: yönetimi, yönetiminde…; sonuç: sonucunda, sonuçlar…) → biçim
+  eşleşmeleri ve sayımlar etkilenmiyor. İşaretleme Excel'indeki 758 örnek
+  cümlede işaretli kelime ile gövde karşılaştırıldı: yalnızca 1 gerçek
+  tutarsızlık (yönetim 2. örnek: cümlede "yönetim" biçimi yok, "sonucunda"
+  işaretli; diğer 5 uyarı mekânsal/edildi/ayrılmaktadır, doğru). Sahte veriyle
+  yeniden üretilemedi; nedeni bulunamadı (olası: kullanıcının makinesinde
+  birleşik onarımın o cümleyi farklı bölmesi). Hocanın dosyasında yönetim =
+  234 no'lu satır.
+- `toplama/yil_dogrulama.py` (Claude; dış değerlendirme önerisi): yıl kuralının
+  elle doğrulaması. İki grup, her birinden 73 rastgele makale (tohum 20261127;
+  73 = önceki doğrulamalarla aynı kural): A) arşiv (doğru: gerçek yıl <
+  kayıttaki yıl), B) analize giren 2015–2025 TR özetli makale (doğru: gerçek
+  yıl = kullanılan yıl). Excel kör: grup ve yıl yok, karışık sıra; kullanıcı
+  makale sayfasındaki künye yılını yazar; anahtar ayrı JSON. Sahte veriyle
+  test edildi. B grubu Claude önerisi (sonuç için daha önemli); onay bekliyor.
