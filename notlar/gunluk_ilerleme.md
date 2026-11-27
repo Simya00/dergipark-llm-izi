@@ -1568,3 +1568,17 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   Sınırlılık ve yöntem notu olarak yazılacak; tanım kararı kullanıcıda.
 - `hesapla`: A grubunda kayıttaki yıl yoksa (4 makale) "değerlendirilemeyen"
   sayılır → A = 42/69 (%60,9).
+- Arşiv sayılan makaleler, kayıttaki (çevrim içi) yıla göre (kullanıcı):
+  2014: 39.058 (TR 25.416), 2015: 32.077 (21.583), 2016: 10.841 (7.801),
+  2017: 7.666 (5.871), 2018: 5.654 (4.772), 2019: 6.826 (5.918), 2020: 5.204
+  (4.390), 2021: 4.851 (3.981), 2022: 3.836 (3.145), 2023: 2.735 (2.087),
+  2024: 2.162 (1.650), 2025: 1.347 (1.145). → Çoğunluk 2014–2015 (DergiPark'a
+  toplu geçiş). Analiz yıllarında dışarıda kalan TR özetli makale, analize
+  girenlere göre kabaca 2018 ~%15, 2019 ~%17, 2022 ~%7, 2024 ~%3, 2025 ~%2
+  (Claude'un yaklaşık hesabı; analize girenler uzunluk filtresi sonrası).
+  Arşiv kuralının isabeti %60,9 → bunların ~%40'ı büyük olasılıkla gereksiz
+  dışlama. Etki: yanlış yıl değil veri kaybı; kayıp oranı yıllara göre
+  azalıyor (taban yıllarında daha çok) → dergi bileşimi kayabilir; kısa panel
+  (sabit dergiler) bunu denetliyor. Claude önerisi: kural korunsun (yanlış
+  yıl almaktan iyidir), sınırlılık olarak sayılarla yazılsın; iyileştirme
+  ancak veri dondurması açılırsa. Karar kullanıcıda.
