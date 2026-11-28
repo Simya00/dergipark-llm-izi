@@ -1632,3 +1632,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   kısa panel sağlamlık satırı. → yontem.md §3.4 eklendi (yıl tanımı + yıl
   doğrulaması + arşiv). Kontrol seti tasarımı kullanıcı onayına sunuldu.
 - Kobak kontrol seti: dış değerlendirmenin 4 düzeltmesi (dışlama, önceden eşik, iki ayrı oran, hoca Türkçeyi bitirdikten sonra) ve sınırlılıklar yontem.md §6.3'e ÖN KAYIT TASLAĞI olarak yazıldı; dışlama listesi analiz/kaynaklar/kobak_kontrol_dislama.txt (106 kelime: notlar, kılavuz ve sohbet çıktılarında geçen Kobak kelimeleri). Kullanıcı onayı bekleniyor.
+- Kısa panel plasebo (kullanıcı): A plasebo en büyük +0,4; ana 2025 +4,1, 2024 +1,8 → GEÇİYOR. C plasebo 2018 +7,2, 2019 +4,9, 2020 +4,2, 2021 +3,5, 2022 +3,4 → en büyük +7,2; ana 2024 +10,5, 2025 +14,2 → GEÇİYOR. Tüm veriyle aynı desen. Kobak kontrol seti eşikleri (%30, kappa 0,6): kullanıcı onayı hâlâ net değil.
