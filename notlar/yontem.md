@@ -59,6 +59,26 @@ Son güncelleme: 2026-10-25
 ### 3.3 Geçersiz yıllar
 - 1990–2027 dışındaki yıllar (1902, 2068 gibi veri giriş hataları) yılsız.
 
+### 3.4 Yıl tanımı ve elle doğrulama (2026-11-27/28)
+
+- **Tanım (kullanıcı onayı bekleniyor; Claude önerisi): yıl = makalenin
+  DergiPark'taki ÇEVRİM İÇİ YAYIN yılı** (OAI dc:date; sayfadaki
+  "Yayımlanma Tarihi"), sayı (künye) yılı DEĞİL. Teşhis: yanlış çıkan
+  makalelerde dc:date tek tarih ve sayı yılından aylar önce (ör. 2020-10-22 →
+  2021 Cilt 12 Sayı 1). Gerekçe: yazım zamanına daha yakın; LLM etkisini
+  şişirmez, olsa olsa erkene çeker.
+- **Doğrulama (`toplama/yil_dogrulama.py`, kör, tohum 20261127, kullanıcı):**
+  B) analize giren 73 makale: çevrim içi yıl = künye yılı 50/73 (%68,5;
+  Wilson 57,1–78,0); fark ±1 yıl içinde 72/73; 21 yanlışın yönü künye = +1.
+  A) arşiv sayılan 73 makale: kural doğru (künye yılı < kayıttaki yıl)
+  42/69 (%60,9; Wilson 49,1–71,5); 4'ünde kayıtta yıl yok. **Arşiv kuralı
+  ("≥3 cilt", Claude'un seçimi) zayıf:** yanlış yıl vermez ama tarihi doğru
+  makaleleri de dışlar. Dışlanan TR özetli makale analize girenlere göre
+  kabaca 2018 ~%15, 2019 ~%17, 2022 ~%7, 2024 ~%3, 2025 ~%2 → kayıp taban
+  yıllarında büyük; dergi bileşimini kaydırabilir (2018 plasebosunun yüksek
+  çıkmasıyla ilişkili olabilir). Denetim: kısa panel (sabit dergiler) her
+  sonuç için sağlamlık satırı olarak raporlanır.
+
 **Sonuç (tam veri):** Güvenilir yıllı makale 2021: 57.347, 2022: 58.172,
 2023: 58.416, 2024: 60.547, 2025: 65.057, 2026 (kısmi): 22.149.
 

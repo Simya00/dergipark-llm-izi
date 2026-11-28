@@ -1623,3 +1623,11 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   - Kullanıcı plaseboyu ikinci ön kayıt yazılmadan başlattı ve sonucu gördü →
     ikinci ön kayıt (yapılırsa) bu sonuçlar görüldükten SONRA yazılmış olacak;
     gücü 2026 verisinden gelir.
+- Dış değerlendirme (kullanıcı iletti): (1) kappa yalnızca tutarlılığı ölçer,
+  ölçütün doğruluğunu değil → Kobak'ın İngilizce etiketli kelimelerinden
+  kontrol seti aynı kılavuzla işaretlenip Kobak etiketleriyle örtüşme
+  ölçülsün; (2) kullanıcı kılavuzsuz / hoca kılavuzlu → kappa düşükse kişi mi
+  kılavuz mu ayrılamaz (önceden bilinerek yorumlanmalı); (3) yıl tanımı
+  yöntem bölümüne açıkça yazılsın; (4) arşiv kaybı taban yıllarında büyük →
+  kısa panel sağlamlık satırı. → yontem.md §3.4 eklendi (yıl tanımı + yıl
+  doğrulaması + arşiv). Kontrol seti tasarımı kullanıcı onayına sunuldu.
