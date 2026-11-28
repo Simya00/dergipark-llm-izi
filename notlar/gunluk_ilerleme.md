@@ -1651,3 +1651,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   edildi (sahte istemciyle topla dahil). Gemini ücretsiz sınırları bu
   ortamdan okunamadı (ai.google.dev erişimi yok). Claude model seçimi ve
   maliyet yarına (kullanıcı kararı).
+- (devam) Kullanıcı AI Studio sınır tablosunu gönderdi: ücretsiz katmanda
+  Gemini 3.8/3.6/3/2.5 Flash dakikada 5, günde 20 istek; 3.5/3.1 Flash Lite
+  dakikada 15, günde 500; Pro modeller 0. 600 istek Flash ile ~30 gün sürer.
+  `api_yeniden_yaz.py`: Gemini beklemesi 6,5 → 13 sn, `--bekle` seçeneği,
+  günlük kota (429 + "PerDay") gelince beklemeden durur (sahte hatayla test
+  edildi). Model/katman kararı kullanıcıda.

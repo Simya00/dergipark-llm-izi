@@ -64,7 +64,7 @@ python3 deney_yapistir.py --durum
   "claude.ai'dan alınmalı" kuralının amacı (kod asistanını dışarıda tutmak)
   korunur.
 - Sınırlılık: API, web arayüzüyle aynı değil (arayüzün gizli talimatları ve
-  varsayılanları farklı olabilir). Gemini ücretsiz katmanı yalnızca Flash
+  varsayılanları farklı olabilir). Gemini ücretsiz sınırları (AI Studio, 2026-11-28, kullanıcının hesabı): Gemini 3.8 / 3.6 / 3 / 2.5 Flash dakikada 5, günde 20 istek; 3.5 ve 3.1 Flash Lite dakikada 15, günde 500; Pro modeller 0. Kod Gemini için istekler arasında 13 sn bekler (`--bekle` ile değişir) ve günlük kota dolunca hemen durur. Gemini ücretsiz katmanı yalnızca Flash
   modelleri kapsar; gönderilen veriyi Google kullanabilir (özetler zaten açık
   erişimli).
 

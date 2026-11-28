@@ -61,7 +61,7 @@ KLASOR = Path(__file__).resolve().parent
 # saglayici -> (cevap alani, anahtar degiskeni, istekler arasi bekleme sn)
 SAGLAYICILAR = {
     "openai": ("chatgpt", "OPENAI_API_KEY", 1.0),
-    "gemini": ("gemini", "GEMINI_API_KEY", 6.5),   # ucretsiz katman: dakikada ~10 istek
+    "gemini": ("gemini", "GEMINI_API_KEY", 13.0),  # ucretsiz katman Flash: dakikada 5 istek (AI Studio, 2026-11-28)
     "anthropic": ("claude", "ANTHROPIC_API_KEY", 1.0),
 }
 TEKRAR_EN_FAZLA = 5          # 429 / 5xx hatalarinda en fazla deneme
@@ -119,7 +119,11 @@ def gonder(url, basliklar, govde):
             with urllib.request.urlopen(req, timeout=120) as r:
                 return json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as h:
-            govde_metni = h.read().decode("utf-8", "replace")[:500]
+            tam_govde = h.read().decode("utf-8", "replace")
+            govde_metni = tam_govde[:500]
+            if h.code == 429 and "PerDay" in tam_govde:
+                # GUNLUK kota doldu: beklemek ise yaramaz, hemen dur (ertesi gun ayni komut)
+                raise RuntimeError(f"GUNLUK KOTA DOLDU (HTTP 429). Ertesi gun ayni komutla devam edin. {govde_metni[:200]}")
             if h.code == 429 or h.code >= 500:
                 bekle = 2 ** deneme * 5
                 print(f"  HTTP {h.code} (sinir/sunucu), {bekle} sn bekleniyor ({deneme}/{TEKRAR_EN_FAZLA})")
@@ -149,10 +153,13 @@ def main():
     p.add_argument("--durum", action="store_true", help="hicbir sey gonderme; her kosulda kac cevap dolu, yaz")
     p.add_argument("--sinir", type=int, help="yalnizca bu kadar bos ornegi doldur (deneme icin)")
     p.add_argument("--kuru", action="store_true", help="hicbir sey gonderme; ilk istegi ekrana bas")
+    p.add_argument("--bekle", type=float, help="istekler arasi bekleme (sn); varsayilan saglayiciya gore")
     p.add_argument("--dosya", default=str(KLASOR / "deney_ornekleri.json"))
     arg = p.parse_args()
 
     taban_alan, anahtar_adi, bekleme = SAGLAYICILAR[arg.saglayici]
+    if arg.bekle is not None:
+        bekleme = arg.bekle
     dosya = Path(arg.dosya)
     veri = json.loads(dosya.read_text(encoding="utf-8"))
     if taban_alan not in veri["modeller"]:
