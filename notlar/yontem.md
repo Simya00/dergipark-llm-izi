@@ -407,7 +407,16 @@ Sıra: `oai_ayristir.py` → `birlesik_kelime.py sozluk / zemberek / onayla --di
 ## 6. Aşırı kelime yöntemi (Kobak vd. 2025)
 
 - `p_y`: öğenin (kelime, kelime grubu, ek zinciri) y yılında geçtiği özet oranı.
-- Karşı-olgusal: `q_T = p_2022 + (T − 2022) · max(p_2022 − p_2021, 0)`.
+- Karşı-olgusal (**düzeltme 2026-11-28**: bu satır eskiden sabit 2022 tabanını
+  anlatıyordu; 2026-11-11'den beri kod Kobak vd. gibi HER hedef yıl için taban
+  T−2 kullanıyor): `q_T = p_{T−2} + 2 · max(p_{T−2} − p_{T−3}, 0)`. Yani
+  2024 için taban 2022 (eğilim 2021 → 2022), **2025 için taban 2023** (eğilim
+  2022 → 2023). ChatGPT Kasım 2022'de çıktığı için 2023'te başlamış bir LLM
+  etkisi 2025'in beklenen değerine girer ve 2025 sonucunu KÜÇÜLTÜR. Makalede
+  2025 sonucu "LLM'siz dünyaya göre fazlalık" değil, **"2022–2023 eğilimine
+  göre fazlalık"** olarak tarif edilecek. (Gözlem: 2023'te gövde δ>0,01 = 22,
+  2022'de 6; kaba A plasebosunda 2023 ≈ −0,2 → 2023 etkisi büyük olasılıkla
+  küçük.)
 - Fark `δ = p_T − q_T`, kat `r = p_T / q_T`.
 - Alt sınır: işaretçilerden en az birini içeren özet oranı için
   `L ≥ (p − q) / (1 − q)`. **Değişti (2026-11-22): Kobak vd. gibi Δ = p − q; bkz. §6.2.**

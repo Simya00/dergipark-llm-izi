@@ -1597,3 +1597,13 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   çıktıda plasebo en büyüğü ve ana sonuçlar için GEÇİYOR / GEÇMİYOR. Ana
   sonuç hesapları değişmedi. Sahte veriyle test edildi (mekanik doğru).
   Kullanıcı çalıştıracak.
+- Dış değerlendirme (kullanıcı yapıştırdı): (a) yontem.md §6'daki sabit 2022
+  tabanı formülü kodla çelişiyordu → düzeltildi (taban T−2; 2025 için taban
+  2023 → 2025 sonucu "2022–2023 eğilimine göre fazlalık" diye tarif
+  edilecek). (b) Öneriler: havuza kat kuralıyla seçilen nadir kelimeler;
+  ikinci ön kayıt (havuz, birleşim doygunluk sınırı, plasebo ölçütü);
+  doğrulama görülmemiş 2026 verisinde. Claude notu: 2026'nın karşı-olgusalı
+  (taban 2024, eğilim 2023 → 2024) zaten LLM dönemi → Kobak kuralıyla 2026
+  "LLM izi var mı"yı değil "2024'ten sonra daha da arttı mı"yı ölçer; 2026
+  doğrulaması için karşı-olgusal da ayrıca ön kayda yazılmalı. 2026 kısmi
+  yıl (Ocak–Ekim). Karar plasebo sonucu ve hocanın etiketlerinden sonra.
