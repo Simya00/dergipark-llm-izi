@@ -612,11 +612,14 @@ yorumlanmaz.** A ve C ayrı ayrı değerlendirilir.
   2019–2023 −1,8…+0,5) bu kural yazılmadan önce görüldü. C plasebosu hiç
   hesaplanmadı. Kesin değerler `alt_sinir_govde.py` ile hesaplanacak.
 
-## 6.3 Kılavuz kontrol seti: Kobak vd. etiketleriyle sınama — ÖN KAYIT TASLAĞI (2026-11-28)
+## 6.3 Kılavuz kontrol seti: Kobak vd. etiketleriyle sınama — ÖN KAYIT (2026-11-28)
 
-**Durum: kullanıcı onayı bekliyor.** Onaylanınca ve HİÇBİR işaretleme
-yapılmadan önce kesinleşir. Öneri dış değerlendirmeden, eşikler
-değerlendirmenin önerisi; karar kullanıcıda.
+**Durum: KESİNLEŞTİ (kullanıcı onayı 2026-11-28; "0,6 uygundur" — kappa
+0,6 ≈ %80 ham uyum, içerik kelimelerinde yanlış Ü ≤ %30; daha sıkı seçenek
+kappa 0,8 ≈ %90 da konuşuldu, seçilmedi). Hiçbir işaretleme yapılmadan
+önce kaydedildi.** Öneri ve eşikler dış değerlendirmeden; karar kullanıcıda.
+Kobak etiketleri: `analiz/kaynaklar/kobak_excess_words.csv` (MIT lisansı,
+`kobak_excess_words_LICENSE.txt`).
 
 - **Amaç:** Kappa yalnızca iki işaretleyicinin tutarlılığını ölçer. Bu set,
   kılavuzun Kobak vd.'nin "style/content" ayrımına ne kadar yakın olduğunu
