@@ -559,6 +559,30 @@ Türkçe özetlerden daha erken başlar (2023 ya da 2024) ve daha büyüktür;
 özettekinden yüksektir. Böyle çıkarsa Türkçe bulgu kullanımın alt sınırı
 olarak yorumlanır. Yanlış çıkması da raporlanır.
 
+### 6.2.1 Plasebo kuralı — EK ÖN KAYIT (2026-11-28, plasebo kodu çalıştırılmadan)
+
+Kural (kullanıcı): **bir alt sınır sonucu, aynı yöntemin LLM öncesi plasebo
+yıllarında verdiği değerlerin EN BÜYÜĞÜNÜ geçmezse "LLM izi" olarak
+yorumlanmaz.** A ve C ayrı ayrı değerlendirilir.
+
+- Plasebo yılları: hedef/ölçüm yılı **2018–2022** (hepsi; 2018'in taban
+  sorunu bilinse de dışarıda bırakılmaz, seçim yapılmaz). 2023 plasebo
+  sayılmaz (ChatGPT Kasım 2022).
+- **A plasebosu, ana sonuçla aynı adımlar:** komşu yıl çiftleri, iki yön
+  (S → M): 2018↔2019, 2019↔2020, 2020↔2021, 2021↔2022 (8 değer). İşaretçi:
+  Ü + S yılında Kobak'a göre aşırı + taban yılında (min(S, M) − 2; ana
+  sonuçta 2022) özetlerin %10'undan azında. Ölçüm M yılında, Δ = p − q,
+  q taban M−2. Karşılaştırma: A'nın 2024 ve 2025 değerleri, 8 plasebo
+  değerinin en büyüğüyle.
+- **C plasebosu:** T = 2018–2022 her yıl için Ü + T'de aşırı gövdeler, 11
+  eşik, en büyük Δ (5 değer). Karşılaştırma: C 2024 ve 2025, bu 5 değerin
+  en büyüğüyle. C'nin Kobak vd. %13,5'iyle karşılaştırılması ancak C bu
+  kuralı geçerse yapılır.
+- Şeffaflık: A'nın ana sonuçları (2024 +1,1; 2025 +3,6) ve Claude'un
+  yuvarlanmış yıllık oranlardan ELLE yaptığı kaba A plasebosu (2018 +3,4,
+  2019–2023 −1,8…+0,5) bu kural yazılmadan önce görüldü. C plasebosu hiç
+  hesaplanmadı. Kesin değerler `alt_sinir_govde.py` ile hesaplanacak.
+
 ## 7. Dergi paneli
 
 - Geç katılan dergiler (ör. `gazimmfd` 2023) tabanda yok, hedef yılda var →

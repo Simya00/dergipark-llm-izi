@@ -1582,3 +1582,12 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   (sabit dergiler) bunu denetliyor. Claude önerisi: kural korunsun (yanlış
   yıl almaktan iyidir), sınırlılık olarak sayılarla yazılsın; iyileştirme
   ancak veri dondurması açılırsa. Karar kullanıcıda.
+
+## 2026-11-28
+
+- Kullanıcı: plasebo elle değil kodla, her LLM öncesi yıl için aynı adımlarla
+  yapılmalı; kural önceden yazılmalı ("sonuç, plasebo yıllarının en büyüğünü
+  geçmeli"); C'nin plasebosu yok → Kobak %13,5 ile karşılaştırma erken.
+  → yontem.md §6.2.1 ek ön kayıt (kod çalıştırılmadan): plasebo yılları
+  2018–2022, A için 8 komşu yıl çifti, C için 5 yıl; şeffaflık notu (A ana
+  sonucu ve kaba A plasebosu önceden görüldü).
