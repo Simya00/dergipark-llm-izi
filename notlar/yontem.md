@@ -612,6 +612,47 @@ yorumlanmaz.** A ve C ayrı ayrı değerlendirilir.
   2019–2023 −1,8…+0,5) bu kural yazılmadan önce görüldü. C plasebosu hiç
   hesaplanmadı. Kesin değerler `alt_sinir_govde.py` ile hesaplanacak.
 
+## 6.3 Kılavuz kontrol seti: Kobak vd. etiketleriyle sınama — ÖN KAYIT TASLAĞI (2026-11-28)
+
+**Durum: kullanıcı onayı bekliyor.** Onaylanınca ve HİÇBİR işaretleme
+yapılmadan önce kesinleşir. Öneri dış değerlendirmeden, eşikler
+değerlendirmenin önerisi; karar kullanıcıda.
+
+- **Amaç:** Kappa yalnızca iki işaretleyicinin tutarlılığını ölçer. Bu set,
+  kılavuzun Kobak vd.'nin "style/content" ayrımına ne kadar yakın olduğunu
+  ölçer. Asıl şüphe: kılavuz İÇERİK kelimelerini de Ü yapıyor (LLM öncesi
+  yıllarda Ü oranı %57–100).
+- **Örneklem:** Kobak vd. `results/excess_words.csv` içinden yalnızca
+  "style" ve "content" etiketliler (content/style, other vb. hariç);
+  **30 style + 30 content**, rastgele (tohum 20261128), tek bir karışık sıra.
+- **Dışlama kuralı (önceden):** `notlar/*.md`'de, ikinci işaretleyici
+  kılavuzunda ya da sohbette (Claude'un araç çıktılarında) GEÇEN her Kobak
+  kelimesi örneklem dışında: `analiz/kaynaklar/kobak_kontrol_dislama.txt`
+  (106 kelime; kalan 344 style, 424 content).
+- **Örnek cümle:** DergiPark İngilizce özetlerinden (analize giren, her yıl)
+  kelimeyi içeren 2 rastgele cümle. 2 cümle bulunamazsa kelime atlanır ve
+  aynı türden rastgele sıradaki sonraki kelimeye geçilir.
+- **Kör:** Kobak etiketi gösterilmez; aynı kılavuz ve Ü/İ/B/D etiketleri.
+- **İşaretleyenler ve zamanlama:** kullanıcı ve hoca, ikisi de kılavuzla.
+  Hocaya ancak Türkçe işaretlemesini TAMAMEN bitirip teslim ettikten sonra
+  verilir (Türkçe işaretlemenin bağımsızlığı korunur).
+- **Raporlanacak (iki ayrı oran + kappa), her işaretleyici için ayrı:**
+  (1) Kobak "style" kelimelerinin Ü işaretlenen oranı; (2) Kobak "content"
+  kelimelerinin YANLIŞLIKLA Ü işaretlenen oranı (asıl soru); (3) Ü/İ
+  ikilisi üzerinden Kobak ile Cohen kappa (B ve D ayrıca sayılır). Wilson
+  %95 aralıkları.
+- **Önceden yazılan eşikler:** içerik kelimelerinin **%30'undan fazlası Ü**
+  işaretlenirse kılavuz "fazla geniş" sayılır ve düzeltilir; Kobak ile genel
+  uyum için **kappa ≥ 0,6** ("iyi uyum").
+- **Yorum kuralı:** iki işaretleyici bu sette (aynı koşul, kılavuzlu) Kobak'la
+  benzer uyumdaysa Türkçe listedeki aralarındaki fark büyük olasılıkla
+  kılavuz/koşul farkıdır; bu sette de ayrışıyorlarsa kişi farkıdır.
+- **Sınırlılıklar:** İngilizce kelimeler, Türkçe gövdeler değil (yaklaşık
+  ölçü); Kobak etiketleri biyomedikal bağlamda verildi (içerik kelimeleri
+  kolay olabilir); 30 kelimede güven aralığı ~±15 puan. Bu test işaretleme
+  ÖLÇÜTÜNÜ sınar; havuzun δ > 0,01 kuralıyla sık kelimelerden kurulması
+  (doygunluk) ayrı bir sorundur ve bununla çözülmez.
+
 ## 7. Dergi paneli
 
 - Geç katılan dergiler (ör. `gazimmfd` 2023) tabanda yok, hedef yılda var →

@@ -1631,3 +1631,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   yöntem bölümüne açıkça yazılsın; (4) arşiv kaybı taban yıllarında büyük →
   kısa panel sağlamlık satırı. → yontem.md §3.4 eklendi (yıl tanımı + yıl
   doğrulaması + arşiv). Kontrol seti tasarımı kullanıcı onayına sunuldu.
+- Kobak kontrol seti: dış değerlendirmenin 4 düzeltmesi (dışlama, önceden eşik, iki ayrı oran, hoca Türkçeyi bitirdikten sonra) ve sınırlılıklar yontem.md §6.3'e ÖN KAYIT TASLAĞI olarak yazıldı; dışlama listesi analiz/kaynaklar/kobak_kontrol_dislama.txt (106 kelime: notlar, kılavuz ve sohbet çıktılarında geçen Kobak kelimeleri). Kullanıcı onayı bekleniyor.
