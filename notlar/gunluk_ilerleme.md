@@ -1608,3 +1608,18 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   doğrulaması için karşı-olgusal da ayrıca ön kayda yazılmalı. 2026 kısmi
   yıl (Ocak–Ekim). Karar plasebo sonucu ve hocanın etiketlerinden sonra.
 - Kullanıcı: kendi işaretlemesi (379 gövde) 2 saat sürdü; hocanın en fazla 2 günü → yeni (nadir kelime) havuzunun işaretlenmesi uygulanabilir. Claude önerisi: ikinci ön kayıt plasebo sonucuna BAKMADAN yazılsın; önce havuz büyüklüğü seçenekleri sayılsın (yalnızca kelime sayısı, Δ değil).
+- **PLASEBO SONUCU (kullanıcı, tüm veri; kural §6.2.1 önceden yazılmıştı):**
+  - A plasebo (8 çift): 2018→19 −2,5; 19→18 −0,1; 19→20 −3,8; 20→19 +0,1;
+    20→21 +0,2; 21→20 −2,5; 21→22 −2,4; 22→21 −0,2 → en büyük **+0,2**.
+    Ana: 2024→2025 **+3,6**, 2025→2024 **+1,1** → ikisi de GEÇİYOR. Not:
+    plasebo kümeleri çok küçük (1–19 gövde; ana 69/134) — LLM öncesi yıllarda
+    %10 kuralını geçen Ü aşırı gövde az. Karşılaştırma kurala uygun ama küme
+    büyüklükleri eşit değil (makalede belirtilecek).
+  - C plasebo: 2018 +7,4; 2019 +6,5; 2020 +3,8; 2021 +4,0; 2022 +3,2 → en
+    büyük **+7,4**. Ana: 2024 **+11,8**, 2025 **+15,2** → GEÇİYOR. Ama aynı
+    yıl seçimi LLM olmadan da 3–7 puan üretiyor → C'nin Kobak %13,5 ile
+    doğrudan karşılaştırılması yanıltıcı olur; plasebonun üstündeki fark
+    (2024 ~4,4, 2025 ~7,8 puan) keşif amaçlı verilebilir.
+  - Kullanıcı plaseboyu ikinci ön kayıt yazılmadan başlattı ve sonucu gördü →
+    ikinci ön kayıt (yapılırsa) bu sonuçlar görüldükten SONRA yazılmış olacak;
+    gücü 2026 verisinden gelir.
