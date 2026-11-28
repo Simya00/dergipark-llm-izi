@@ -15,7 +15,18 @@ Kararlar (kullanici, 2026-11-07):
   - Model adi kodda YAZILI DEGIL: her calistirmada --model ile tam surum adi
     verilir ve ozete kaydedilir (makalede raporlanir).
 
-Anahtarlar ortam degiskeninden okunur, hicbir dosyaya yazilmaz:
+KOSULLAR (2026-11-28; dis degerlendirme onerisi; komutlar deney_ornekleri.json "komutlar"):
+  --kosul duzenle : (varsayilan) eski KOMUT ile Turkce ozet  -> cevaplar[<alan>]
+  --kosul duzelt  : notr komut (yalnizca yazim/dil bilgisi)   -> cevaplar[<alan>_duzelt]
+  --kosul ceviri  : ayni makalenin INGILIZCE ozeti -> Turkceye -> cevaplar[<alan>_ceviri]
+  (once: python3 deney_hazirla.py --kosullar-ekle)
+
+KALDIGI YERDEN DEVAM: her cevap gelir gelmez dosyaya kaydedilir; dolu alanlar atlanir.
+Kredi/kota biterse ya da hata olursa program durur, o ana kadarkiler kayitlidir;
+ayni komutu sonra yeniden calistirmak yeter. Durum: --durum
+
+API ANAHTARI hicbir dosyaya yazilmaz, koda yazilmaz. Ortam degiskeninde yoksa
+terminalde GORUNMEZ olarak sorulur (yapistirip Enter):
   OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY
 
 Kayitlar:
@@ -36,6 +47,7 @@ Kullanim:
 
 import argparse
 import datetime as dt
+import getpass
 import json
 import os
 import sys
@@ -132,42 +144,74 @@ def kaydet(dosya, veri):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("saglayici", choices=sorted(SAGLAYICILAR))
-    p.add_argument("--model", required=True, help="tam model surum adi (saglayicinin listesinden)")
+    p.add_argument("--model", help="tam model surum adi (saglayicinin listesinden); --durum disinda zorunlu")
+    p.add_argument("--kosul", choices=["duzenle", "duzelt", "ceviri"], default="duzenle")
+    p.add_argument("--durum", action="store_true", help="hicbir sey gonderme; her kosulda kac cevap dolu, yaz")
     p.add_argument("--sinir", type=int, help="yalnizca bu kadar bos ornegi doldur (deneme icin)")
     p.add_argument("--kuru", action="store_true", help="hicbir sey gonderme; ilk istegi ekrana bas")
     p.add_argument("--dosya", default=str(KLASOR / "deney_ornekleri.json"))
     arg = p.parse_args()
 
-    alan, anahtar_adi, bekleme = SAGLAYICILAR[arg.saglayici]
+    taban_alan, anahtar_adi, bekleme = SAGLAYICILAR[arg.saglayici]
     dosya = Path(arg.dosya)
     veri = json.loads(dosya.read_text(encoding="utf-8"))
-    if alan not in veri["modeller"]:
-        raise SystemExit(f"'{alan}' alani deney dosyasinda yok (modeller: {veri['modeller']})")
-    bekleyen = [o for o in veri["ornekler"] if not o["cevaplar"].get(alan, "").strip()]
+    if taban_alan not in veri["modeller"]:
+        raise SystemExit(f"'{taban_alan}' alani deney dosyasinda yok (modeller: {veri['modeller']})")
+
+    def alan_adi(kosul):
+        return taban_alan if kosul == "duzenle" else f"{taban_alan}_{kosul}"
+
+    def kaynak_alan(kosul):
+        return "ozet_en" if kosul == "ceviri" else "ozet_tr"
+
+    if arg.durum:
+        for k in ("duzenle", "duzelt", "ceviri"):
+            uygun = [o for o in veri["ornekler"] if (o.get(kaynak_alan(k)) or "").strip()]
+            dolu = sum(1 for o in uygun if o["cevaplar"].get(alan_adi(k), "").strip())
+            print(f"  {arg.saglayici:<9} {k:<8} cevaplar['{alan_adi(k)}']: {dolu}/{len(uygun)} dolu")
+        return
+    if not arg.model:
+        raise SystemExit("--model gerekli (tam surum adi).")
+    if arg.kosul != "duzenle" and arg.kosul not in veri.get("komutlar", {}):
+        raise SystemExit("Bu kosulun komutu dosyada yok. Once: python3 deney_hazirla.py --kosullar-ekle")
+    komut = veri.get("komutlar", {}).get(arg.kosul, veri["komut"])
+    alan, kaynak = alan_adi(arg.kosul), kaynak_alan(arg.kosul)
+    bekleyen = [o for o in veri["ornekler"]
+                if (o.get(kaynak) or "").strip() and not o["cevaplar"].get(alan, "").strip()]
     if arg.sinir:
         bekleyen = bekleyen[:arg.sinir]
-    print(f"{arg.saglayici} / {arg.model} -> cevaplar['{alan}']: {len(bekleyen)} ornek gonderilecek")
+    print(f"{arg.saglayici} / {arg.model} / kosul {arg.kosul} -> cevaplar['{alan}']: "
+          f"{len(bekleyen)} ornek gonderilecek")
 
     if arg.kuru:
         if bekleyen:
-            url, _, govde = istek_hazirla(arg.saglayici, arg.model, veri["komut"] + bekleyen[0]["ozet_tr"], "GIZLI")
+            url, _, govde = istek_hazirla(arg.saglayici, arg.model, komut + bekleyen[0][kaynak], "GIZLI")
             print(url)
             print(json.dumps(govde, ensure_ascii=False, indent=1))
         return
+    if not bekleyen:
+        print("Gonderilecek ornek kalmadi.")
+        return
 
-    anahtar = os.environ.get(anahtar_adi)
+    anahtar = os.environ.get(anahtar_adi) or getpass.getpass(
+        f"{anahtar_adi} (yapistirin, ekranda GORUNMEZ; hicbir yere kaydedilmez): ").strip()
     if not anahtar:
-        raise SystemExit(f"{anahtar_adi} ortam degiskeni tanimli degil (export {anahtar_adi}=...)")
+        raise SystemExit("Anahtar girilmedi.")
 
     ham_dosya = KLASOR / f"api_ham_{alan}.jsonl"
     tamam = 0
     for i, o in enumerate(bekleyen, 1):
-        metin = veri["komut"] + o["ozet_tr"]
+        metin = komut + o[kaynak]
         url, basliklar, govde = istek_hazirla(arg.saglayici, arg.model, metin, anahtar)
         try:
             ham = gonder(url, basliklar, govde)
         except RuntimeError as h:
             print(f"  ornek {o['no']}: HATA, duruldu: {h}")
+            print("  (Kredi/kota bitmis ya da anahtar hatali olabilir. Simdiye kadarki cevaplar KAYITLI;\n"
+                  "   sorun giderilince AYNI komutu yeniden calistirin, kaldigi yerden devam eder.)")
+            break
+        except KeyboardInterrupt:
+            print("\n  Durduruldu (Ctrl+C). Simdiye kadarki cevaplar kayitli; ayni komutla devam edin.")
             break
         zaman = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
         with open(ham_dosya, "a", encoding="utf-8") as f:
@@ -179,19 +223,23 @@ def main():
             print(f"  ornek {o['no']}: KAYDEDILMEDI (bitis nedeni: {neden}, {len(cevap)} karakter)")
         else:
             o["cevaplar"][alan] = cevap.strip()
-            o.setdefault("api", {})[alan] = {"istenen_model": arg.model, "donen_model": donen_model,
+            o.setdefault("api", {})[alan] = {"istenen_model": arg.model, "donen_model": donen_model, "kosul": arg.kosul,
                                              "zaman": zaman, "bitis": neden, "tokenlar": tokenlar}
             kaydet(dosya, veri)
             tamam += 1
-            print(f"  [{i}/{len(bekleyen)}] ornek {o['no']}: {len(o['ozet_tr'])} -> {len(cevap)} karakter")
+            print(f"  [{i}/{len(bekleyen)}] ornek {o['no']}: {len(o[kaynak])} -> {len(cevap)} karakter")
         time.sleep(bekleme)
 
-    dolu = sum(1 for o in veri["ornekler"] if o["cevaplar"].get(alan, "").strip())
-    print(f"\nBu calistirmada {tamam} cevap kaydedildi; '{alan}' toplam {dolu}/{len(veri['ornekler'])}.")
+    uygun = [o for o in veri["ornekler"] if (o.get(kaynak) or "").strip()]
+    dolu = sum(1 for o in uygun if o["cevaplar"].get(alan, "").strip())
+    print(f"\nBu calistirmada {tamam} cevap kaydedildi; '{alan}' toplam {dolu}/{len(uygun)}.")
     surumler = sorted({o.get("api", {}).get(alan, {}).get("donen_model") for o in veri["ornekler"]} - {None})
     if surumler:
         print(f"Donen model surum(ler)i (README'ye yazin): {', '.join(surumler)}")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print("\nDurduruldu (Ctrl+C). Simdiye kadarki cevaplar kayitli; ayni komutla devam edin.")

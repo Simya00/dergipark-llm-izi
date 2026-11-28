@@ -94,3 +94,31 @@ python3 deney_yapistir.py --durum
 - ChatGPT: (doldurulacak)
 - Claude: (doldurulacak)
 - Gemini: (doldurulacak)
+
+## Ek koşullar ve Claude Batch (2026-11-28)
+
+Dış değerlendirme önerisi: tek komut ("akademik yazım diline uygun ... düzenle") akademik
+kalıpları kendisi çağırabilir. İki koşul eklendi (komutlar `deney_ornekleri.json` →
+`komutlar`; bir kez yazılır, değişmez):
+
+| Koşul | Girdi | Komut | Cevap alanı |
+|---|---|---|---|
+| duzenle | Türkçe özet | eski KOMUT | `cevaplar[<model>]` |
+| duzelt | Türkçe özet | yalnızca yazım/noktalama/dil bilgisi düzelt, başka değişiklik yok | `cevaplar[<model>_duzelt]` |
+| ceviri | aynı makalenin İngilizce özeti | Türkçeye çevir | `cevaplar[<model>_ceviri]` |
+
+```bash
+cd deney
+python3 deney_hazirla.py --kosullar-ekle          # komutlar + ozet_en; CEVAPLARA DOKUNMAZ
+python3 api_yeniden_yaz.py gemini --durum
+python3 api_yeniden_yaz.py gemini --model <tam-ad> --kosul duzelt --sinir 3
+pip install anthropic
+python3 claude_batch.py gonder --model <tam-ad> --kosul duzenle --sinir 3   # Batch: yarı fiyat
+python3 claude_batch.py topla                                               # sonuçları yaz
+python3 claude_batch.py durum
+```
+
+- Anahtarlar koda/dosyaya yazılmaz; ortam değişkeninde yoksa terminalde görünmez sorulur.
+- Kaldığı yerden devam: her cevap gelince kaydedilir; kredi/kota biterse program durur,
+  aynı komut sonra kaldığı yerden sürer. Batch'te gönderilmiş ama toplanmamış örnekler
+  tekrar gönderilmez; başarısız/kesilmiş/reddedilmiş cevaplar kaydedilmez, yeniden gider.

@@ -22,7 +22,13 @@ Turkce olmayan) kullanilmamis dergilerden yeni orneklerle degistirir; diger
 orneklerin yapistirilmis cevaplari korunur, degisen orneklerin cevaplari
 silinir (yeniden sorulmali).
 
+--kosullar-ekle (2026-11-28): Var olan deney_ornekleri.json'a, CEVAPLARA
+DOKUNMADAN, iki yeni kosulun komutlarini ("komutlar") ve her ornegin ayni
+makaledeki INGILIZCE ozetini ("ozet_en"; yoksa bos) ekler. Komutlar bir kez
+yazilir, sonra degistirilmez (dosyada varsa korunur).
+
 Kullanim:
+  python3 deney_hazirla.py --kosullar-ekle
   python3 deney_hazirla.py
   python3 deney_hazirla.py --adet 200 --modeller chatgpt,claude,gemini
   python3 deney_hazirla.py --degistir
@@ -46,6 +52,36 @@ CIKTI = KLASOR / "deney_ornekleri.json"
 KOMUT = ("Aşağıdaki akademik özeti, anlamını ve bulgularını değiştirmeden, akademik yazım "
          "diline uygun olacak şekilde yeniden düzenle. Sadece düzenlenmiş özeti yaz; başlık, "
          "açıklama veya not ekleme.\n\n")
+
+
+# Ek kosullar (2026-11-28; dis degerlendirme onerisi, kullanici onayi): notr duzeltme ve ceviri.
+KOMUT_DUZELT = ("Aşağıdaki akademik özetteki yalnızca yazım, noktalama ve dil bilgisi hatalarını düzelt. "
+                "Başka hiçbir değişiklik yapma. Sadece düzeltilmiş özeti yaz; açıklama ekleme.\n\n")
+KOMUT_CEVIRI = ("Aşağıdaki İngilizce akademik özeti Türkçeye çevir. Sadece çeviriyi yaz; başlık, "
+                "açıklama veya not ekleme.\n\n")
+
+
+def kosullar_ekle(arg):
+    veri = json.loads(CIKTI.read_text(encoding="utf-8"))
+    if "komutlar" not in veri:
+        veri["komutlar"] = {"duzenle": veri["komut"], "duzelt": KOMUT_DUZELT, "ceviri": KOMUT_CEVIRI}
+    else:
+        print("komutlar zaten var; degistirilmedi.")
+    istenen = {o["oai_id"] for o in veri["ornekler"]}
+    en = {}
+    with open(arg.girdi, encoding="utf-8") as g:
+        for satir in g:
+            m = json.loads(satir)
+            if m.get("oai_id") in istenen:
+                en[m["oai_id"]] = m.get("ozet_en") or ""
+    for o in veri["ornekler"]:
+        if "ozet_en" not in o:
+            o["ozet_en"] = en.get(o["oai_id"], "")
+    gecici = CIKTI.with_suffix(".json.gecici")
+    gecici.write_text(json.dumps(veri, ensure_ascii=False, indent=1), encoding="utf-8")
+    gecici.replace(CIKTI)
+    var = sum(1 for o in veri["ornekler"] if o["ozet_en"].strip())
+    print(f"komutlar: {', '.join(veri['komutlar'])}; Ingilizce ozeti olan ornek: {var}/{len(veri['ornekler'])} -> {CIKTI}")
 
 
 def turkce_mi(oz):
@@ -97,7 +133,11 @@ def main():
     p.add_argument("--tohum", type=int, default=20261024)
     p.add_argument("--uzerine-yaz", action="store_true", help="Var olan deney dosyasinin uzerine yaz")
     p.add_argument("--degistir", action="store_true", help="Var olan dosyadaki uygun olmayan ornekleri degistir")
+    p.add_argument("--kosullar-ekle", action="store_true", help="yeni kosullarin komutlari ve Ingilizce ozetler")
     arg = p.parse_args()
+    if arg.kosullar_ekle:
+        kosullar_ekle(arg)
+        return
 
     if CIKTI.exists() and not (arg.uzerine_yaz or arg.degistir):
         raise SystemExit(f"{CIKTI.name} zaten var (icinde yapistirilmis cevaplar olabilir). "

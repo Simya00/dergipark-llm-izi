@@ -706,6 +706,16 @@ Kobak etiketleri: `analiz/kaynaklar/kobak_excess_words.csv` (MIT lisansı,
   aldığı API). Model sürüm adları çalıştırma anında belirlenip
   `deney/README.md`'ye yazılacak. Sınırlılık: API ≠ web arayüzü.
 
+- **Ek koşullar (2026-11-28; dış değerlendirme önerisi):** K1 düzenle (eski
+  komut), K2 düzelt (nötr: yalnızca yazım/noktalama/dil bilgisi), K3 çeviri
+  (aynı makalenin İngilizce özeti → Türkçe; yazarın kendi Türkçe özetiyle
+  karşılaştırılır). K2'de de LLM kelimeleri ekleniyorsa kelimeler komuttan
+  değil modelden gelir. Komut metinleri Claude taslağı; kullanıcı açık onayı
+  bekleniyor (kullanıcı kodun yazılmasını istedi). Claude: Message Batches
+  (%50 fiyat; `claude_batch.py`); Gemini: ücretsiz katman (`api_yeniden_yaz.py`).
+  Sınırlılıklar: 2026 modelleri ≠ 2023–2024'te kullanılan modeller; API ≠ web
+  arayüzü; örnekler Ekim 2026 ayrıştırmasından (dondurma öncesi) alındı.
+
 ## 10. Bilinen sınırlılıklar (kullanıcı onayı, 2026-11-05)
 
 Veri temizliğinde bilerek düzeltilmeyen ya da düzeltilemeyen sorunlar.

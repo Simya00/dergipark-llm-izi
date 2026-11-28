@@ -1641,3 +1641,13 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   hakkında" notu; anahtar ayrı JSON. `hesapla` her Excel için (1) style→Ü,
   (2) content→yanlış Ü (eşik %30), (3) Ü/İ kappa (eşik 0,6), Wilson.
   Sahte veriyle test edildi. Kullanıcı şimdi, hoca Türkçeyi bitirdikten sonra.
+- Deney hazırlığı (kullanıcı: "Claude ve Gemini'ye gidecek 200 örneği hazırla;
+  kaldığı yerden devam etsin; anahtarlar koda değil terminalden"; "Claude'u
+  batch'ten yaparsak daha ucuz"): `deney_hazirla.py --kosullar-ekle` (komutlar
+  + İngilizce özet; cevaplara dokunmaz), `api_yeniden_yaz.py --kosul` ve
+  `--durum`, anahtar yoksa getpass ile gizli sorulur, Ctrl+C/kredi bitimi
+  mesajı; yeni `claude_batch.py` (gonder/topla/durum; Anthropic SDK, Message
+  Batches %50; yoldaki örnekler tekrar gönderilmez). Sahte veriyle test
+  edildi (sahte istemciyle topla dahil). Gemini ücretsiz sınırları bu
+  ortamdan okunamadı (ai.google.dev erişimi yok). Claude model seçimi ve
+  maliyet yarına (kullanıcı kararı).
