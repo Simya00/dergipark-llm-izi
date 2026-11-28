@@ -1634,3 +1634,10 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
 - Kobak kontrol seti: dış değerlendirmenin 4 düzeltmesi (dışlama, önceden eşik, iki ayrı oran, hoca Türkçeyi bitirdikten sonra) ve sınırlılıklar yontem.md §6.3'e ÖN KAYIT TASLAĞI olarak yazıldı; dışlama listesi analiz/kaynaklar/kobak_kontrol_dislama.txt (106 kelime: notlar, kılavuz ve sohbet çıktılarında geçen Kobak kelimeleri). Kullanıcı onayı bekleniyor.
 - Kısa panel plasebo (kullanıcı): A plasebo en büyük +0,4; ana 2025 +4,1, 2024 +1,8 → GEÇİYOR. C plasebo 2018 +7,2, 2019 +4,9, 2020 +4,2, 2021 +3,5, 2022 +3,4 → en büyük +7,2; ana 2024 +10,5, 2025 +14,2 → GEÇİYOR. Tüm veriyle aynı desen. Kobak kontrol seti eşikleri (%30, kappa 0,6): kullanıcı onayı hâlâ net değil.
 - Kobak kontrol seti eşikleri KESİNLEŞTİ (kullanıcı: "0,6 uygundur"; %30 kuralı ile birlikte). Kullanıcı %90 uyum gerekip gerekmediğini sordu → kappa ile ham uyum farkı anlatıldı (κ 0,6 ≈ %80, κ 0,8 ≈ %90). Kobak excess_words.csv (MIT) depoya eklendi.
+- `analiz/kobak_kontrol.py` (Claude; §6.3'e birebir): `excel` 30 style + 30
+  content (tohum 20261128, dışlama listesi dışı), DergiPark İngilizce
+  özetlerinden 2 rastgele cümle (yoksa sıradaki kelime; atlananlar anahtarda),
+  kılavuz sayfası ikinci işaretleyici Excel'inden kopyalanır + "bu set
+  hakkında" notu; anahtar ayrı JSON. `hesapla` her Excel için (1) style→Ü,
+  (2) content→yanlış Ü (eşik %30), (3) Ü/İ kappa (eşik 0,6), Wilson.
+  Sahte veriyle test edildi. Kullanıcı şimdi, hoca Türkçeyi bitirdikten sonra.
