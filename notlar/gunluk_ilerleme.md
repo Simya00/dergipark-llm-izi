@@ -1607,3 +1607,4 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   "LLM izi var mı"yı değil "2024'ten sonra daha da arttı mı"yı ölçer; 2026
   doğrulaması için karşı-olgusal da ayrıca ön kayda yazılmalı. 2026 kısmi
   yıl (Ocak–Ekim). Karar plasebo sonucu ve hocanın etiketlerinden sonra.
+- Kullanıcı: kendi işaretlemesi (379 gövde) 2 saat sürdü; hocanın en fazla 2 günü → yeni (nadir kelime) havuzunun işaretlenmesi uygulanabilir. Claude önerisi: ikinci ön kayıt plasebo sonucuna BAKMADAN yazılsın; önce havuz büyüklüğü seçenekleri sayılsın (yalnızca kelime sayısı, Δ değil).
