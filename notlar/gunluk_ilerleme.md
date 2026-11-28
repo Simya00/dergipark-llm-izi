@@ -1657,3 +1657,6 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   `api_yeniden_yaz.py`: Gemini beklemesi 6,5 → 13 sn, `--bekle` seçeneği,
   günlük kota (429 + "PerDay") gelince beklemeden durur (sahte hatayla test
   edildi). Model/katman kararı kullanıcıda.
+- (devam) Karar (kullanıcı): deney ay başına ertelendi; üç model ücretli API
+  ile, kullanıcı maliyet hesaplayıp bütçe ayıracak (tahmini ~30 $). Gemini
+  düşerse en az iki model şartı (yontem.md §9).

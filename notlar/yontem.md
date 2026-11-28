@@ -715,6 +715,12 @@ Kobak etiketleri: `analiz/kaynaklar/kobak_excess_words.csv` (MIT lisansı,
   (%50 fiyat; `claude_batch.py`); Gemini: ücretsiz katman (`api_yeniden_yaz.py`).
   Sınırlılıklar: 2026 modelleri ≠ 2023–2024'te kullanılan modeller; API ≠ web
   arayüzü; örnekler Ekim 2026 ayrıştırmasından (dondurma öncesi) alındı.
+- **Zamanlama ve bütçe (kullanıcı, 2026-11-28):** Gemini ücretsiz katmanı
+  (Flash: günde 20 istek) 600 istek için yetersiz (~30 gün). Karar: üç model
+  de (ChatGPT, Claude, Gemini) ücretli API ile, ay başında bütçe ayrılınca
+  çalıştırılacak; kullanıcı tahmini toplam ~30 $. Gemini'nin düşmesi
+  durumunda en az iki model (ChatGPT + Claude) şartı korunur (ortak
+  işaretçi kuralı).
 
 ## 10. Bilinen sınırlılıklar (kullanıcı onayı, 2026-11-05)
 
