@@ -1591,3 +1591,9 @@ kaçışı (`p&amp;lt; 0.01`) görüldü.
   → yontem.md §6.2.1 ek ön kayıt (kod çalıştırılmadan): plasebo yılları
   2018–2022, A için 8 komşu yıl çifti, C için 5 yıl; şeffaflık notu (A ana
   sonucu ve kaba A plasebosu önceden görüldü).
+- `alt_sinir_govde.py` plasebo eklendi (Claude; §6.2.1'e birebir): A için
+  8 komşu yıl çifti 2018↔2019…2021↔2022 (taban min(S,M)−2; ana sonuçta 2022,
+  kodda assert ile kontrol), C için T = 2018–2022 (11 eşik, en büyük Δ);
+  çıktıda plasebo en büyüğü ve ana sonuçlar için GEÇİYOR / GEÇMİYOR. Ana
+  sonuç hesapları değişmedi. Sahte veriyle test edildi (mekanik doğru).
+  Kullanıcı çalıştıracak.

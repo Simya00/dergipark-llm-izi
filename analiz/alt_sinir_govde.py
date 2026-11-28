@@ -22,6 +22,10 @@ Olcum, govde sayiminin makale basina sonuclarindan (govde_parcalar/, SURUM 2):
 her makalenin govde kumesi. --dergiler ile panel (karar 3: kisa panel sagamlik).
 Yumusatma Kobak vd. gibi (sayi + 1) / (ozet + 1).
 
+PLASEBO (ek on kayit §6.2.1): A icin 2018-2022 komsu yil ciftleri (8 deger; taban
+min(S, M) - 2), C icin T = 2018-2022 (5 deger), birebir ayni adimlar. Ana sonuc,
+plasebo degerlerinin en buyugunu gecmeli.
+
 Kullanim (analiz/ klasorunde; Zemberek gerekmez):
   python3 alt_sinir_govde.py
   python3 alt_sinir_govde.py --dergiler dergi_paneli_tr_kisa.txt
@@ -42,6 +46,10 @@ VARSAYILAN_EXCEL = KLASOR / "isaretleme_kayit" / "isaretleme_tr_govde_2026-11-26
 TABAN_YILI, X_ESIGI = 2022, 0.10           # on kayit karari 2
 KOBAK_ESIKLERI = [0.0002, 0.0005, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
 CAPRAZ = [(2024, 2025), (2025, 2024)]      # (secim yili, olcum yili)
+# PLASEBO (ek on kayit, yontem.md §6.2.1, 2026-11-28): LLM oncesi yillarda AYNI adimlar.
+# Kural: ana sonuc, plasebo degerlerinin EN BUYUGUNU gecmezse "LLM izi" diye yorumlanmaz.
+PLASEBO_YILLARI = range(2018, 2023)        # 2018-2022
+A_PLASEBO = [c for a in range(2018, 2022) for c in ((a, a + 1), (a + 1, a))]  # komsu yillar, iki yon
 ETIKET_BASLIK = "etiket (Ü/İ/B)"
 
 
@@ -76,9 +84,11 @@ def main():
     siklik = lambda g, y: sayi.get(g, {}).get(y, 0) / belge[y]  # ham oran (secim kurallari icin)
 
     kumeler = {}  # ad -> isaretci govde kumesi
-    for S, M in CAPRAZ:
-        kumeler[f"A {S}->{M}"] = {g for g in uslup if S in asiri_yil.get(g, ()) and siklik(g, TABAN_YILI) < X_ESIGI}
-    for T in (2024, 2025):
+    for S, M in CAPRAZ + A_PLASEBO:
+        taban = min(S, M) - 2  # ana sonucta 2022 (= TABAN_YILI); plaseboda ayni kural
+        kumeler[f"A {S}->{M}"] = {g for g in uslup if S in asiri_yil.get(g, ()) and siklik(g, taban) < X_ESIGI}
+    assert all(min(S, M) - 2 == TABAN_YILI for S, M in CAPRAZ)
+    for T in [*PLASEBO_YILLARI, 2024, 2025]:
         for c in KOBAK_ESIKLERI:
             kumeler[f"C {T} <{c}"] = {g for g in uslup if T in asiri_yil.get(g, ()) and siklik(g, T) < c}
 
@@ -130,6 +140,39 @@ def main():
             en_iyi = max(en_iyi or (dlt, c), (dlt, c))
             print(f"       {c:>7} {len(kumeler[ad]):>6} {p[T]:>7.4f} {q:>7.4f} {dlt:>+7.4f}")
         print(f"     en buyuk Delta: {en_iyi[0]:+.4f} ({100 * en_iyi[0]:.1f}%), esik {en_iyi[1]}")
+
+    def delta_A(S, M):
+        p = oran(f"A {S}->{M}")
+        return p[M] - karsi_olgusal_T(p, M)
+
+    def delta_C(T):
+        sonuc = []
+        for c in KOBAK_ESIKLERI:
+            p = oran(f"C {T} <{c}")
+            sonuc.append((p[T] - karsi_olgusal_T(p, T), c))
+        return max(sonuc)
+
+    print("\nPLASEBO (ek on kayit §6.2.1; LLM oncesi yillarda ayni adimlar):")
+    print("  A) capraz secim, komsu yillar:")
+    pa = []
+    for S, M in A_PLASEBO:
+        d = delta_A(S, M)
+        pa.append(d)
+        print(f"     {S}->{M}: {len(kumeler[f'A {S}->{M}']):>4} govde  Delta = {100 * d:+.1f}%")
+    print(f"     plasebo en buyuk: {100 * max(pa):+.1f}%")
+    for S, M in CAPRAZ:
+        d = delta_A(S, M)
+        print(f"     ANA {S}->{M}: {100 * d:+.1f}%  -> {'GECIYOR' if d > max(pa) else 'GECMIYOR'}")
+    print("  C) Kobak ile birebir (ayni yil, 11 esik, en buyuk Delta):")
+    pc = []
+    for T in PLASEBO_YILLARI:
+        d, c = delta_C(T)
+        pc.append(d)
+        print(f"     {T}: Delta = {100 * d:+.1f}% (esik {c})")
+    print(f"     plasebo en buyuk: {100 * max(pc):+.1f}%")
+    for T in (2024, 2025):
+        d, c = delta_C(T)
+        print(f"     ANA {T}: {100 * d:+.1f}%  -> {'GECIYOR' if d > max(pc) else 'GECMIYOR'}")
 
 
 if __name__ == "__main__":
